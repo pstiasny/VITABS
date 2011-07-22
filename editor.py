@@ -16,6 +16,7 @@ class editor:
 		self.status_line = curses.newwin(0, 0, stdscr.getmaxyx()[0]-1, 0)
 
 		self.redraw_view()
+		self.cy = 2
 		self.move_cursor(1,1)
 		curses.doupdate()
 
@@ -72,20 +73,41 @@ class editor:
 		self.stdscr.clear()
 		self.draw_tab(self.tab) # merge theese functions?
 		self.stdscr.noutrefresh()
+	
+	def redraw_status(self):
+		'''Update status bar'''
+		self.status_line.clear()
+		self.status_line.addstr(0, 0, self.st)
+		self.status_line.noutrefresh()
 
-	def move_cursor(self, new_bar=None, new_chord=None):
+	def move_cursor(self, new_bar=None, new_chord=None, cache_lengths=False):
 		'''Set new cursor position'''
 		if not new_bar: new_bar = self.tab.cursor_bar
 		if not new_chord: new_chord = self.tab.cursor_chord
+		if not cache_lengths: self.cursor_prev_bar_x = None
+
 		self.st = "move to bar " + str(new_bar) + " chord " + str(new_chord)
+
+		# calculate the width of preceeding bars
+		screen_height, screen_width = self.stdscr.getmaxyx()
 		if new_bar != self.tab.cursor_bar or self.cursor_prev_bar_x == None:
 			self.cursor_prev_bar_x = 2
+			self.cy = 2
 			i = 1
 			for b in self.tab.bars:
+				barw = b.total_width(b.gcd()) + 1
+				if self.cursor_prev_bar_x + barw > screen_width:
+					self.cursor_prev_bar_x = 2
+					self.cy = self.cy + 8
+
 				if i >= new_bar: 
 					break
-				self.cursor_prev_bar_x = self.cursor_prev_bar_x + b.total_width(b.gcd()) + 1
+
+				if self.cursor_prev_bar_x + barw <= screen_width:
+					self.cursor_prev_bar_x = self.cursor_prev_bar_x + barw
 				i = i + 1
+
+		# width of preceeding chords
 		offset = 1
 		i = 1
 		b = self.tab.bars[new_bar - 1]
@@ -95,25 +117,28 @@ class editor:
 				break
 			offset = offset + int(c.duration / gcd)*2 + 1
 			i = i + 1
+
 		self.tab.cursor_bar = new_bar
 		self.tab.cursor_chord = new_chord
-		self.cy = 2
 		self.cx = self.cursor_prev_bar_x + offset
 
 	def move_cursor_left(self):
 		if self.tab.cursor_chord == 1:
 			if self.tab.cursor_bar > 1:
 				self.move_cursor(self.tab.cursor_bar-1, 
-						len(self.tab.bars[self.tab.cursor_bar-2].chords))
+						len(self.tab.bars[self.tab.cursor_bar-2].chords),
+						cache_lengths=True)
 		else:
-			self.move_cursor(self.tab.cursor_bar, self.tab.cursor_chord-1)	
+			self.move_cursor(self.tab.cursor_bar, self.tab.cursor_chord-1,
+					cache_lengths=True)	
 	
 	def move_cursor_right(self):
 		if self.tab.cursor_chord == len(self.tab.get_cursor_bar().chords):
 			if self.tab.cursor_bar < len(self.tab.bars):
-				self.move_cursor(self.tab.cursor_bar+1, 1)
+				self.move_cursor(self.tab.cursor_bar+1, 1, cache_lengths=True)
 		else:
-			self.move_cursor(self.tab.cursor_bar, self.tab.cursor_chord+1)
+			self.move_cursor(self.tab.cursor_bar, self.tab.cursor_chord+1, 
+					cache_lengths=True)
 	
 	def insert_mode(self):
 		'''Switch to insert mode and listen for keys'''
@@ -157,9 +182,7 @@ class editor:
 		t = self.tab
 
 		while True:
-			self.status_line.clear()
-			self.status_line.addstr(0, 0, self.st)
-			self.status_line.noutrefresh()
+			self.redraw_status()
 			curses.setsyx(self.cy, self.cx)
 			curses.doupdate()
 			# TODO: accept multi-char commands
