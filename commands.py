@@ -2,6 +2,14 @@ from fractions import Fraction
 from tablature import chord, bar, tablature
 import curses # KEY_*
 
+# i
+def insert(ed, num):
+	ed.tab.get_cursor_bar().chords.insert(ed.tab.cursor_chord-1,
+			chord(ed.insert_duration))
+	ed.move_cursor(new_chord = max(ed.tab.cursor_chord, 1))
+	ed.redraw_view()
+	ed.insert_mode()
+
 # a
 def append(ed, num):
 	ed.tab.get_cursor_bar().chords.insert(ed.tab.cursor_chord,
@@ -109,6 +117,7 @@ def quit(ed, params):
 	ed.terminate = True
 
 def map_commands(ed):
+	ed.nmap[ord('i')] = insert
 	ed.nmap[ord('a')] = append
 	ed.nmap[ord('x')] = delete_chord
 	ed.nmap[ord('q')] = set_duration

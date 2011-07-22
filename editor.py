@@ -250,7 +250,8 @@ class editor:
 		self.stdscr.clear()
 		self.redraw_view()
 		try:
-			self.commands[cmd](self, words)
+			if cmd:
+				self.commands[cmd](self, words)
 		except KeyError:
 			self.st = 'Invalid command'
 
