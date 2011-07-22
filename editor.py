@@ -1,3 +1,18 @@
+#Copyright (C) 2011  Paweł Stiasny
+
+#This program is free software: you can redistribute it and/or modify
+#it under the terms of the GNU General Public License as published by
+#the Free Software Foundation, either version 3 of the License, or
+#(at your option) any later version.
+
+#This program is distributed in the hope that it will be useful,
+#but WITHOUT ANY WARRANTY; without even the implied warranty of
+#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#GNU General Public License for more details.
+
+#You should have received a copy of the GNU General Public License
+#along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 import curses
 import pickle
 import os
@@ -30,9 +45,6 @@ class editor:
 		self.cy = 2
 		self.move_cursor(1,1)
 		curses.doupdate()
-
-	#def add_normal_maps(self, nmaps):
-	#	
 
 	def load_tablature(self, filename):
 		try:
@@ -106,8 +118,8 @@ class editor:
 				if x + bar_width >= screen_width:
 					x = 2
 					y = y + 8
-				if y > screen_height:
-							break
+				if y+8 > screen_height:
+					break
 				self.draw_bar_meta(y, x, tbar, prev_bar) 
 				x = self.draw_bar(y+1, x, tbar)
 			prev_bar = tbar
@@ -146,8 +158,6 @@ class editor:
 		if not new_bar: new_bar = self.tab.cursor_bar
 		if not new_chord: new_chord = self.tab.cursor_chord
 		if not cache_lengths: self.cursor_prev_bar_x = None
-
-		#self.st = "move to bar " + str(new_bar) + " chord " + str(new_chord)
 
 		# calculate the width of preceeding bars
 		screen_height, screen_width = self.stdscr.getmaxyx()

@@ -1,0 +1,44 @@
+VITABS
+======
+
+Introduction
+------------
+VITABS is a guitar tab editor inspired by the legendary Vi text editor.  This is
+an early development version, so there is no manual yet.  For default key
+bindings see mappings at the end of the commands.py file.  Also, this project
+started as an excersise in python and curses for me, so code quality may not be
+at it's finest, still an effort is beeing taken to clean it up.
+
+Python 2 and curses library are required to run VITABS.
+
+
+Features
+--------
+For now, only loading/saving and basic editing features work.  Expect updates in
+the upcoming time.  Planned features include multiple tracks, MIDI playback and
+plugin support.
+
+
+License and Disclaimer
+----------------------
+Copyright (C) 2011  Paweł Stiasny
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+Contact
+-------
+pawelstiasny [at] gmail . com
+
+
