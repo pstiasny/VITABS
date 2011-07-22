@@ -83,10 +83,8 @@ class editor:
 		stdscr.vline(y, x-1, curses.ACS_VLINE, 6)
 		gcd = bar.gcd()
 		total_width = bar.total_width(gcd)
-		#stdscr.attron(curses.A_REVERSE)
 		for i in range(6):
 			stdscr.hline(y+i, x, curses.ACS_HLINE, total_width)
-		#stdscr.attroff(curses.A_REVERSE)
 		x = x + 1
 		for chord in bar.chords:
 			for i in chord.strings.keys():

@@ -31,6 +31,7 @@ def ncmain(stdscr):
 	commands.map_commands(ed)
 	if len(sys.argv) > 1:
 		ed.load_tablature(sys.argv[1])
+		ed.stdscr.clear()
 		ed.redraw_view()
 		ed.move_cursor()
 	ed.normal_mode()
