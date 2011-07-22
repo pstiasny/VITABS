@@ -1,5 +1,6 @@
 import curses
 import pickle
+import os
 import os.path
 
 from fractions import Fraction
@@ -14,6 +15,7 @@ class editor:
 
 	def __init__(self, stdscr, tab = tablature()):
 		screen_height, screen_width = stdscr.getmaxyx()
+		self.root = stdscr
 		self.stdscr = curses.newwin(screen_height - 1, 0, 0, 0)
 		self.stdscr.keypad(1)
 		self.tab = tab
@@ -22,6 +24,7 @@ class editor:
 		
 		self.set_term_title('VITABS')
 		self.status_line = curses.newwin(0, 0, screen_height - 1, 0)
+		self.status_line.scrollok(False)
 
 		self.redraw_view()
 		self.cy = 2
@@ -55,8 +58,12 @@ class editor:
 		self.set_term_title(filename + ' - VITABS')
 	
 	def set_term_title(self, text):
-		# TODO: detect termcap
-		print '\033]0;' + text + '\007' # set xterm title
+		try:
+			term = os.environ['TERM'] 
+			if 'xterm' in term or 'rxvt' in term:
+				print '\033]0;' + text + '\007'
+		except:
+			pass
 
 	def draw_bar(self, y, x, bar):
 		'''Render a single bar at specified position'''
@@ -110,6 +117,12 @@ class editor:
 		self.stdscr.erase()
 		self.draw_tab(self.tab) # merge theese functions?
 		self.stdscr.noutrefresh()
+	
+	def term_resized(self):
+		height, width = self.root.getmaxyx()
+		self.status_line.mvwin(height - 1, 0)
+		self.stdscr.resize(height - 1, width)
+		self.redraw_view()
 	
 	def redraw_status(self):
 		'''Update status bar'''
@@ -200,6 +213,8 @@ class editor:
 			if c == 27: # ESCAPE
 				self.st = ''
 				break
+			elif c == curses.KEY_RESIZE:
+				self.term_resized()
 			elif c in range( ord('0'), ord('9')+1 ):
 				curch = self.tab.get_cursor_chord()
 				if string in curch.strings and curch.strings[string] < 10:
@@ -227,10 +242,13 @@ class editor:
 		curses.echo()
 		self.status_line.erase()
 		self.status_line.addstr(0, 0, ":")
-		line = self.status_line.getstr(0, 1)
+		line = self.status_line.getstr(0, 1) 
 		words = line.split(' ')
 		cmd = words[0]
 		curses.noecho()
+		# scrolling bug
+		self.stdscr.clear()
+		self.redraw_view()
 		try:
 			self.commands[cmd](self, words)
 		except KeyError:
@@ -252,6 +270,9 @@ class editor:
 			# TODO: accept multi-char commands
 			c = self.stdscr.getch()
 
+			if c == curses.KEY_RESIZE:
+				self.term_resized()
+				
 			if c in self.nmap:
 				self.nmap[c](self, num_arg)
 
