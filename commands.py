@@ -8,6 +8,10 @@ def append(ed, num):
 	ed.redraw_view()
 	ed.insert_mode()
 
+# s - this one should delete under cursor
+def set_chord(ed, num):
+	ed.insert_mode()
+
 # x
 def delete_chord(ed, num):
 	t = ed.tab
@@ -64,7 +68,28 @@ def go_bar_beg(ed, num):
 def go_bar_end(ed, num):
 	ed.move_cursor(new_chord = len(ed.tab.get_cursor_bar().chords))
 
-# TODO: 0, $, I, A, O, gg
+# TODO: I, A, O, gg
+
+
+def edit_file(ed, params):
+	try:
+		ed.load_tablature(params[1])
+		ed.move_cursor()
+		ed.redraw_view()
+	except IndexError:
+		ed.st = 'File name not specified'
+
+def write_file(ed, params):
+	try:
+		ed.save_tablature(params[1])
+	except IndexError:
+		if ed.file_name:
+			ed.save_tablature(ed.file_name)
+		else:
+			ed.st = 'File name not specified'
+
+def quit(ed, params):
+	ed.terminate = True
 
 def map_commands(ed):
 	ed.nmap[ord('a')] = append
@@ -75,3 +100,8 @@ def map_commands(ed):
 	ed.nmap[ord('G')] = go_end
 	ed.nmap[ord('0')] = go_bar_beg
 	ed.nmap[ord('$')] = go_bar_end
+	ed.nmap[ord('s')] = set_chord
+	
+	ed.commands['e'] = edit_file
+	ed.commands['w'] = write_file
+	ed.commands['q'] = quit

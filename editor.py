@@ -1,4 +1,5 @@
 import curses
+import pickle
 
 from fractions import Fraction
 from tablature import chord, bar, tablature
@@ -6,13 +7,16 @@ from tablature import chord, bar, tablature
 class editor:
 	cursor_prev_bar_x = 2
 	st = ''
+	file_name = None
+	terminate = False
 
 	def __init__(self, stdscr, tab = tablature()):
 		self.stdscr = stdscr
 		self.tab = tab
 		self.nmap = {}
+		self.commands = {}
 		
-		print '\033]0;' + 'VITABS' + '\007' # set xterm title
+		self.set_term_title('VITABS')
 		self.status_line = curses.newwin(0, 0, stdscr.getmaxyx()[0]-1, 0)
 
 		self.redraw_view()
@@ -23,14 +27,39 @@ class editor:
 	#def add_normal_maps(self, nmaps):
 	#	
 
+	def load_tablature(self, filename):
+		try:
+			infile = open(filename, 'rb')
+			self.tab = pickle.load(infile)
+			infile.close()
+			self.file_name = filename
+		except:
+			self.st = 'Error: Can\'t open the specified file'
+		self.set_term_title(filename + ' - VITABS')
+
+	def save_tablature(self, filename):
+		try:
+			outfile = open(filename, 'wb')
+			pickle.dump(self.tab, outfile)
+			outfile.close()
+			self.file_name = filename
+		except:
+			self.st = 'Error: Can\'t save'
+		self.set_term_title(filename + ' - VITABS')
+	
+	def set_term_title(self, text):
+		print '\033]0;' + text + '\007' # set xterm title
+
 	def draw_bar(self, y, x, bar):
 		'''Render a single bar at specified position'''
 		stdscr = self.stdscr
 		stdscr.vline(y, x-1, curses.ACS_VLINE, 6)
 		gcd = bar.gcd()
 		total_width = bar.total_width(gcd)
+		#stdscr.attron(curses.A_REVERSE)
 		for i in range(6):
 			stdscr.hline(y+i, x, curses.ACS_HLINE, total_width)
+		#stdscr.attroff(curses.A_REVERSE)
 		x = x + 1
 		for chord in bar.chords:
 			for i in chord.strings.keys():
@@ -76,8 +105,11 @@ class editor:
 	
 	def redraw_status(self):
 		'''Update status bar'''
+		width = self.status_line.getmaxyx()[1]
 		self.status_line.clear()
 		self.status_line.addstr(0, 0, self.st)
+		self.status_line.addstr(0, width - 8, 
+				 '{0},{1}'.format(self.tab.cursor_bar, self.tab.cursor_chord))
 		self.status_line.noutrefresh()
 
 	def move_cursor(self, new_bar=None, new_chord=None, cache_lengths=False):
@@ -86,7 +118,7 @@ class editor:
 		if not new_chord: new_chord = self.tab.cursor_chord
 		if not cache_lengths: self.cursor_prev_bar_x = None
 
-		self.st = "move to bar " + str(new_bar) + " chord " + str(new_chord)
+		#self.st = "move to bar " + str(new_bar) + " chord " + str(new_chord)
 
 		# calculate the width of preceeding bars
 		screen_height, screen_width = self.stdscr.getmaxyx()
@@ -143,11 +175,14 @@ class editor:
 	def insert_mode(self):
 		'''Switch to insert mode and listen for keys'''
 		string = 0
+		self.st = '-- INSERT --'
 		while True:
+			self.redraw_status()
 			curses.setsyx(self.cy + string, self.cx)
 			curses.doupdate()
 			c = self.stdscr.getch()
 			if c == 27: # ESCAPE
+				self.st = ''
 				break
 			if c in range( ord('0'), ord('9')+1 ):
 				curch = self.tab.get_cursor_chord()
@@ -168,13 +203,17 @@ class editor:
 
 	def command_mode(self):
 		'''Read a command'''
-		# TODO: actual commands
 		curses.echo()
 		self.status_line.clear()
 		self.status_line.addstr(0, 0, ":")
-		st = self.status_line.getstr(0, 1)
+		line = self.status_line.getstr(0, 1)
+		words = line.split(' ')
+		cmd = words[0]
 		curses.noecho()
-		self.st = st
+		try:
+			self.commands[cmd](self, words)
+		except KeyError:
+			self.st = 'Invalid command'
 
 	def normal_mode(self):
 		'''Enter normal mode, returns on quit'''
@@ -182,7 +221,11 @@ class editor:
 		t = self.tab
 
 		while True:
+			if self.terminate:
+				break
+
 			self.redraw_status()
+			self.st = ''
 			curses.setsyx(self.cy, self.cx)
 			curses.doupdate()
 			# TODO: accept multi-char commands
@@ -195,11 +238,10 @@ class editor:
 				self.move_cursor_right()
 			elif c == curses.KEY_LEFT or c == ord('h'):
 				self.move_cursor_left()
-			elif c == ord('q'):
-				break
 			elif c == ord(':'): 
 				self.command_mode()
 
+			# 0?
 			if c in range( ord('0'), ord('9') ):
 				# read a numeric argument
 				if num_arg:
@@ -212,4 +254,4 @@ class editor:
 				num_arg = None
 
 			if c == 27: # ESCAPE
-				st = ''
+				self.st = ''

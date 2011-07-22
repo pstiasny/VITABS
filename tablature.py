@@ -36,9 +36,11 @@ class bar:
 			return int(self.real_duration() / gcd)*2 + len(self.chords) + 2
 
 class tablature:
-	bars = [bar()]
 	cursor_bar = 1
 	cursor_chord = 1
+
+	def __init__(self):
+		self.bars = [bar()]
 
 	def get_cursor_bar(self):
 		return self.bars[self.cursor_bar-1]
