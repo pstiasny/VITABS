@@ -3,8 +3,9 @@ from tablature import chord, bar, tablature
 
 # a
 def append(ed, num):
-	ed.tab.get_cursor_bar().chords.insert(ed.tab.cursor_chord, chord())
-	ed.move_cursor(new_chord = ed.tab.cursor_chord + 1, cache_lengths = False)
+	ed.tab.get_cursor_bar().chords.insert(ed.tab.cursor_chord,
+			chord(ed.insert_duration))
+	ed.move_cursor(new_chord = ed.tab.cursor_chord + 1)
 	ed.redraw_view()
 	ed.insert_mode()
 
@@ -29,7 +30,7 @@ def delete_chord(ed, num):
 	ed.move_cursor()
 	ed.redraw_view()
 
-# l
+# q
 def set_duration(ed, num_arg):
 	curch = ed.tab.get_cursor_chord()
 	if num_arg:
@@ -39,7 +40,7 @@ def set_duration(ed, num_arg):
 	ed.move_cursor()
 	ed.redraw_view()
 
-# L
+# Q
 def increase_duration(ed, num):
 	curch = ed.tab.get_cursor_chord()
 	curch.duration = curch.duration * 2
@@ -48,7 +49,8 @@ def increase_duration(ed, num):
 
 # o
 def append_bar(ed, num):
-	ed.tab.bars.insert(ed.tab.cursor_bar, bar())
+	curb = ed.tab.get_cursor_bar()
+	ed.tab.bars.insert(ed.tab.cursor_bar, bar(curb.sig_num, curb.sig_den))
 	ed.move_cursor(ed.tab.cursor_bar + 1, 1)
 	ed.redraw_view()
 	ed.insert_mode()
@@ -62,7 +64,8 @@ def go_end(ed, num):
 
 # 0
 def go_bar_beg(ed, num):
-	ed.move_cursor(new_chord = 1)
+	if not num:
+		ed.move_cursor(new_chord = 1)
 
 # $
 def go_bar_end(ed, num):
@@ -70,6 +73,19 @@ def go_bar_end(ed, num):
 
 # TODO: I, A, O, gg
 
+def set_bar_meter(ed, params):
+	try:
+		curb = ed.tab.get_cursor_bar()
+		curb.sig_num, curb.sig_den = int(params[1]), int(params[2])
+		ed.redraw_view()
+	except:
+		ed.st = 'Invalid argument'
+
+def set_insert_duration(ed, params):
+	try:
+		ed.insert_duration = Fraction(int(params[1]), int(params[2]))
+	except:
+		ed.st = 'Invalid argument'
 
 def edit_file(ed, params):
 	try:
@@ -94,14 +110,17 @@ def quit(ed, params):
 def map_commands(ed):
 	ed.nmap[ord('a')] = append
 	ed.nmap[ord('x')] = delete_chord
-	ed.nmap[ord('l')] = set_duration
-	ed.nmap[ord('L')] = increase_duration
+	ed.nmap[ord('q')] = set_duration
+	ed.nmap[ord('Q')] = increase_duration
 	ed.nmap[ord('o')] = append_bar
 	ed.nmap[ord('G')] = go_end
 	ed.nmap[ord('0')] = go_bar_beg
 	ed.nmap[ord('$')] = go_bar_end
 	ed.nmap[ord('s')] = set_chord
 	
+	ed.commands['meter'] = set_bar_meter
+	ed.commands['ilen'] = set_insert_duration
+
 	ed.commands['e'] = edit_file
 	ed.commands['w'] = write_file
 	ed.commands['q'] = quit

@@ -2,17 +2,15 @@ import fractions
 from fractions import Fraction
 
 class chord:
-	duration = Fraction('1/4')
-
-	def __init__(self):
+	def __init__(self, duration = Fraction('1/4')):
 		self.strings = {}
+		self.duration = duration
 
 class bar:
-	sig_num = 4
-	sig_den = 4
-
-	def __init__(self):
+	def __init__(self, sig_num = 4, sig_den = 4):
 		self.chords = [chord()]
+		self.sig_num = sig_num
+		self.sig_den = sig_den
 
 	def required_duration(self):
 		"""Duration as specified by signature"""

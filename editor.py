@@ -1,11 +1,13 @@
 import curses
 import pickle
+import os.path
 
 from fractions import Fraction
 from tablature import chord, bar, tablature
 
 class editor:
 	cursor_prev_bar_x = 2
+	insert_duration = Fraction('1/4')
 	st = ''
 	file_name = None
 	terminate = False
@@ -29,13 +31,16 @@ class editor:
 
 	def load_tablature(self, filename):
 		try:
-			infile = open(filename, 'rb')
-			self.tab = pickle.load(infile)
-			infile.close()
+			if os.path.isfile(filename):
+				infile = open(filename, 'rb')
+				self.tab = pickle.load(infile)
+				infile.close()
+			else:
+				self.tab = tablature()
 			self.file_name = filename
+			self.set_term_title(filename + ' - VITABS')
 		except:
 			self.st = 'Error: Can\'t open the specified file'
-		self.set_term_title(filename + ' - VITABS')
 
 	def save_tablature(self, filename):
 		try:
@@ -107,9 +112,17 @@ class editor:
 		'''Update status bar'''
 		width = self.status_line.getmaxyx()[1]
 		self.status_line.clear()
+		# general purpose status line
 		self.status_line.addstr(0, 0, self.st)
+		# position indicator
 		self.status_line.addstr(0, width - 8, 
 				 '{0},{1}'.format(self.tab.cursor_bar, self.tab.cursor_chord))
+		self.status_line.addstr(0, width - 16,
+				str(self.tab.get_cursor_chord().duration))
+		# meter incomplete indicator
+		cb = self.tab.get_cursor_bar()
+		if cb.real_duration() != cb.required_duration():
+			self.status_line.addstr(0, width - 18, 'M')
 		self.status_line.noutrefresh()
 
 	def move_cursor(self, new_bar=None, new_chord=None, cache_lengths=False):
@@ -184,7 +197,7 @@ class editor:
 			if c == 27: # ESCAPE
 				self.st = ''
 				break
-			if c in range( ord('0'), ord('9')+1 ):
+			elif c in range( ord('0'), ord('9')+1 ):
 				curch = self.tab.get_cursor_chord()
 				if string in curch.strings and curch.strings[string] < 10:
 					st_dec = curch.strings[string] * 10 
@@ -192,14 +205,19 @@ class editor:
 				else:
 					curch.strings[string] = c - ord('0')
 				self.redraw_view()
-			if c == curses.KEY_DC:
+			elif c == curses.KEY_DC:
 				if self.tab.get_cursor_chord().strings[string]:
 					del self.tab.get_cursor_chord().strings[string]
 					self.redraw_view()
-			if c == curses.KEY_UP:
+			elif c == curses.KEY_UP:
 				string = max(string - 1, 0)
-			if c == curses.KEY_DOWN:
+			elif c == curses.KEY_DOWN:
 				string = min(string + 1, 5)
+			elif c == curses.KEY_RIGHT:
+				self.tab.get_cursor_bar().chords.insert(
+						self.tab.cursor_chord, chord(self.insert_duration))
+				self.move_cursor(new_chord = self.tab.cursor_chord + 1)
+				self.redraw_view()
 
 	def command_mode(self):
 		'''Read a command'''
@@ -234,21 +252,21 @@ class editor:
 			if c in self.nmap:
 				self.nmap[c](self, num_arg)
 
-			elif c == curses.KEY_RIGHT or c == ord('l'): # l for length!
+			elif c == curses.KEY_RIGHT or c == ord('l'):
 				self.move_cursor_right()
 			elif c == curses.KEY_LEFT or c == ord('h'):
 				self.move_cursor_left()
 			elif c == ord(':'): 
 				self.command_mode()
 
-			# 0?
 			if c in range( ord('0'), ord('9') ):
 				# read a numeric argument
 				if num_arg:
 					num_arg = num_arg*10 + c - ord('0')
-				else:
+					self.st = str(num_arg)
+				elif c != ord('0'):
 					num_arg = c - ord('0')
-				self.st = str(num_arg)
+					self.st = str(num_arg)
 			else:
 				# reset after a command
 				num_arg = None
