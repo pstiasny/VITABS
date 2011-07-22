@@ -13,13 +13,15 @@ class editor:
 	terminate = False
 
 	def __init__(self, stdscr, tab = tablature()):
-		self.stdscr = stdscr
+		screen_height, screen_width = stdscr.getmaxyx()
+		self.stdscr = curses.newwin(screen_height - 1, 0, 0, 0)
+		self.stdscr.keypad(1)
 		self.tab = tab
 		self.nmap = {}
 		self.commands = {}
 		
 		self.set_term_title('VITABS')
-		self.status_line = curses.newwin(0, 0, stdscr.getmaxyx()[0]-1, 0)
+		self.status_line = curses.newwin(0, 0, screen_height - 1, 0)
 
 		self.redraw_view()
 		self.cy = 2
@@ -53,6 +55,7 @@ class editor:
 		self.set_term_title(filename + ' - VITABS')
 	
 	def set_term_title(self, text):
+		# TODO: detect termcap
 		print '\033]0;' + text + '\007' # set xterm title
 
 	def draw_bar(self, y, x, bar):
@@ -104,14 +107,14 @@ class editor:
 	
 	def redraw_view(self):
 		'''Redraw tab window'''
-		self.stdscr.clear()
+		self.stdscr.erase()
 		self.draw_tab(self.tab) # merge theese functions?
 		self.stdscr.noutrefresh()
 	
 	def redraw_status(self):
 		'''Update status bar'''
 		width = self.status_line.getmaxyx()[1]
-		self.status_line.clear()
+		self.status_line.erase()
 		# general purpose status line
 		self.status_line.addstr(0, 0, self.st)
 		# position indicator
@@ -222,7 +225,7 @@ class editor:
 	def command_mode(self):
 		'''Read a command'''
 		curses.echo()
-		self.status_line.clear()
+		self.status_line.erase()
 		self.status_line.addstr(0, 0, ":")
 		line = self.status_line.getstr(0, 1)
 		words = line.split(' ')
@@ -252,13 +255,6 @@ class editor:
 			if c in self.nmap:
 				self.nmap[c](self, num_arg)
 
-			elif c == curses.KEY_RIGHT or c == ord('l'):
-				self.move_cursor_right()
-			elif c == curses.KEY_LEFT or c == ord('h'):
-				self.move_cursor_left()
-			elif c == ord(':'): 
-				self.command_mode()
-
 			if c in range( ord('0'), ord('9') ):
 				# read a numeric argument
 				if num_arg:
@@ -273,3 +269,5 @@ class editor:
 
 			if c == 27: # ESCAPE
 				self.st = ''
+
+			if c == ord('?'): self.st = self.stdscr.getkey()

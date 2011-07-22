@@ -1,5 +1,6 @@
 from fractions import Fraction
 from tablature import chord, bar, tablature
+import curses # KEY_*
 
 # a
 def append(ed, num):
@@ -117,6 +118,11 @@ def map_commands(ed):
 	ed.nmap[ord('0')] = go_bar_beg
 	ed.nmap[ord('$')] = go_bar_end
 	ed.nmap[ord('s')] = set_chord
+	ed.nmap[ord('h')] = ed.nmap[curses.KEY_LEFT] = \
+			lambda ed, num: ed.move_cursor_left()
+	ed.nmap[ord('l')] = ed.nmap[curses.KEY_RIGHT] = \
+			lambda ed, num: ed.move_cursor_right()
+	ed.nmap[ord(':')] = lambda ed, num: ed.command_mode()
 	
 	ed.commands['meter'] = set_bar_meter
 	ed.commands['ilen'] = set_insert_duration
