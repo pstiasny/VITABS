@@ -15,6 +15,7 @@
 
 from fractions import Fraction
 from tablature import chord, bar, tablature
+import string
 import curses # KEY_*
 
 # i
@@ -95,6 +96,28 @@ def go_bar_beg(ed, num):
 def go_bar_end(ed, num):
 	ed.move_cursor(new_chord = len(ed.tab.get_cursor_bar().chords))
 
+# Page-Down
+def scroll_bars(ed, num):
+	if num == None: num = 1
+	first = ed.first_visible_bar 
+	first += num
+	first = min(max(first, 1), len(ed.tab.bars))
+	ed.first_visible_bar = first
+	ed.redraw_view()
+	if ed.tab.cursor_bar < first:
+		ed.move_cursor(first, 1)
+	elif ed.tab.cursor_bar > ed.last_visible_bar:
+		ed.move_cursor(ed.last_visible_bar, 1)
+	else:
+		ed.move_cursor()
+
+# Page-Up
+def scroll_bars_backward(ed, num):
+	if num:
+		scroll_bars(ed, -num)
+	else:
+		scroll_bars(ed, -1)
+
 # TODO: I, A, O, gg
 
 def set_bar_meter(ed, params):
@@ -131,6 +154,10 @@ def write_file(ed, params):
 def quit(ed, params):
 	ed.terminate = True
 
+def exec_python(ed, params):
+	'''Execute a python expression from the command line'''
+	exec string.join(params[1:], ' ') in {'ed':ed}
+
 def map_commands(ed):
 	ed.nmap[ord('i')] = insert
 	ed.nmap[ord('a')] = append
@@ -141,6 +168,8 @@ def map_commands(ed):
 	ed.nmap[ord('G')] = go_end
 	ed.nmap[ord('0')] = go_bar_beg
 	ed.nmap[ord('$')] = go_bar_end
+	ed.nmap[curses.KEY_NPAGE] = scroll_bars
+	ed.nmap[curses.KEY_PPAGE] = scroll_bars_backward
 	ed.nmap[ord('s')] = set_chord
 	ed.nmap[ord('h')] = ed.nmap[curses.KEY_LEFT] = \
 			lambda ed, num: ed.move_cursor_left()
@@ -150,6 +179,7 @@ def map_commands(ed):
 	
 	ed.commands['meter'] = set_bar_meter
 	ed.commands['ilen'] = set_insert_duration
+	ed.commands['python'] = exec_python
 
 	ed.commands['e'] = edit_file
 	ed.commands['w'] = write_file
