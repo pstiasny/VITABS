@@ -51,7 +51,7 @@ the note length indicator and the position indicator.
     M 1/4     1,1
 
 The *bar-meter* indicator - `M` - is visible when the bar selected by the
-cursor is not complete, eg. bar's meter does not match total duration of notes
+cursor is not complete, i.e. bar's meter does not match total duration of notes
 in it.
 
 The *note length* presents length of note or chord indicated by the cursor.
@@ -94,7 +94,7 @@ However, it is also possible to use Vi-like keys, including:
 
 `g` and `G` move to the beginning and end of the tablature
 
-`G` with a numeric argument moves to the specified bar, ie. `10G` goes to the
+`G` with a numeric argument moves to the specified bar, e.g. `10G` goes to the
 10th bar.
 
 
@@ -140,7 +140,7 @@ To change the duration of the selected chord you can use
 * `Q` to incerease twice
 
 to set a specified length of 1/[natural number] write that number followed
-by `q`, ie. if you want to set the selected chord to quarter notes, you would
+by `q`, e.g. if you want to set the selected chord to quarter notes, you would
 enter
 
     4q
