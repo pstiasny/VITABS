@@ -41,6 +41,7 @@ class editor:
 		self.status_line = curses.newwin(0, 0, screen_height - 1, 0)
 		self.status_line.scrollok(False)
 
+		self.first_visible_bar = tab.cursor_bar
 		self.redraw_view()
 		self.cy = 2
 		self.move_cursor(1,1)
@@ -107,7 +108,7 @@ class editor:
 		y = 1
 		prev_bar = None
 		screen_height, screen_width = self.stdscr.getmaxyx()
-		for tbar in t.bars:
+		for i, tbar in enumerate(t.bars[self.first_visible_bar - 1 : ]):
 			bar_width = tbar.total_width(tbar.gcd())
 			if bar_width >= screen_width - 2:
 				# should split the bar
@@ -120,6 +121,7 @@ class editor:
 					break
 				self.draw_bar_meta(y, x, tbar, prev_bar) 
 				x = self.draw_bar(y+1, x, tbar)
+				self.last_visible_bar = i + self.first_visible_bar
 			prev_bar = tbar
 	
 	def redraw_view(self):
@@ -157,35 +159,44 @@ class editor:
 		if not new_chord: new_chord = self.tab.cursor_chord
 		if not cache_lengths: self.cursor_prev_bar_x = None
 
+		# make sure the cursor stays inside the visible bar range
+		if new_bar < self.first_visible_bar or new_bar > self.last_visible_bar:
+			self.first_visible_bar = new_bar
+			self.redraw_view()
+			# reset prevbarx?
+
+		newbar_i = self.tab.bars[new_bar - 1]
+		
 		# calculate the width of preceeding bars
 		screen_height, screen_width = self.stdscr.getmaxyx()
 		if new_bar != self.tab.cursor_bar or self.cursor_prev_bar_x == None:
 			self.cursor_prev_bar_x = 2
 			self.cy = 2
-			i = 1
-			for b in self.tab.bars:
-				barw = b.total_width(b.gcd()) + 1
-				if self.cursor_prev_bar_x + barw > screen_width:
+			self.st = 'rec width '
+			if new_bar > self.first_visible_bar:
+				for b in self.tab.bars[self.first_visible_bar - 1 : new_bar - 1]:
+					barw = b.total_width(b.gcd()) + 1
+
+					self.cursor_prev_bar_x += barw
+					self.st += 'm' + str(barw)
+
+					if self.cursor_prev_bar_x > screen_width:
+						self.cursor_prev_bar_x = 2 + barw
+						self.cy = self.cy + 8
+						self.st += 'b'
+
+				# should the cursor bar be wrapped?
+				newbar_w = newbar_i.total_width(newbar_i.gcd())  + 1
+				if newbar_w + self.cursor_prev_bar_x > screen_width:
 					self.cursor_prev_bar_x = 2
 					self.cy = self.cy + 8
-
-				if i >= new_bar: 
-					break
-
-				if self.cursor_prev_bar_x + barw <= screen_width:
-					self.cursor_prev_bar_x = self.cursor_prev_bar_x + barw
-				i = i + 1
+					self.st += 'l' + str(newbar_w)
 
 		# width of preceeding chords
 		offset = 1
-		i = 1
-		b = self.tab.bars[new_bar - 1]
-		gcd = b.gcd()
-		for c in b.chords:
-			if i >= new_chord:
-				break
-			offset = offset + int(c.duration / gcd)*2 + 1
-			i = i + 1
+		gcd = newbar_i.gcd()
+		for c in newbar_i.chords[:new_chord - 1]:
+			offset += int(c.duration / gcd)*2 + 1
 
 		self.tab.cursor_bar = new_bar
 		self.tab.cursor_chord = new_chord
