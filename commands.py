@@ -96,6 +96,16 @@ def go_bar_beg(ed, num):
 def go_bar_end(ed, num):
 	ed.move_cursor(new_chord = len(ed.tab.get_cursor_bar().chords))
 
+# j
+def go_next_bar(ed, num):
+	if not num: num = 1
+	ed.move_cursor(min(len(ed.tab.bars), ed.tab.cursor_bar + num), 1)
+
+# k
+def go_prev_bar(ed, num):
+	if not num: num = 1
+	ed.move_cursor(max(1, ed.tab.cursor_bar - num), 1)
+
 # Page-Down
 def scroll_bars(ed, num):
 	if num == None: num = 1
@@ -175,6 +185,8 @@ def map_commands(ed):
 			lambda ed, num: ed.move_cursor_left()
 	ed.nmap[ord('l')] = ed.nmap[curses.KEY_RIGHT] = \
 			lambda ed, num: ed.move_cursor_right()
+	ed.nmap[ord('j')] = ed.nmap[curses.KEY_DOWN] = go_next_bar
+	ed.nmap[ord('k')] = ed.nmap[curses.KEY_UP] = go_prev_bar
 	ed.nmap[ord(':')] = lambda ed, num: ed.command_mode()
 	
 	ed.commands['meter'] = set_bar_meter
