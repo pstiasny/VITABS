@@ -172,25 +172,21 @@ class editor:
 		if new_bar != self.tab.cursor_bar or self.cursor_prev_bar_x == None:
 			self.cursor_prev_bar_x = 2
 			self.cy = 2
-			self.st = 'rec width '
 			if new_bar > self.first_visible_bar:
 				for b in self.tab.bars[self.first_visible_bar - 1 : new_bar - 1]:
 					barw = b.total_width(b.gcd()) + 1
 
 					self.cursor_prev_bar_x += barw
-					self.st += 'm' + str(barw)
 
 					if self.cursor_prev_bar_x > screen_width:
 						self.cursor_prev_bar_x = 2 + barw
 						self.cy = self.cy + 8
-						self.st += 'b'
 
 				# should the cursor bar be wrapped?
 				newbar_w = newbar_i.total_width(newbar_i.gcd())  + 1
 				if newbar_w + self.cursor_prev_bar_x > screen_width:
 					self.cursor_prev_bar_x = 2
 					self.cy = self.cy + 8
-					self.st += 'l' + str(newbar_w)
 
 		# width of preceeding chords
 		offset = 1
