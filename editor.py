@@ -153,6 +153,26 @@ class editor:
 			self.status_line.addstr(0, width - 18, 'M')
 		self.status_line.noutrefresh()
 
+	def display_nmaps(self):
+		self.root.scrollok(True)
+		self.root.clear()
+		i = 0
+		h = self.root.getmaxyx()[0]
+		for c, f in self.nmap.items():
+			self.root.addstr(i, 0, '{0}  {1}: {2}'.format(
+				curses.keyname(c), f.__name__, f.__doc__))
+			i += 1
+			if i == h-1:
+				self.root.addstr(i, 0, '<Space> NEXT PAGE')
+				while self.root.getch() != ord(' '): pass
+				self.root.clear()
+				i = 0
+		self.root.addstr(h-1, 0, '<Space> CONTINUE')
+		while self.root.getch() != ord(' '): pass
+		self.root.scrollok(False)
+		self.root.clear()
+		self.redraw_view()
+
 	def move_cursor(self, new_bar=None, new_chord=None, cache_lengths=False):
 		'''Set new cursor position'''
 		if not new_bar: new_bar = self.tab.cursor_bar
@@ -311,7 +331,8 @@ class editor:
 				if c == 27: # ESCAPE
 					self.st = ''
 
-				if c == ord('?'): self.st = self.stdscr.getkey()
+				if c == ord('?'):
+					self.display_nmaps()
 
 			except KeyboardInterrupt:
 				self.st = 'Use :q<Enter> to quit'

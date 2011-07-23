@@ -146,7 +146,7 @@ def scroll_bars_backward(ed, num):
 	else:
 		scroll_bars(ed, -1)
 
-# TODO: I, A, gg
+# TODO: gg
 
 def set_bar_meter(ed, params):
 	try:
