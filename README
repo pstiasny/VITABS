@@ -5,11 +5,14 @@ Introduction
 ------------
 VITABS is a guitar tab editor inspired by the legendary Vi text editor.  It is
 created with convenient editing and fast keyboard entry in mind.  Keyboard
-mappings are modeled after Vi and Vim.  This is an early development version, so
-there is no manual yet.  For default key bindings see mappings at the end of the
-commands.py file.  Also, this project started as an excersise in python and
-curses for me, so code quality may not be at it's finest, still an effort is
-beeing taken to clean it up.
+mappings are modeled after Vi and Vim.
+
+A more detailed documentation is available in the doc directory in Markdown
+format.
+
+The project is in a quite early stage, so many features are missing. Also, this
+project started as an excersise in python and curses for me, so code quality may
+not be at it's finest, still an effort is beeing taken to clean it up.
 
 Python 2 and curses library are required to run VITABS.
 
