@@ -115,14 +115,14 @@ To create a new bar after the currently selected and enter insert mode press
 `o`. Press `O` to do the same before the selected bar.
 
 ### The insert mode
-After you used of the the above commands, the editor will switch to the insert
-mode.  This is indicated in the status line by the following message
+After you used one of the the above commands, the editor will switch to the
+insert mode.  This is indicated in the status line by the following message
 
     -- INSERT --
 
-Now you can enter new notes and modify selected chord.  Use up/down arrow keys
-to move between the strings.  Enter fret numbers using the usual number keys.
-Press `delete` to remove the number from the current string.
+Now you can enter new notes and modify the selected chord.  Use up/down arrow
+keys to move between the strings.  Enter fret numbers using the usual number
+keys.  Press `delete` to remove the number from the current string.
 
 Pressing the right arrow will insert another empty chord after the cursor and
 move to it.  If you instead want to edit one of the existing chords, exit
@@ -139,7 +139,7 @@ To change the duration of the selected chord you can use
 * `q` to decrease the length twice
 * `Q` to incerease twice
 
-to set a specified length of 1/[natural number] write that number followed
+To set a specified length of 1/[natural number] write that number followed
 by `q`, e.g. if you want to set the selected chord to quarter notes, you would
 enter
 
@@ -154,7 +154,7 @@ To get a more specific duration, you can use the `:ilen` command.
 This command will cause all following chords created with an insert command
 to have the specified initial length.
 
-More duration are planned for future versions.
+More duration commands are planned for future versions.
 
 
 Removing
