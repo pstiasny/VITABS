@@ -250,7 +250,10 @@ class editor:
 		curses.echo()
 		self.status_line.erase()
 		self.status_line.addstr(0, 0, ":")
-		line = self.status_line.getstr(0, 1) 
+		try:
+			line = self.status_line.getstr(0, 1) 
+		except KeyboardInterrupt:
+			line = ''
 		words = line.split(' ')
 		cmd = words[0]
 		curses.noecho()
@@ -277,27 +280,31 @@ class editor:
 			curses.setsyx(self.cy, self.cx)
 			curses.doupdate()
 			# TODO: accept multi-char commands
-			c = self.stdscr.getch()
+			try:
+				c = self.stdscr.getch()
 
-			if c == curses.KEY_RESIZE:
-				self.term_resized()
-				
-			if c in self.nmap:
-				self.nmap[c](self, num_arg)
+				if c == curses.KEY_RESIZE:
+					self.term_resized()
+					
+				if c in self.nmap:
+					self.nmap[c](self, num_arg)
 
-			if c in range( ord('0'), ord('9') ):
-				# read a numeric argument
-				if num_arg:
-					num_arg = num_arg*10 + c - ord('0')
-					self.st = str(num_arg)
-				elif c != ord('0'):
-					num_arg = c - ord('0')
-					self.st = str(num_arg)
-			else:
-				# reset after a command
-				num_arg = None
+				if c in range( ord('0'), ord('9') ):
+					# read a numeric argument
+					if num_arg:
+						num_arg = num_arg*10 + c - ord('0')
+						self.st = str(num_arg)
+					elif c != ord('0'):
+						num_arg = c - ord('0')
+						self.st = str(num_arg)
+				else:
+					# reset after a command
+					num_arg = None
 
-			if c == 27: # ESCAPE
-				self.st = ''
+				if c == 27: # ESCAPE
+					self.st = ''
 
-			if c == ord('?'): self.st = self.stdscr.getkey()
+				if c == ord('?'): self.st = self.stdscr.getkey()
+
+			except KeyboardInterrupt:
+				self.st = 'use :q<Enter> to quit'
