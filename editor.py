@@ -111,7 +111,7 @@ class editor:
 			bar_width = tbar.total_width(tbar.gcd())
 			if bar_width >= screen_width - 2:
 				# should split the bar
-				self.st = 'bar too long, not displaying'
+				self.st = 'Bar too long, not displaying'
 			else:
 				if x + bar_width >= screen_width:
 					x = 2
@@ -307,4 +307,4 @@ class editor:
 				if c == ord('?'): self.st = self.stdscr.getkey()
 
 			except KeyboardInterrupt:
-				self.st = 'use :q<Enter> to quit'
+				self.st = 'Use :q<Enter> to quit'
