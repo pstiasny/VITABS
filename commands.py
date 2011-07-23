@@ -20,6 +20,7 @@ import curses # KEY_*
 
 # i
 def insert(ed, num):
+	'''Create a new chord before the cursor and enter insert mode'''
 	ed.tab.get_cursor_bar().chords.insert(ed.tab.cursor_chord-1,
 			chord(ed.insert_duration))
 	ed.move_cursor(new_chord = max(ed.tab.cursor_chord, 1))
@@ -28,6 +29,7 @@ def insert(ed, num):
 
 # a
 def append(ed, num):
+	'''Create a new chord after the cursor and enter insert mode'''
 	ed.tab.get_cursor_bar().chords.insert(ed.tab.cursor_chord,
 			chord(ed.insert_duration))
 	ed.move_cursor(new_chord = ed.tab.cursor_chord + 1)
@@ -36,10 +38,12 @@ def append(ed, num):
 
 # s - this one should delete under cursor
 def set_chord(ed, num):
+	'''Enter insert mode at current position'''
 	ed.insert_mode()
 
 # x
 def delete_chord(ed, num):
+	'''Delete at current cursor position'''
 	t = ed.tab
 	del t.get_cursor_bar().chords[t.cursor_chord-1]
 	if not t.bars[t.cursor_bar-1].chords:
@@ -57,6 +61,7 @@ def delete_chord(ed, num):
 
 # q
 def set_duration(ed, num_arg):
+	'''Decrease note length by half, with numeric argument set to 1/arg'''
 	curch = ed.tab.get_cursor_chord()
 	if num_arg:
 		curch.duration = Fraction(1, num_arg)
@@ -67,6 +72,7 @@ def set_duration(ed, num_arg):
 
 # Q
 def increase_duration(ed, num):
+	'''Increase note length twice'''
 	curch = ed.tab.get_cursor_chord()
 	curch.duration = curch.duration * 2
 	ed.move_cursor()
@@ -74,6 +80,7 @@ def increase_duration(ed, num):
 
 # o
 def append_bar(ed, num):
+	'''Create a bar after the selected and enter insert mode'''
 	curb = ed.tab.get_cursor_bar()
 	ed.tab.bars.insert(ed.tab.cursor_bar, bar(curb.sig_num, curb.sig_den))
 	ed.move_cursor(ed.tab.cursor_bar + 1, 1)
@@ -82,6 +89,7 @@ def append_bar(ed, num):
 
 # O
 def insert_bar(ed, num):
+	'''Create a bar before the selected and enter insert mode'''
 	curb = ed.tab.get_cursor_bar()
 	ed.tab.bars.insert(ed.tab.cursor_bar - 1, bar(curb.sig_num, curb.sig_den))
 	ed.move_cursor(ed.tab.cursor_bar, 1)
@@ -90,6 +98,7 @@ def insert_bar(ed, num):
 
 # G
 def go_end(ed, num):
+	'''Go to last bar, with numeric argument go to the specified bar'''
 	if num:
 		ed.move_cursor(min(len(ed.tab.bars), num), 1)
 	else:
@@ -97,20 +106,24 @@ def go_end(ed, num):
 
 # 0
 def go_bar_beg(ed, num):
+	'''Go to the beginning of the bar'''
 	if not num:
 		ed.move_cursor(new_chord = 1)
 
 # $
 def go_bar_end(ed, num):
+	'''Go to the end of the bar'''
 	ed.move_cursor(new_chord = len(ed.tab.get_cursor_bar().chords))
 
 # I
 def insert_at_beg(ed, num):
+	'''Enter insert mode at the beginning of the bar'''
 	go_bar_beg(ed, None)
 	insert(ed, num)
 
 # A
 def append_at_end(ed, num):
+	'''Enter insert mode at the end of the bar'''
 	go_bar_end(ed, None)
 	append(ed, num)
 
@@ -126,6 +139,7 @@ def go_prev_bar(ed, num):
 
 # Page-Down
 def scroll_bars(ed, num):
+	'''Scroll the screen by one bar'''
 	if num == None: num = 1
 	first = ed.first_visible_bar 
 	first += num
@@ -141,6 +155,7 @@ def scroll_bars(ed, num):
 
 # Page-Up
 def scroll_bars_backward(ed, num):
+	'''Scroll the screen by one bar'''
 	if num:
 		scroll_bars(ed, -num)
 	else:

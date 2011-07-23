@@ -48,6 +48,7 @@ class editor:
 		curses.doupdate()
 
 	def load_tablature(self, filename):
+		'''Unpickle tab from a file'''
 		try:
 			if os.path.isfile(filename):
 				infile = open(filename, 'rb')
@@ -61,6 +62,7 @@ class editor:
 			self.st = 'Error: Can\'t open the specified file'
 
 	def save_tablature(self, filename):
+		'''Pickle tab to a file'''
 		try:
 			outfile = open(filename, 'wb')
 			pickle.dump(self.tab, outfile)
@@ -71,6 +73,7 @@ class editor:
 		self.set_term_title(filename + ' - VITABS')
 	
 	def set_term_title(self, text):
+		'''Atempt to change virtual terminal window title'''
 		try:
 			term = os.environ['TERM'] 
 			if 'xterm' in term or 'rxvt' in term:
@@ -131,6 +134,7 @@ class editor:
 		self.stdscr.noutrefresh()
 	
 	def term_resized(self):
+		'''Called when the terminal window is resized, updates window sizes'''
 		height, width = self.root.getmaxyx()
 		self.status_line.mvwin(height - 1, 0)
 		self.stdscr.resize(height - 1, width)
@@ -159,8 +163,12 @@ class editor:
 		i = 0
 		h = self.root.getmaxyx()[0]
 		for c, f in self.nmap.items():
-			self.root.addstr(i, 0, '{0}  {1}: {2}'.format(
-				curses.keyname(c), f.__name__, f.__doc__))
+			if f.__doc__:
+				self.root.addstr(i, 1, '{0}  {1}: {2}'.format(
+					curses.keyname(c), f.__name__, f.__doc__))
+			else:
+				self.root.addstr(i, 1, '{0}  {1}'.format(
+					curses.keyname(c), f.__name__, f.__doc__))
 			i += 1
 			if i == h-1:
 				self.root.addstr(i, 0, '<Space> NEXT PAGE')
@@ -244,12 +252,14 @@ class editor:
 			self.redraw_status()
 			curses.setsyx(self.cy + string, self.cx)
 			curses.doupdate()
+
 			c = self.stdscr.getch()
 			if c == 27: # ESCAPE
 				self.st = ''
 				break
 			elif c == curses.KEY_RESIZE:
 				self.term_resized()
+
 			elif c in range( ord('0'), ord('9')+1 ):
 				curch = self.tab.get_cursor_chord()
 				if string in curch.strings and curch.strings[string] < 10:
@@ -262,10 +272,12 @@ class editor:
 				if self.tab.get_cursor_chord().strings[string]:
 					del self.tab.get_cursor_chord().strings[string]
 					self.redraw_view()
+
 			elif c == curses.KEY_UP:
 				string = max(string - 1, 0)
 			elif c == curses.KEY_DOWN:
 				string = min(string + 1, 5)
+
 			elif c == curses.KEY_RIGHT:
 				self.tab.get_cursor_bar().chords.insert(
 						self.tab.cursor_chord, chord(self.insert_duration))
