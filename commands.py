@@ -104,6 +104,16 @@ def go_bar_beg(ed, num):
 def go_bar_end(ed, num):
 	ed.move_cursor(new_chord = len(ed.tab.get_cursor_bar().chords))
 
+# I
+def insert_at_beg(ed, num):
+	go_bar_beg(ed, None)
+	insert(ed, num)
+
+# A
+def append_at_end(ed, num):
+	go_bar_end(ed, None)
+	append(ed, num)
+
 # j
 def go_next_bar(ed, num):
 	if not num: num = 1
@@ -136,7 +146,7 @@ def scroll_bars_backward(ed, num):
 	else:
 		scroll_bars(ed, -1)
 
-# TODO: I, A, O, gg
+# TODO: I, A, gg
 
 def set_bar_meter(ed, params):
 	try:
@@ -187,6 +197,8 @@ def map_commands(ed):
 	ed.nmap[ord('G')] = go_end
 	ed.nmap[ord('0')] = go_bar_beg
 	ed.nmap[ord('$')] = go_bar_end
+	ed.nmap[ord('I')] = insert_at_beg
+	ed.nmap[ord('A')] = append_at_end
 	ed.nmap[curses.KEY_NPAGE] = scroll_bars
 	ed.nmap[curses.KEY_PPAGE] = scroll_bars_backward
 	ed.nmap[ord('s')] = set_chord
