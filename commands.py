@@ -210,6 +210,7 @@ def map_commands(ed):
 	ed.nmap[ord('o')] = append_bar
 	ed.nmap[ord('O')] = insert_bar
 	ed.nmap[ord('G')] = go_end
+	ed.nmap[ord('g')] = lambda ed, num: go_end(ed, 1)
 	ed.nmap[ord('0')] = ed.nmap[curses.KEY_HOME] = go_bar_beg
 	ed.nmap[ord('$')] = ed.nmap[curses.KEY_END] = go_bar_end
 	ed.nmap[ord('I')] = insert_at_beg
