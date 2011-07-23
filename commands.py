@@ -80,6 +80,14 @@ def append_bar(ed, num):
 	ed.redraw_view()
 	ed.insert_mode()
 
+# O
+def insert_bar(ed, num):
+	curb = ed.tab.get_cursor_bar()
+	ed.tab.bars.insert(ed.tab.cursor_bar - 1, bar(curb.sig_num, curb.sig_den))
+	ed.move_cursor(ed.tab.cursor_bar, 1)
+	ed.redraw_view()
+	ed.insert_mode()
+
 # G
 def go_end(ed, num):
 	if num:
@@ -175,6 +183,7 @@ def map_commands(ed):
 	ed.nmap[ord('q')] = set_duration
 	ed.nmap[ord('Q')] = increase_duration
 	ed.nmap[ord('o')] = append_bar
+	ed.nmap[ord('O')] = insert_bar
 	ed.nmap[ord('G')] = go_end
 	ed.nmap[ord('0')] = go_bar_beg
 	ed.nmap[ord('$')] = go_bar_end
