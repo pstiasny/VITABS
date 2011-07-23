@@ -139,6 +139,7 @@ class editor:
 		self.status_line.mvwin(height - 1, 0)
 		self.stdscr.resize(height - 1, width)
 		self.redraw_view()
+		self.move_cursor()
 	
 	def redraw_status(self):
 		'''Update status bar'''
