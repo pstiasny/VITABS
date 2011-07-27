@@ -278,6 +278,12 @@ class editor:
 				string = max(string - 1, 0)
 			elif c == curses.KEY_DOWN:
 				string = min(string + 1, 5)
+			elif c == ord('E'): string = 5
+			elif c == ord('A'): string = 4
+			elif c == ord('D'): string = 3
+			elif c == ord('G'): string = 2
+			elif c == ord('B'): string = 1
+			elif c == ord('e'): string = 0
 
 			elif c == curses.KEY_RIGHT:
 				self.tab.get_cursor_bar().chords.insert(
