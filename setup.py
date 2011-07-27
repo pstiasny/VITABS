@@ -8,6 +8,6 @@ setup(
 	scripts=['bin/vitabs'],
 	url='http://github.com/PawelStiasny/VITABS',
 	license='COPYING',
-	description='Vi-inspired guitar tab editor'
-	long_descripton=open('README').read(),
+	description='Vi-inspired guitar tab editor',
+	long_description=open('README').read(),
 )

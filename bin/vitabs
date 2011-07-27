@@ -18,17 +18,13 @@
 
 import sys
 import curses
-import fractions
-from fractions import Fraction
-import copy
 
-from tablature import chord, bar, tablature
-from editor import editor
-import commands
+from vitabs.editor import editor
+import vitabs.commands
 
 def ncmain(stdscr):
 	ed = editor(stdscr)
-	commands.map_commands(ed)
+	vitabs.commands.map_commands(ed)
 	if len(sys.argv) > 1:
 		ed.load_tablature(sys.argv[1])
 		ed.stdscr.clear()
