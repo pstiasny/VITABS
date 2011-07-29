@@ -2,7 +2,7 @@ VITABS Manual
 =============
 
 VITABS is a guitar tab editor inspired by the legendary Vi text editor and
-it's highly successful clone, Vim.  It was created as an alternative to
+its highly successful clone, Vim.  It was created as an alternative to
 GUI-based editors, with convenient editing and fast keyboard entry in mind.
 It also tries to adhere to the philosophy of doing one thing well.  VITABS is
 not a composition application, music typesetting software nor music theory
@@ -20,11 +20,11 @@ programming interface.
 Getting VITABS
 ---------------
 You can get the latest development source at projects github at 
-<https://github.com/PawelStiasny/VITABS>.  Use git dowload the latest version
+<https://github.com/PawelStiasny/VITABS>.  Use git to dowload the latest version
 
     git clone git://github.com/PawelStiasny/VITABS.git
 
-To install, execute as root:
+To install, execute the following as root:
 
     python2 setup.py install
 
