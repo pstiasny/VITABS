@@ -24,6 +24,10 @@ You can get the latest development source at projects github at
 
     git clone git://github.com/PawelStiasny/VITABS.git
 
+To install, execute as root:
+
+    python2 setup.py install
+
 An up-to-date version of this manual should be available in the `doc`
 directory.
 
