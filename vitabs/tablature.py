@@ -60,3 +60,30 @@ class tablature:
 
 	def get_cursor_chord(self):
 		return self.bars[self.cursor_bar-1].chords[self.cursor_chord-1]
+
+class chordrange:
+	def __init__(self, tab, beginning, end):
+		self.tab = tab
+		self.beginning = beginning
+		self.end = end
+
+	def chords(self):
+		'''Iterator over chords in the range'''
+		first_bar = self.beginning[0] - 1
+		first_chord = self.beginning[1] - 1
+		last_bar = self.end[0] - 1 
+		last_chord = self.end[1]
+
+		if first_bar == last_bar:
+			for c in self.tab.bars[first_bar].chords[first_chord:last_chord]:
+				yield c
+		else:
+			for c in self.tab.bars[first_bar].chords[first_chord : ]:
+				yield c
+
+			for b in self.tab.bars[first_bar + 1 : last_bar]:
+				for c in b.chords:
+					yield c
+
+			for c in self.tab.bars[last_bar].chords[ : last_chord]:
+				yield c
