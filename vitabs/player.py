@@ -14,14 +14,32 @@
 #along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import tablature
-import pypm
 import time
+import functools
+
+try:
+	import pypm
+except ImportError:
+	print "PyPortMidi not installed, MIDI playback will not be available."
+
+def if_mod_imported(mod, retval=None):
+	'''Make a function do nothing if module is not imported'''
+	def wrapper(f):
+		if mod in globals():
+			return f
+		else:
+			def wfun(*args, **kwds):
+				return retval
+			return wfun
+	return wrapper
 
 class player:
+	@if_mod_imported('pypm')
 	def __init__(self):
 		pypm.Initialize()
 		self.open_first_output()
 
+	@if_mod_imported('pypm')
 	def __del__(self):
 		del self.port
 		pypm.Terminate()
@@ -31,16 +49,19 @@ class player:
 		   Return False to stop playback.'''
 		return True
 
+	@if_mod_imported('pypm')
 	def open_first_output(self):
 		for i in range(pypm.CountDevices()):
-			interf,name,inp,outp,opened = pypm.GetDeviceInfo(i)
+			outp = pypm.GetDeviceInfo(i)[3]
 			if outp:
 				self.port = pypm.Output(i, 0)
 				break
 
+	@if_mod_imported('pypm')
 	def set_instrument(self, num):
 		self.port.WriteShort(0xC0, num)
 
+	@if_mod_imported('pypm')
 	def play(self, chords, tuning, bpm):
 		try:
 			bartime = (240./bpm)
@@ -52,7 +73,8 @@ class player:
 				t = pypm.Time()
 				self.port.Write(
 					[[[144, tuning[s]+n, 0], t] for s, n in c.strings.iteritems()])
-				self.post_play_chord()
+				if not self.post_play_chord():
+					break
 		except KeyboardInterrupt:
 			self.port.Write(
 				[[[144, tuning[s]+n, 0], t] for s, n in c.strings.iteritems()])
