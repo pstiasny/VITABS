@@ -294,9 +294,9 @@ class Editor:
 					del self.tab.get_cursor_chord().strings[string]
 					self.redraw_view()
 
-			elif c == curses.KEY_UP:
+			elif c == curses.KEY_UP or c == ord('k'):
 				string = max(string - 1, 0)
-			elif c == curses.KEY_DOWN:
+			elif c == curses.KEY_DOWN or c == ord('j'):
 				string = min(string + 1, 5)
 			elif c == ord('E'): string = 5
 			elif c == ord('A'): string = 4
@@ -305,7 +305,7 @@ class Editor:
 			elif c == ord('B'): string = 1
 			elif c == ord('e'): string = 0
 
-			elif c == curses.KEY_RIGHT:
+			elif c == curses.KEY_RIGHT or c == ord('l'):
 				self.tab.get_cursor_bar().chords.insert(
 						self.tab.cursor_chord, Chord(self.insert_duration))
 				self.move_cursor(new_chord = self.tab.cursor_chord + 1)
