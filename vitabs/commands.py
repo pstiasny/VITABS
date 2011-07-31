@@ -127,6 +127,15 @@ def append_at_end(ed, num):
 	go_bar_end(ed, None)
 	append(ed, num)
 
+# J
+def join_bars(ed, num):
+	'''Join current bar with the following'''
+	if ed.tab.cursor_bar != len(ed.tab.bars):
+		ed.tab.get_cursor_bar().chords.extend(
+				ed.tab.bars[ed.tab.cursor_bar].chords)
+		del ed.tab.bars[ed.tab.cursor_bar]
+		ed.redraw_view()
+
 # j
 def go_next_bar(ed, num):
 	if not num: num = 1
@@ -231,6 +240,7 @@ def map_commands(ed):
 	ed.nmap[ord('$')] = ed.nmap[curses.KEY_END] = go_bar_end
 	ed.nmap[ord('I')] = insert_at_beg
 	ed.nmap[ord('A')] = append_at_end
+	ed.nmap[ord('J')] = join_bars
 	ed.nmap[curses.KEY_NPAGE] = scroll_bars
 	ed.nmap[curses.KEY_PPAGE] = scroll_bars_backward
 	ed.nmap[ord('s')] = set_chord
