@@ -169,6 +169,13 @@ Press `x` to delete a single chord at the cursor.  More commands will be added
 in future versions.
 
 
+Playback
+--------
+You need to have PyPortMidi installed on your system for playback to work.
+
+Currently `r` plays the whole track.  `Ctrl-c` stops playback.
+
+
 Working with files
 ------------------
 ### Opening

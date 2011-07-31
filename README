@@ -14,14 +14,19 @@ The project is in a quite early stage, so many features are missing. Also, this
 project started as an excersise in python and curses for me, so code quality may
 not be at it's finest, still an effort is beeing taken to clean it up.
 
+
+Requirements
+------------
 Python 2 and curses library are required to run VITABS.
+PyPortMidi is required for MIDI playback.
 
 
 Features
 --------
-For now, only loading/saving and basic editing features work.  Expect updates in
-the upcoming time.  Planned features include multiple tracks, MIDI playback and
-plugin support.
+* Vi-like editing commands
+* MIDI playback
+
+Planned features include multiple tracks and plugin support.
 
 
 License and Disclaimer
