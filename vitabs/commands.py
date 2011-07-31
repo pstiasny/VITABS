@@ -14,7 +14,7 @@
 #along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from fractions import Fraction
-from tablature import chord, bar, tablature
+from tablature import Chord, Bar, Tablature
 import string
 import curses # KEY_*
 
@@ -22,7 +22,7 @@ import curses # KEY_*
 def insert(ed, num):
 	'''Create a new chord before the cursor and enter insert mode'''
 	ed.tab.get_cursor_bar().chords.insert(ed.tab.cursor_chord-1,
-			chord(ed.insert_duration))
+			Chord(ed.insert_duration))
 	ed.move_cursor(new_chord = max(ed.tab.cursor_chord, 1))
 	ed.redraw_view()
 	ed.insert_mode()
@@ -31,7 +31,7 @@ def insert(ed, num):
 def append(ed, num):
 	'''Create a new chord after the cursor and enter insert mode'''
 	ed.tab.get_cursor_bar().chords.insert(ed.tab.cursor_chord,
-			chord(ed.insert_duration))
+			Chord(ed.insert_duration))
 	ed.move_cursor(new_chord = ed.tab.cursor_chord + 1)
 	ed.redraw_view()
 	ed.insert_mode()
@@ -50,7 +50,7 @@ def delete_chord(ed, num):
 		del t.bars[t.cursor_bar-1]
 	if not t.bars:
 		# empty tab
-		t.bars = [bar()]
+		t.bars = [Bar()]
 	if t.cursor_bar > len(t.bars):
 		t.cursor_bar = len(t.bars)
 		t.cursor_chord = len(t.bars[t.cursor_bar-1].chords)
@@ -82,7 +82,7 @@ def increase_duration(ed, num):
 def append_bar(ed, num):
 	'''Create a bar after the selected and enter insert mode'''
 	curb = ed.tab.get_cursor_bar()
-	ed.tab.bars.insert(ed.tab.cursor_bar, bar(curb.sig_num, curb.sig_den))
+	ed.tab.bars.insert(ed.tab.cursor_bar, Bar(curb.sig_num, curb.sig_den))
 	ed.move_cursor(ed.tab.cursor_bar + 1, 1)
 	ed.redraw_view()
 	ed.insert_mode()
@@ -91,7 +91,7 @@ def append_bar(ed, num):
 def insert_bar(ed, num):
 	'''Create a bar before the selected and enter insert mode'''
 	curb = ed.tab.get_cursor_bar()
-	ed.tab.bars.insert(ed.tab.cursor_bar - 1, bar(curb.sig_num, curb.sig_den))
+	ed.tab.bars.insert(ed.tab.cursor_bar - 1, Bar(curb.sig_num, curb.sig_den))
 	ed.move_cursor(ed.tab.cursor_bar, 1)
 	ed.redraw_view()
 	ed.insert_mode()

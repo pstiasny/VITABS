@@ -19,17 +19,17 @@ import os
 import os.path
 
 from fractions import Fraction
-from tablature import chord, bar, tablature, chordrange
+from tablature import Chord, Bar, Tablature, ChordRange
 from player import player
 
-class editor:
+class Editor:
 	cursor_prev_bar_x = 2
 	insert_duration = Fraction('1/4')
 	st = ''
 	file_name = None
 	terminate = False
 
-	def __init__(self, stdscr, tab = tablature()):
+	def __init__(self, stdscr, tab = Tablature()):
 		screen_height, screen_width = stdscr.getmaxyx()
 		self.root = stdscr
 		self.stdscr = curses.newwin(screen_height - 1, 0, 0, 0)
@@ -56,7 +56,7 @@ class editor:
 				self.tab = pickle.load(infile)
 				infile.close()
 			else:
-				self.tab = tablature()
+				self.tab = Tablature()
 			self.file_name = filename
 			self.set_term_title(filename + ' - VITABS')
 		except:
@@ -260,7 +260,7 @@ class editor:
 		p.post_play_chord = update_playback_status
 		p.set_instrument(getattr(self.tab, 'instrument', 24))
 		p.play(
-				chordrange(self.tab, fro, to).chords(),
+				ChordRange(self.tab, fro, to).chords(),
 				getattr(self.tab, 'tuning', [76, 71, 67, 62, 57, 52]),
 				getattr(self.tab, 'bpm', 120))
 		self.st = ''
@@ -307,7 +307,7 @@ class editor:
 
 			elif c == curses.KEY_RIGHT:
 				self.tab.get_cursor_bar().chords.insert(
-						self.tab.cursor_chord, chord(self.insert_duration))
+						self.tab.cursor_chord, Chord(self.insert_duration))
 				self.move_cursor(new_chord = self.tab.cursor_chord + 1)
 				self.redraw_view()
 

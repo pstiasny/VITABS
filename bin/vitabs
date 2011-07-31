@@ -19,11 +19,11 @@
 import sys
 import curses
 
-from vitabs.editor import editor
+from vitabs.editor import Editor
 import vitabs.commands
 
 def ncmain(stdscr):
-	ed = editor(stdscr)
+	ed = Editor(stdscr)
 	vitabs.commands.map_commands(ed)
 	if len(sys.argv) > 1:
 		ed.load_tablature(sys.argv[1])

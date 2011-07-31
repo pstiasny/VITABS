@@ -16,14 +16,14 @@
 import fractions
 from fractions import Fraction
 
-class chord:
+class Chord:
 	def __init__(self, duration = Fraction('1/4')):
 		self.strings = {}
 		self.duration = duration
 
-class bar:
+class Bar:
 	def __init__(self, sig_num = 4, sig_den = 4):
-		self.chords = [chord()]
+		self.chords = [Chord()]
 		self.sig_num = sig_num
 		self.sig_den = sig_den
 
@@ -48,12 +48,12 @@ class bar:
 		else:
 			return int(self.real_duration() / gcd)*2 + len(self.chords) + 2
 
-class tablature:
+class Tablature:
 	cursor_bar = 1
 	cursor_chord = 1
 
 	def __init__(self):
-		self.bars = [bar()]
+		self.bars = [Bar()]
 
 	def get_cursor_bar(self):
 		return self.bars[self.cursor_bar-1]
@@ -68,7 +68,7 @@ class tablature:
 		barcount = len(self.bars)
 		return barcount, len(self.bars[barcount - 1].chords)
 
-class chordrange:
+class ChordRange:
 	def __init__(self, tab, beginning, end):
 		self.tab = tab
 		self.beginning = beginning
