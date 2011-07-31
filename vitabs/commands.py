@@ -161,7 +161,9 @@ def scroll_bars_backward(ed, num):
 	else:
 		scroll_bars(ed, -1)
 
-# TODO: gg
+# r
+def play_all(ed, num):
+	ed.play_range((1,1), ed.tab.last_position())
 
 def set_bar_meter(ed, params):
 	try:
@@ -224,6 +226,7 @@ def map_commands(ed):
 			lambda ed, num: ed.move_cursor_right()
 	ed.nmap[ord('j')] = ed.nmap[curses.KEY_DOWN] = go_next_bar
 	ed.nmap[ord('k')] = ed.nmap[curses.KEY_UP] = go_prev_bar
+	ed.nmap[ord('r')] = play_all
 	ed.nmap[ord(':')] = lambda ed, num: ed.command_mode()
 	
 	ed.commands['meter'] = set_bar_meter

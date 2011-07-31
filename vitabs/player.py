@@ -33,10 +33,17 @@ class player:
 				self.port = pypm.Output(i, 0)
 				break
 
+	def set_instrument(self, num):
+		self.port.WriteShort(0xC0, num)
+
 	def play(self, chords, tuning):
 		for c in chords:
-			self.port.Write([[[144, tuning[s]+n, 100], pypm.Time()] for s, n in c.strings.iteritems()])
+			t = pypm.Time()
+			self.port.Write(
+				[[[144, tuning[s]+n, 100], t] for s, n in c.strings.iteritems()])
 			time.sleep(c.duration * 2.)
-			self.port.Write([[[144, tuning[s]+n, 0], pypm.Time()] for s, n in c.strings.iteritems()])
+			t = pypm.Time()
+			self.port.Write(
+				[[[144, tuning[s]+n, 0], t] for s, n in c.strings.iteritems()])
 
 	

@@ -61,6 +61,10 @@ class tablature:
 	def get_cursor_chord(self):
 		return self.bars[self.cursor_bar-1].chords[self.cursor_chord-1]
 
+	def last_position(self):
+		barcount = len(self.bars)
+		return barcount, len(self.bars[barcount - 1].chords)
+
 class chordrange:
 	def __init__(self, tab, beginning, end):
 		self.tab = tab

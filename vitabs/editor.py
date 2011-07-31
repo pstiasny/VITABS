@@ -19,7 +19,8 @@ import os
 import os.path
 
 from fractions import Fraction
-from tablature import chord, bar, tablature
+from tablature import chord, bar, tablature, chordrange
+from player import player
 
 class editor:
 	cursor_prev_bar_x = 2
@@ -245,6 +246,13 @@ class editor:
 			self.move_cursor(self.tab.cursor_bar, self.tab.cursor_chord+1, 
 					cache_lengths=True)
 	
+	def play_range(self, fro, to):
+		p = player()
+		p.set_instrument(getattr(self.tab, 'instrument', 24))
+		p.play(
+				chordrange(self.tab, fro, to).chords(),
+				getattr(self.tab, 'tuning', [76, 71, 67, 62, 57, 52]))
+
 	def insert_mode(self):
 		'''Switch to insert mode and listen for keys'''
 		string = 0
