@@ -33,7 +33,7 @@ def if_mod_imported(mod, retval=None):
 			return wfun
 	return wrapper
 
-class player:
+class Player:
 	@if_mod_imported('pypm')
 	def __init__(self):
 		pypm.Initialize()

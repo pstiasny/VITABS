@@ -20,7 +20,7 @@ import os.path
 
 from fractions import Fraction
 from tablature import Chord, Bar, Tablature, ChordRange
-from player import player
+from player import Player
 
 class Editor:
 	cursor_prev_bar_x = 2
@@ -256,7 +256,7 @@ class Editor:
 		self.move_cursor(fro[0], fro[1])
 		redraw_playback_status()
 
-		p = player()
+		p = Player()
 		p.post_play_chord = update_playback_status
 		p.set_instrument(getattr(self.tab, 'instrument', 24))
 		p.play(
