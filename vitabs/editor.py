@@ -159,18 +159,13 @@ class editor:
 			self.status_line.addstr(0, width - 18, 'M')
 		self.status_line.noutrefresh()
 
-	def display_nmaps(self):
+	def pager(self, lines):
 		self.root.scrollok(True)
 		self.root.clear()
 		i = 0
 		h = self.root.getmaxyx()[0]
-		for c, f in self.nmap.items():
-			if f.__doc__:
-				self.root.addstr(i, 1, '{0}  {1}: {2}'.format(
-					curses.keyname(c), f.__name__, f.__doc__))
-			else:
-				self.root.addstr(i, 1, '{0}  {1}'.format(
-					curses.keyname(c), f.__name__, f.__doc__))
+		for line in lines:
+			self.root.addstr(i, 1, line)
 			i += 1
 			if i == h-1:
 				self.root.addstr(i, 0, '<Space> NEXT PAGE')
@@ -358,9 +353,6 @@ class editor:
 
 				if c == 27: # ESCAPE
 					self.st = ''
-
-				if c == ord('?'):
-					self.display_nmaps()
 
 			except KeyboardInterrupt:
 				self.st = 'Use :q<Enter> to quit'

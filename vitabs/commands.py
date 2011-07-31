@@ -165,6 +165,20 @@ def scroll_bars_backward(ed, num):
 def play_all(ed, num):
 	ed.play_range((1,1), ed.tab.last_position())
 
+# ?
+def display_nmaps(ed, num):
+	def make_line():
+		i = 0
+		for c, f in ed.nmap.items():
+			if f.__doc__:
+				yield '{0}  {1}: {2}'.format(
+					curses.keyname(c), f.__name__, f.__doc__)
+			else:
+				yield '{0}  {1}'.format(
+					curses.keyname(c), f.__name__, f.__doc__)
+			i += 1
+	ed.pager(make_line())
+
 def set_bar_meter(ed, params):
 	try:
 		curb = ed.tab.get_cursor_bar()
@@ -228,6 +242,7 @@ def map_commands(ed):
 	ed.nmap[ord('k')] = ed.nmap[curses.KEY_UP] = go_prev_bar
 	ed.nmap[ord('r')] = play_all
 	ed.nmap[ord(':')] = lambda ed, num: ed.command_mode()
+	ed.nmap[ord('?')] = display_nmaps
 	
 	ed.commands['meter'] = set_bar_meter
 	ed.commands['ilen'] = set_insert_duration
