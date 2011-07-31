@@ -242,11 +242,28 @@ class editor:
 					cache_lengths=True)
 	
 	def play_range(self, fro, to):
+		def redraw_playback_status():
+			self.st = 'Playing... <CTRL-C> to abort'
+			self.redraw_status()
+			curses.setsyx(self.cy + 6, self.cx)
+			curses.doupdate()
+
+		def update_playback_status():
+			self.move_cursor_right()
+			redraw_playback_status()
+			return True
+
+		self.move_cursor(fro[0], fro[1])
+		redraw_playback_status()
+
 		p = player()
+		p.post_play_chord = update_playback_status
 		p.set_instrument(getattr(self.tab, 'instrument', 24))
 		p.play(
 				chordrange(self.tab, fro, to).chords(),
-				getattr(self.tab, 'tuning', [76, 71, 67, 62, 57, 52]))
+				getattr(self.tab, 'tuning', [76, 71, 67, 62, 57, 52]),
+				getattr(self.tab, 'bpm', 120))
+		self.st = ''
 
 	def insert_mode(self):
 		'''Switch to insert mode and listen for keys'''

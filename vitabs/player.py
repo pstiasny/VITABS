@@ -25,6 +25,11 @@ class player:
 	def __del__(self):
 		del self.port
 		pypm.Terminate()
+	
+	def post_play_chord():
+		'''Called after each chord played, override for custom handling.
+		   Return False to stop playback.'''
+		return True
 
 	def open_first_output(self):
 		for i in range(pypm.CountDevices()):
@@ -36,14 +41,19 @@ class player:
 	def set_instrument(self, num):
 		self.port.WriteShort(0xC0, num)
 
-	def play(self, chords, tuning):
-		for c in chords:
-			t = pypm.Time()
-			self.port.Write(
-				[[[144, tuning[s]+n, 100], t] for s, n in c.strings.iteritems()])
-			time.sleep(c.duration * 2.)
-			t = pypm.Time()
+	def play(self, chords, tuning, bpm):
+		try:
+			bartime = (240./bpm)
+			for c in chords:
+				t = pypm.Time()
+				self.port.Write(
+					[[[144, tuning[s]+n, 100], t] for s, n in c.strings.iteritems()])
+				time.sleep(c.duration * bartime)
+				t = pypm.Time()
+				self.port.Write(
+					[[[144, tuning[s]+n, 0], t] for s, n in c.strings.iteritems()])
+				self.post_play_chord()
+		except KeyboardInterrupt:
 			self.port.Write(
 				[[[144, tuning[s]+n, 0], t] for s, n in c.strings.iteritems()])
 
-	
