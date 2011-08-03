@@ -1,17 +1,17 @@
-#Copyright (C) 2011  Pawel Stiasny
+# Copyright (C) 2011  Pawel Stiasny
 
-#This program is free software: you can redistribute it and/or modify
-#it under the terms of the GNU General Public License as published by
-#the Free Software Foundation, either version 3 of the License, or
-#(at your option) any later version.
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 
-#This program is distributed in the hope that it will be useful,
-#but WITHOUT ANY WARRANTY; without even the implied warranty of
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#GNU General Public License for more details.
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 
-#You should have received a copy of the GNU General Public License
-#along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import curses
 import pickle
@@ -45,7 +45,7 @@ class Editor:
 		self.first_visible_bar = tab.cursor_bar
 		self.redraw_view()
 		self.cy = 2
-		self.move_cursor(1,1)
+		self.move_cursor(1, 1)
 		curses.doupdate()
 	
 	def load_tablature(self, filename):
@@ -85,19 +85,19 @@ class Editor:
 	def draw_bar(self, y, x, bar):
 		'''Render a single bar at specified position'''
 		stdscr = self.stdscr
-		stdscr.vline(y, x-1, curses.ACS_VLINE, 6)
+		stdscr.vline(y, x - 1, curses.ACS_VLINE, 6)
 		gcd = bar.gcd()
 		total_width = bar.total_width(gcd)
 		for i in range(6):
-			stdscr.hline(y+i, x, curses.ACS_HLINE, total_width)
-		x = x + 1
+			stdscr.hline(y + i, x, curses.ACS_HLINE, total_width)
+		x += 1
 		for chord in bar.chords:
 			for i in chord.strings.keys():
 				stdscr.addstr(y+i, x, str(chord.strings[i]), curses.A_BOLD)
 			width = int(chord.duration / gcd)
 			x = x + width*2 + 1
-		stdscr.vline(y, x+1, curses.ACS_VLINE, 6)
-		return x+2
+		stdscr.vline(y, x + 1, curses.ACS_VLINE, 6)
+		return x + 2
 
 	def draw_bar_meta(self, y, x, bar, prev_bar):
 		'''Print additional bar info at specified position'''
@@ -120,11 +120,11 @@ class Editor:
 			else:
 				if x + bar_width >= screen_width:
 					x = 2
-					y = y + 8
-				if y+8 > screen_height:
+					y += 8
+				if y + 8 > screen_height:
 					break
 				self.draw_bar_meta(y, x, tbar, prev_bar) 
-				x = self.draw_bar(y+1, x, tbar)
+				x = self.draw_bar(y + 1, x, tbar)
 				self.last_visible_bar = i + self.first_visible_bar
 			prev_bar = tbar
 	
@@ -167,12 +167,12 @@ class Editor:
 		for line in lines:
 			self.root.addstr(i, 1, line)
 			i += 1
-			if i == h-1:
+			if i == h - 1:
 				self.root.addstr(i, 0, '<Space> NEXT PAGE')
 				while self.root.getch() != ord(' '): pass
 				self.root.clear()
 				i = 0
-		self.root.addstr(h-1, 0, '<Space> CONTINUE')
+		self.root.addstr(h - 1, 0, '<Space> CONTINUE')
 		while self.root.getch() != ord(' '): pass
 		self.root.scrollok(False)
 		self.root.clear()
@@ -205,13 +205,13 @@ class Editor:
 
 					if self.cursor_prev_bar_x > screen_width:
 						self.cursor_prev_bar_x = 2 + barw
-						self.cy = self.cy + 8
+						self.cy += 8
 
 				# should the cursor bar be wrapped?
-				newbar_w = newbar_i.total_width(newbar_i.gcd())  + 1
+				newbar_w = newbar_i.total_width(newbar_i.gcd()) + 1
 				if newbar_w + self.cursor_prev_bar_x > screen_width:
 					self.cursor_prev_bar_x = 2
-					self.cy = self.cy + 8
+					self.cy += 8
 
 		# width of preceeding chords
 		offset = 1
@@ -226,19 +226,19 @@ class Editor:
 	def move_cursor_left(self):
 		if self.tab.cursor_chord == 1:
 			if self.tab.cursor_bar > 1:
-				self.move_cursor(self.tab.cursor_bar-1, 
-						len(self.tab.bars[self.tab.cursor_bar-2].chords),
+				self.move_cursor(self.tab.cursor_bar - 1, 
+						len(self.tab.bars[self.tab.cursor_bar - 2].chords),
 						cache_lengths=True)
 		else:
-			self.move_cursor(self.tab.cursor_bar, self.tab.cursor_chord-1,
+			self.move_cursor(self.tab.cursor_bar, self.tab.cursor_chord - 1,
 					cache_lengths=True)	
 	
 	def move_cursor_right(self):
 		if self.tab.cursor_chord == len(self.tab.get_cursor_bar().chords):
 			if self.tab.cursor_bar < len(self.tab.bars):
-				self.move_cursor(self.tab.cursor_bar+1, 1, cache_lengths=True)
+				self.move_cursor(self.tab.cursor_bar + 1, 1, cache_lengths=True)
 		else:
-			self.move_cursor(self.tab.cursor_bar, self.tab.cursor_chord+1, 
+			self.move_cursor(self.tab.cursor_bar, self.tab.cursor_chord + 1, 
 					cache_lengths=True)
 	
 	def play_range(self, fro, to):
@@ -281,7 +281,7 @@ class Editor:
 			elif c == curses.KEY_RESIZE:
 				self.term_resized()
 
-			elif c in range( ord('0'), ord('9')+1 ):
+			elif c in range( ord('0'), ord('9') + 1 ):
 				curch = self.tab.get_cursor_chord()
 				if string in curch.strings and curch.strings[string] < 10:
 					st_dec = curch.strings[string] * 10 
@@ -307,8 +307,9 @@ class Editor:
 
 			elif c == curses.KEY_RIGHT or c == ord('l'):
 				self.tab.get_cursor_bar().chords.insert(
-						self.tab.cursor_chord, Chord(self.insert_duration))
-				self.move_cursor(new_chord = self.tab.cursor_chord + 1)
+						self.tab.cursor_chord, 
+						Chord(self.insert_duration))
+				self.move_cursor(new_chord=self.tab.cursor_chord + 1)
 				self.redraw_view()
 
 	def command_mode(self):
@@ -346,7 +347,7 @@ class Editor:
 
 			self.redraw_status()
 			self.st = ''
-			curses.setsyx(self.cy-1, self.cx)
+			curses.setsyx(self.cy - 1, self.cx)
 			curses.curs_set(2)
 			curses.doupdate()
 			# TODO: accept multi-char commands

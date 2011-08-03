@@ -1,17 +1,17 @@
-#Copyright (C) 2011  Pawel Stiasny
+# Copyright (C) 2011  Pawel Stiasny
 
-#This program is free software: you can redistribute it and/or modify
-#it under the terms of the GNU General Public License as published by
-#the Free Software Foundation, either version 3 of the License, or
-#(at your option) any later version.
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
 
-#This program is distributed in the hope that it will be useful,
-#but WITHOUT ANY WARRANTY; without even the implied warranty of
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#GNU General Public License for more details.
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 
-#You should have received a copy of the GNU General Public License
-#along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from fractions import Fraction
 from tablature import Chord, Bar, Tablature
@@ -56,7 +56,8 @@ builtin_handler = InputHandler()
 @map_char(builtin_handler.nmap, 'i')
 def insert(ed, num):
 	'''Create a new chord before the cursor and enter insert mode'''
-	ed.tab.get_cursor_bar().chords.insert(ed.tab.cursor_chord-1,
+	ed.tab.get_cursor_bar().chords.insert(
+			ed.tab.cursor_chord - 1,
 			Chord(ed.insert_duration))
 	ed.move_cursor(new_chord = max(ed.tab.cursor_chord, 1))
 	ed.redraw_view()
@@ -286,5 +287,5 @@ def quit(ed, params):
 @map_command(builtin_handler.commands, 'python')
 def exec_python(ed, params):
 	'''Execute a python expression from the command line'''
-	exec string.join(params[1:], ' ') in {'ed':ed}
+	exec string.join(params[1 : ], ' ') in {'ed' : ed}
 
