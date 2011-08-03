@@ -46,7 +46,7 @@ class Bar:
 		if d == 0:
 			return 2
 		else:
-			return int(self.real_duration() / gcd)*2 + len(self.chords) + 2
+			return int(self.real_duration() / gcd) * 2 + len(self.chords) + 2
 
 class Tablature:
 	cursor_bar = 1
@@ -56,10 +56,10 @@ class Tablature:
 		self.bars = [Bar()]
 
 	def get_cursor_bar(self):
-		return self.bars[self.cursor_bar-1]
+		return self.bars[self.cursor_bar - 1]
 
 	def get_cursor_chord(self):
-		return self.bars[self.cursor_bar-1].chords[self.cursor_chord-1]
+		return self.bars[self.cursor_bar - 1].chords[self.cursor_chord - 1]
 	
 	def cursor_position(self):
 		return cursor_bar, cursor_chord

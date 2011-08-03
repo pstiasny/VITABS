@@ -364,7 +364,7 @@ class Editor:
 				if c in range( ord('0'), ord('9') ):
 					# read a numeric argument
 					if num_arg:
-						num_arg = num_arg*10 + c - ord('0')
+						num_arg = num_arg * 10 + c - ord('0')
 						self.st = str(num_arg)
 					elif c != ord('0'):
 						num_arg = c - ord('0')
