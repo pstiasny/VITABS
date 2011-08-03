@@ -24,7 +24,9 @@ import vitabs.commands
 
 def ncmain(stdscr):
 	ed = Editor(stdscr)
-	vitabs.commands.map_commands(ed)
+
+	ed.input_handlers = [vitabs.commands.builtin_handler]
+	#vitabs.commands.map_commands(ed)
 	if len(sys.argv) > 1:
 		ed.load_tablature(sys.argv[1])
 		ed.stdscr.clear()

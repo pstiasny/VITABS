@@ -47,7 +47,7 @@ class Editor:
 		self.cy = 2
 		self.move_cursor(1,1)
 		curses.doupdate()
-
+	
 	def load_tablature(self, filename):
 		'''Unpickle tab from a file'''
 		try:
@@ -326,11 +326,14 @@ class Editor:
 		# scrolling bug
 		self.stdscr.clear()
 		self.redraw_view()
-		try:
-			if cmd:
-				self.commands[cmd](self, words)
-		except KeyError:
-			self.st = 'Invalid command'
+		if cmd:
+			handled = False
+			for h in self.input_handlers:
+				if h.command(self, cmd, words):
+					handled = True
+					break
+			if not handled:
+				self.st = 'Invalid command'
 
 	def normal_mode(self):
 		'''Enter normal mode, returns on quit'''
@@ -353,8 +356,9 @@ class Editor:
 				if c == curses.KEY_RESIZE:
 					self.term_resized()
 					
-				if c in self.nmap:
-					self.nmap[c](self, num_arg)
+				for h in self.input_handlers:
+					if h.normal(self, c, num_arg):
+						break
 
 				if c in range( ord('0'), ord('9') ):
 					# read a numeric argument
