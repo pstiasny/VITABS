@@ -34,8 +34,9 @@ def map_command(commands, command):
 	return decorate
 
 class InputHandler:
-	nmap = {}
-	commands = {}
+	def __init__(self):
+		self.nmap = {}
+		self.commands = {}
 
 	def normal(self, ed, key, num):
 		if key in self.nmap:
