@@ -225,9 +225,13 @@ def scroll_bars_backward(ed, num):
 	else:
 		scroll_bars(ed, -1)
 
-@map_char(builtin_handler.nmap, 'r')
+@map_char(builtin_handler.nmap, 'E')
 def play_all(ed, num):
 	ed.play_range((1,1), ed.tab.last_position())
+
+@map_char(builtin_handler.nmap, 'e')
+def play_all(ed, num):
+	ed.play_range(ed.tab.cursor_position(), ed.tab.last_position())
 
 @map_char(builtin_handler.nmap, '?')
 def display_nmaps(ed, num):

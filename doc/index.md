@@ -174,7 +174,10 @@ Playback
 --------
 You need to have PyPortMidi installed on your system for playback to work.
 
-Currently `r` plays the whole track.  `Ctrl-c` stops playback.
+Currently `E` plays the whole track and `e` plays from the current cursor
+position to the end of the track.
+
+`Ctrl-c` stops playback.
 
 
 Working with files

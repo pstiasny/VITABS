@@ -62,7 +62,7 @@ class Tablature:
 		return self.bars[self.cursor_bar - 1].chords[self.cursor_chord - 1]
 	
 	def cursor_position(self):
-		return cursor_bar, cursor_chord
+		return self.cursor_bar, self.cursor_chord
 
 	def last_position(self):
 		barcount = len(self.bars)
