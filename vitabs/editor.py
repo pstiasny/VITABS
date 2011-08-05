@@ -85,6 +85,7 @@ class Editor:
 	def draw_bar(self, y, x, bar):
 		'''Render a single bar at specified position'''
 		stdscr = self.stdscr
+		screen_width = self.stdscr.getmaxyx()[1]
 		stdscr.vline(y, x - 1, curses.ACS_VLINE, 6)
 		gcd = bar.gcd()
 		total_width = bar.total_width(gcd)
@@ -93,10 +94,12 @@ class Editor:
 		x += 1
 		for chord in bar.chords:
 			for i in chord.strings.keys():
-				stdscr.addstr(y+i, x, str(chord.strings[i]), curses.A_BOLD)
+				if x < screen_width:
+					stdscr.addstr(y+i, x, str(chord.strings[i]), curses.A_BOLD)
 			width = int(chord.duration / gcd)
 			x = x + width*2 + 1
-		stdscr.vline(y, x + 1, curses.ACS_VLINE, 6)
+		if x + 1 < screen_width:
+			stdscr.vline(y, x + 1, curses.ACS_VLINE, 6)
 		return x + 2
 
 	def draw_bar_meta(self, y, x, bar, prev_bar):
@@ -114,18 +117,19 @@ class Editor:
 		screen_height, screen_width = self.stdscr.getmaxyx()
 		for i, tbar in enumerate(t.bars[self.first_visible_bar - 1 : ]):
 			bar_width = tbar.total_width(tbar.gcd())
-			if bar_width >= screen_width - 2:
-				# should split the bar
-				self.st = 'Bar too long, not displaying'
-			else:
-				if x + bar_width >= screen_width:
-					x = 2
-					y += 8
-				if y + 8 > screen_height:
-					break
-				self.draw_bar_meta(y, x, tbar, prev_bar) 
-				x = self.draw_bar(y + 1, x, tbar)
-				self.last_visible_bar = i + self.first_visible_bar
+			#if bar_width >= screen_width - 2:
+			#	# should split the bar
+			#	self.st = 'Bar too long, not displaying'
+			#else:
+			if x + bar_width >= screen_width:
+				x = 2
+				y += 8
+			if y + 8 > screen_height:
+				break
+			self.draw_bar_meta(y, x, tbar, prev_bar) 
+			x = self.draw_bar(y + 1, x, tbar)
+			self.last_visible_bar = i + self.first_visible_bar
+
 			prev_bar = tbar
 	
 	def redraw_view(self):
@@ -160,6 +164,7 @@ class Editor:
 		self.status_line.noutrefresh()
 
 	def pager(self, lines):
+		'''Display a list of lines in a paged fashion'''
 		self.root.scrollok(True)
 		self.root.clear()
 		i = 0
