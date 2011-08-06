@@ -18,43 +18,25 @@ from tablature import Chord, Bar, Tablature
 import string
 import curses # KEY_*
 
-def map_char(nmap, key):
-	return map_key(nmap, ord(key))
+def nmap_char(key):
+	return nmap_key(ord(key))
 
-def map_key(nmap, key):
+def nmap_key(key):
 	def decorate(f):
-		nmap[key] = f
-		return f
-	return decorate
-
-def map_command(commands, command):
-	def decorate(f):
-		commands[command] = f
-		return f
-	return decorate
-
-class InputHandler:
-	def __init__(self):
-		self.nmap = {}
-		self.commands = {}
-
-	def normal(self, ed, key, num):
-		if key in self.nmap:
-			self.nmap[key](ed, num)
-			return True
+		if hasattr(f, 'normal_keys'):
+			f.normal_keys.append(key)
 		else:
-			return False
+			f.normal_keys = [key]
+		return f
+	return decorate
 
-	def command(self, ed, cmd, args):
-		try:
-			self.commands[cmd](ed, args)
-			return True
-		except KeyError:
-			return False
+def map_command(command):
+	def decorate(f):
+		f.handles_command = command
+		return f
+	return decorate
 
-builtin_handler = InputHandler()
-
-@map_char(builtin_handler.nmap, 'i')
+@nmap_char('i')
 def insert(ed, num):
 	'''Create a new chord before the cursor and enter insert mode'''
 	ed.tab.get_cursor_bar().chords.insert(
@@ -64,7 +46,7 @@ def insert(ed, num):
 	ed.redraw_view()
 	ed.insert_mode()
 
-@map_char(builtin_handler.nmap, 'a')
+@nmap_char('a')
 def append(ed, num):
 	'''Create a new chord after the cursor and enter insert mode'''
 	ed.tab.get_cursor_bar().chords.insert(ed.tab.cursor_chord,
@@ -73,12 +55,12 @@ def append(ed, num):
 	ed.redraw_view()
 	ed.insert_mode()
 
-@map_char(builtin_handler.nmap, 's')
+@nmap_char('s')
 def set_chord(ed, num):
 	'''Enter insert mode at current position'''
 	ed.insert_mode()
 
-@map_char(builtin_handler.nmap, 'x')
+@nmap_char('x')
 def delete_chord(ed, num):
 	'''Delete at current cursor position'''
 	t = ed.tab
@@ -96,7 +78,7 @@ def delete_chord(ed, num):
 	ed.move_cursor()
 	ed.redraw_view()
 
-@map_char(builtin_handler.nmap, 'q')
+@nmap_char('q')
 def set_duration(ed, num_arg):
 	'''Decrease note length by half, with numeric argument set to 1/arg'''
 	curch = ed.tab.get_cursor_chord()
@@ -107,7 +89,7 @@ def set_duration(ed, num_arg):
 	ed.move_cursor()
 	ed.redraw_view()
 
-@map_char(builtin_handler.nmap, 'Q')
+@nmap_char('Q')
 def increase_duration(ed, num):
 	'''Increase note length twice'''
 	curch = ed.tab.get_cursor_chord()
@@ -115,7 +97,7 @@ def increase_duration(ed, num):
 	ed.move_cursor()
 	ed.redraw_view()
 
-@map_char(builtin_handler.nmap, 'o')
+@nmap_char('o')
 def append_bar(ed, num):
 	'''Create a bar after the selected and enter insert mode'''
 	curb = ed.tab.get_cursor_bar()
@@ -124,7 +106,7 @@ def append_bar(ed, num):
 	ed.redraw_view()
 	ed.insert_mode()
 
-@map_char(builtin_handler.nmap, 'O')
+@nmap_char('O')
 def insert_bar(ed, num):
 	'''Create a bar before the selected and enter insert mode'''
 	curb = ed.tab.get_cursor_bar()
@@ -133,7 +115,7 @@ def insert_bar(ed, num):
 	ed.redraw_view()
 	ed.insert_mode()
 
-@map_char(builtin_handler.nmap, 'G')
+@nmap_char('G')
 def go_end(ed, num):
 	'''Go to last bar, with numeric argument go to the specified bar'''
 	if num:
@@ -141,36 +123,36 @@ def go_end(ed, num):
 	else:
 		ed.move_cursor(len(ed.tab.bars), 1)
 
-@map_char(builtin_handler.nmap, 'g')
+@nmap_char('g')
 def go_beg(ed, num):
 	go_end(ed, 1)
 
-@map_char(builtin_handler.nmap, '0')
-@map_key(builtin_handler.nmap, curses.KEY_HOME)
+@nmap_char('0')
+@nmap_key(curses.KEY_HOME)
 def go_bar_beg(ed, num):
 	'''Go to the beginning of the bar'''
 	if not num:
 		ed.move_cursor(new_chord = 1)
 
-@map_char(builtin_handler.nmap, '$')
-@map_key(builtin_handler.nmap, curses.KEY_END)
+@nmap_char('$')
+@nmap_key(curses.KEY_END)
 def go_bar_end(ed, num):
 	'''Go to the end of the bar'''
 	ed.move_cursor(new_chord = len(ed.tab.get_cursor_bar().chords))
 
-@map_char(builtin_handler.nmap, 'I')
+@nmap_char('I')
 def insert_at_beg(ed, num):
 	'''Enter insert mode at the beginning of the bar'''
 	go_bar_beg(ed, None)
 	insert(ed, num)
 
-@map_char(builtin_handler.nmap, 'A')
+@nmap_char('A')
 def append_at_end(ed, num):
 	'''Enter insert mode at the end of the bar'''
 	go_bar_end(ed, None)
 	append(ed, num)
 
-@map_char(builtin_handler.nmap, 'J')
+@nmap_char('J')
 def join_bars(ed, num):
 	'''Join current bar with the following'''
 	if ed.tab.cursor_bar != len(ed.tab.bars):
@@ -179,29 +161,29 @@ def join_bars(ed, num):
 		del ed.tab.bars[ed.tab.cursor_bar]
 		ed.redraw_view()
 
-@map_char(builtin_handler.nmap, 'j')
-@map_key(builtin_handler.nmap, curses.KEY_DOWN)
+@nmap_char('j')
+@nmap_key(curses.KEY_DOWN)
 def go_next_bar(ed, num):
 	if not num: num = 1
 	ed.move_cursor(min(len(ed.tab.bars), ed.tab.cursor_bar + num), 1)
 
-@map_char(builtin_handler.nmap, 'k')
-@map_key(builtin_handler.nmap, curses.KEY_UP)
+@nmap_char('k')
+@nmap_key(curses.KEY_UP)
 def go_prev_bar(ed, num):
 	if not num: num = 1
 	ed.move_cursor(max(1, ed.tab.cursor_bar - num), 1)
 
-@map_char(builtin_handler.nmap, 'h')
-@map_key(builtin_handler.nmap, curses.KEY_LEFT)
+@nmap_char('h')
+@nmap_key(curses.KEY_LEFT)
 def go_left(ed, num):
 	ed.move_cursor_left()
 
-@map_char(builtin_handler.nmap, 'l')
-@map_key(builtin_handler.nmap, curses.KEY_RIGHT)
+@nmap_char('l')
+@nmap_key(curses.KEY_RIGHT)
 def go_right(ed, num): 
 	ed.move_cursor_right()
 
-@map_key(builtin_handler.nmap, curses.KEY_NPAGE) # Page-Down
+@nmap_key(curses.KEY_NPAGE) # Page-Down
 def scroll_bars(ed, num):
 	'''Scroll the screen by one bar'''
 	if num == None: num = 1
@@ -217,7 +199,7 @@ def scroll_bars(ed, num):
 	else:
 		ed.move_cursor()
 
-@map_key(builtin_handler.nmap, curses.KEY_PPAGE) # Page-Up
+@nmap_key(curses.KEY_PPAGE) # Page-Up
 def scroll_bars_backward(ed, num):
 	'''Scroll the screen by one bar backwards'''
 	if num:
@@ -225,32 +207,31 @@ def scroll_bars_backward(ed, num):
 	else:
 		scroll_bars(ed, -1)
 
-@map_char(builtin_handler.nmap, 'E')
+@nmap_char('E')
 def play_all(ed, num):
 	ed.play_range((1,1), ed.tab.last_position())
 
-@map_char(builtin_handler.nmap, 'e')
-def play_all(ed, num):
+@nmap_char('e')
+def play_to_end(ed, num):
 	ed.play_range(ed.tab.cursor_position(), ed.tab.last_position())
 
-@map_char(builtin_handler.nmap, '?')
+@nmap_char('?')
 def display_nmaps(ed, num):
 	def make_line():
-		for h in ed.input_handlers:
-			for c, f in h.nmap.items():
-				if f.__doc__:
-					yield '{0}  {1}: {2}'.format(
-						curses.keyname(c), f.__name__, f.__doc__)
-				else:
-					yield '{0}  {1}'.format(
-						curses.keyname(c), f.__name__, f.__doc__)
+		for c, f in ed.nmap.items():
+			if f.__doc__:
+				yield '{0}  {1}: {2}'.format(
+					curses.keyname(c), f.__name__, f.__doc__)
+			else:
+				yield '{0}  {1}'.format(
+					curses.keyname(c), f.__name__, f.__doc__)
 	ed.pager(make_line())
 
-@map_char(builtin_handler.nmap, ':')
+@nmap_char(':')
 def enter_command_mode(ed, num):
 	ed.command_mode()
 
-@map_command(builtin_handler.commands, 'meter')
+@map_command('meter')
 def set_bar_meter(ed, params):
 	try:
 		curb = ed.tab.get_cursor_bar()
@@ -259,26 +240,26 @@ def set_bar_meter(ed, params):
 	except:
 		ed.st = 'Invalid argument'
 
-@map_command(builtin_handler.commands, 'ilen')
+@map_command('ilen')
 def set_insert_duration(ed, params):
 	try:
 		ed.insert_duration = Fraction(int(params[1]), int(params[2]))
 	except:
 		ed.st = 'Invalid argument'
 
-@map_command(builtin_handler.commands, 'midiouts')
+@map_command('midiouts')
 def list_midi_outputs(ed, params):
 	ed.pager(ed.player.list_outputs())
 
-@map_command(builtin_handler.commands, 'midiout')
-def list_midi_outputs(ed, params):
+@map_command('midiout')
+def change_output(ed, params):
 	try:
 		ed.player.change_output(int(params[1]))
 	except:
 		ed.player.open_first_output()
 		ed.st = 'Could not open given port'
 
-@map_command(builtin_handler.commands, 'e')
+@map_command('e')
 def edit_file(ed, params):
 	try:
 		ed.load_tablature(params[1])
@@ -287,7 +268,7 @@ def edit_file(ed, params):
 	except IndexError:
 		ed.st = 'File name not specified'
 
-@map_command(builtin_handler.commands, 'w')
+@map_command('w')
 def write_file(ed, params):
 	try:
 		ed.save_tablature(params[1])
@@ -297,11 +278,11 @@ def write_file(ed, params):
 		else:
 			ed.st = 'File name not specified'
 
-@map_command(builtin_handler.commands, 'q')
+@map_command('q')
 def quit(ed, params):
 	ed.terminate = True
 
-@map_command(builtin_handler.commands, 'python')
+@map_command('python')
 def exec_python(ed, params):
 	'''Execute a python expression from the command line'''
 	exec string.join(params[1 : ], ' ') in {'ed' : ed}

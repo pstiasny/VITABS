@@ -50,6 +50,15 @@ class Editor:
 
 		self.player = Player()
 	
+	def register_handlers(self, module):
+		'''Add commands defined in the module'''
+		for f in module.__dict__.itervalues():
+			if hasattr(f, 'normal_keys'):
+				for k in f.normal_keys:
+					self.nmap[k] = f
+			if hasattr(f, 'handles_command'):
+				self.commands[f.handles_command] = f
+			
 	def load_tablature(self, filename):
 		'''Unpickle tab from a file'''
 		try:
@@ -119,10 +128,6 @@ class Editor:
 		screen_height, screen_width = self.stdscr.getmaxyx()
 		for i, tbar in enumerate(t.bars[self.first_visible_bar - 1 : ]):
 			bar_width = tbar.total_width(tbar.gcd())
-			#if bar_width >= screen_width - 2:
-			#	# should split the bar
-			#	self.st = 'Bar too long, not displaying'
-			#else:
 			if x + bar_width >= screen_width:
 				x = 2
 				y += 8
@@ -176,6 +181,7 @@ class Editor:
 			i += 1
 			if i == h - 1:
 				self.root.addstr(i, 0, '<Space> NEXT PAGE')
+				self.root.refresh()
 				while self.get_char() != ord(' '): pass
 				self.root.clear()
 				i = 0
@@ -342,20 +348,17 @@ class Editor:
 		# scrolling bug
 		self.stdscr.clear()
 		self.redraw_view()
-		if cmd:
-			handled = False
-			for h in self.input_handlers:
-				if h.command(self, cmd, words):
-					handled = True
-					break
-			if not handled:
-				self.st = 'Invalid command'
+		try:
+			if cmd:
+				self.commands[cmd](self, words)
+		except KeyError:
+			self.st = 'Invalid command'
 
 	def normal_mode(self):
 		'''Enter normal mode, returns on quit'''
 		num_arg = None
 		t = self.tab
-
+		
 		while True:
 			if self.terminate:
 				break
@@ -369,9 +372,8 @@ class Editor:
 			try:
 				c = self.get_char()
 
-				for h in self.input_handlers:
-					if h.normal(self, c, num_arg):
-						break
+				if c in self.nmap:
+					self.nmap[c](self, num_arg)
 
 				if c in range( ord('0'), ord('9') ):
 					# read a numeric argument
