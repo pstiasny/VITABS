@@ -266,6 +266,18 @@ def set_insert_duration(ed, params):
 	except:
 		ed.st = 'Invalid argument'
 
+@map_command(builtin_handler.commands, 'midiouts')
+def list_midi_outputs(ed, params):
+	ed.pager(ed.player.list_outputs())
+
+@map_command(builtin_handler.commands, 'midiout')
+def list_midi_outputs(ed, params):
+	try:
+		ed.player.change_output(int(params[1]))
+	except:
+		ed.player.open_first_output()
+		ed.st = 'Could not open given port'
+
 @map_command(builtin_handler.commands, 'e')
 def edit_file(ed, params):
 	try:

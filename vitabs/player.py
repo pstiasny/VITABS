@@ -58,6 +58,20 @@ class Player:
 				break
 
 	@if_mod_imported('pypm')
+	def change_output(self, num):
+		del self.port
+		self.port = pypm.Output(num, 0)
+	
+	@if_mod_imported('pypm', [])
+	def list_outputs(self):
+		ret = []
+		for i in range(pypm.CountDevices()):
+			interf,name,inp,outp,opened = pypm.GetDeviceInfo(i)
+			if outp == 1:
+				ret.append(str(i) + " " + name)
+		return ret
+
+	@if_mod_imported('pypm')
 	def set_instrument(self, num):
 		self.port.WriteShort(0xC0, num)
 

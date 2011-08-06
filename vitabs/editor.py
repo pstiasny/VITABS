@@ -47,6 +47,8 @@ class Editor:
 		self.cy = 2
 		self.move_cursor(1, 1)
 		curses.doupdate()
+
+		self.player = Player()
 	
 	def load_tablature(self, filename):
 		'''Unpickle tab from a file'''
@@ -261,7 +263,7 @@ class Editor:
 		self.move_cursor(fro[0], fro[1])
 		redraw_playback_status()
 
-		p = Player()
+		p = self.player
 		p.post_play_chord = update_playback_status
 		p.set_instrument(getattr(self.tab, 'instrument', 24))
 		p.play(
