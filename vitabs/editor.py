@@ -176,11 +176,11 @@ class Editor:
 			i += 1
 			if i == h - 1:
 				self.root.addstr(i, 0, '<Space> NEXT PAGE')
-				while self.root.getch() != ord(' '): pass
+				while self.get_char() != ord(' '): pass
 				self.root.clear()
 				i = 0
 		self.root.addstr(h - 1, 0, '<Space> CONTINUE')
-		while self.root.getch() != ord(' '): pass
+		while self.get_char(self.root) != ord(' '): pass
 		self.root.scrollok(False)
 		self.root.clear()
 		self.redraw_view()
@@ -272,6 +272,16 @@ class Editor:
 				getattr(self.tab, 'bpm', 120))
 		self.st = ''
 
+	def get_char(self, parent=None):
+		'''Get a character from terminal, handling things like terminal
+		resize'''
+		if parent is None:
+			parent = self.stdscr
+		c = parent.getch()
+		if c == curses.KEY_RESIZE:
+			self.term_resized()
+		return c
+
 	def insert_mode(self):
 		'''Switch to insert mode and listen for keys'''
 		string = 0
@@ -281,12 +291,10 @@ class Editor:
 			curses.setsyx(self.cy + string, self.cx)
 			curses.doupdate()
 
-			c = self.stdscr.getch()
+			c = self.get_char()
 			if c == 27: # ESCAPE
 				self.st = ''
 				break
-			elif c == curses.KEY_RESIZE:
-				self.term_resized()
 
 			elif c in range( ord('0'), ord('9') + 1 ):
 				curch = self.tab.get_cursor_chord()
@@ -359,11 +367,8 @@ class Editor:
 			curses.doupdate()
 			# TODO: accept multi-char commands
 			try:
-				c = self.stdscr.getch()
+				c = self.get_char()
 
-				if c == curses.KEY_RESIZE:
-					self.term_resized()
-					
 				for h in self.input_handlers:
 					if h.normal(self, c, num_arg):
 						break
