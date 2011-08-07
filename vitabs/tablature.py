@@ -15,6 +15,7 @@
 
 import fractions
 from fractions import Fraction
+import symbols as syms
 
 class Fret:
 	def __init__(self, fret):
@@ -23,11 +24,7 @@ class Fret:
 	
 	def __repr__(self):
 		'''A textual representation of the fret as displayed in the tab'''
-		fr = str(self.fret)
-		if 'bend' in self.symbols:
-			return fr + 'b'
-		else:
-			return fr
+		return syms.apply_symbols(self.fret, self.symbols)
 	
 class Chord:
 	def __init__(self, duration = Fraction('1/4')):
