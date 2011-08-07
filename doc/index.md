@@ -154,6 +154,18 @@ insert mode first, then move to the desired position and use the `s` command.
 After you are done inserting, press `ESC` to exit insert mode and return to
 normal mode.
 
+#### Special symbols
+The following keys set/unset symbols for the selected string:
+
+* `b`: bend
+* `r`: release
+* `h`: hammer on
+* `p`: pull off
+* `v`: vibrato
+* `t`: tremolo
+* `s`: slide up
+* `d`: slide down
+
 
 Note lengths
 ------------

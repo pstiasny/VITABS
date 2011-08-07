@@ -20,6 +20,7 @@ import os.path
 
 from fractions import Fraction
 from tablature import Fret, Chord, Bar, Tablature, ChordRange
+import symbols
 from player import Player
 
 class Editor:
@@ -310,17 +311,6 @@ class Editor:
 				else:
 					curch.strings[string] = Fret(c - ord('0'))
 				self.redraw_view()
-			elif c == ord('b'):
-				try:
-					fr = self.tab.get_cursor_chord().strings[string]
-					if 'bend' in fr.symbols:
-						fr.symbols.remove('bend')
-					else:
-						fr.symbols.append('bend')
-					self.redraw_view()
-				except KeyError:
-					pass
-
 			elif c == curses.KEY_DC or c == ord('x'):
 				if self.tab.get_cursor_chord().strings[string]:
 					del self.tab.get_cursor_chord().strings[string]
@@ -343,6 +333,18 @@ class Editor:
 						Chord(self.insert_duration))
 				self.move_cursor(new_chord=self.tab.cursor_chord + 1)
 				self.redraw_view()
+
+			try:
+				# try to find a symbol in key -> symbol dict
+				sym = symbols.keys[c]
+				fr = self.tab.get_cursor_chord().strings[string]
+				if sym in fr.symbols:
+					fr.symbols.remove(sym)
+				else:
+					fr.symbols.append(sym)
+				self.redraw_view()
+			except KeyError:
+				pass
 
 	def exec_command(self, args, apply_to=None):
 		cmd = args[0]

@@ -24,6 +24,17 @@ templates = {
 	'slide down' : '{}\\'
 }
 
+keys = {
+	ord('b') : 'bend',
+	ord('r') : 'release',
+	ord('h') : 'hammer on',
+	ord('p') : 'pull off',
+	ord('v') : 'vibrato',
+	ord('t') : 'tremolo',
+	ord('s') : 'slide up',
+	ord('d') : 'slide down'
+}
+
 def apply_symbols(fretnum, symlist):
 	st = str(fretnum)
 	for s in symlist:
