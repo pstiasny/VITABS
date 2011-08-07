@@ -298,6 +298,22 @@ def set_insert_duration(ed, params):
 	except:
 		ed.st = 'Invalid argument'
 
+@map_command('len')
+def cmd_set_duration(ed, params, apply_to=None):
+	try:
+		d = Fraction(int(params[1]), int(params[2]))
+
+		if apply_to is None:
+			ed.tab.get_cursor_chord().duration = d
+		else:
+			for c in apply_to.chords():
+				c.duration = d
+
+		ed.move_cursor()
+		ed.redraw_view()
+	except:
+		ed.st = 'Invalid argument'
+
 @map_command('midiouts')
 def list_midi_outputs(ed, params):
 	ed.pager(ed.player.list_outputs())

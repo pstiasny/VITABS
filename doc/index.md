@@ -169,14 +169,18 @@ enter
 
 This way you specify a numeric argument to the `q` command.
 
-To get a more specific duration, you can use the `:ilen` command.
+To set a specified range for the selected chord:
+
+    :len [numerator] [denominator]
+
+This command accept a range.
+
+### Insert length
 
     :ilen [numerator] [denominator]
 
 This command will cause all following chords created with an insert command
 to have the specified initial length.
-
-More duration commands are planned for future versions.
 
 
 Removing
