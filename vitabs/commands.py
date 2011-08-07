@@ -14,7 +14,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from fractions import Fraction
-from tablature import Chord, Bar, Tablature
+from tablature import Chord, Bar, Tablature, ChordRange
 import string
 import curses # KEY_*
 
@@ -231,13 +231,64 @@ def display_nmaps(ed, num):
 def enter_command_mode(ed, num):
 	ed.command_mode()
 
+
+@map_command('for')
+def apply_to_range(ed, params):
+	'''Apply a command to the specified chord range'''
+	if len(params) < 4:
+		ed.st = 'Not enough arguments'
+	else:
+		first = last = None
+		try:
+			if params[1] == '.':
+				first = ed.tab.cursor_position()
+			else:
+				parts = params[1].split(',')
+				first = (int(parts[0]),
+						1 if len(parts) == 1 else int(parts[1]))
+
+			if params[2] == '.':
+				last = ed.tab.cursor_position()
+			elif params[2] == '$':
+				last = ed.tab.last_position()
+			else:
+				parts = params[2].split(',')
+				last = (int(parts[0]),
+						len(ed.tab.bars[int(parts[0]) - 1].chords)
+						if len(parts) == 1 else int(parts[1]))
+		except:
+			ed.st = 'Invalid arguments'
+
+		if first is not None and last is not None:
+			r = ChordRange(ed.tab, first, last)
+			ed.exec_command(params[3:], apply_to=r)
+
 @map_command('meter')
-def set_bar_meter(ed, params):
+def set_bar_meter(ed, params, apply_to=None):
 	try:
-		curb = ed.tab.get_cursor_bar()
-		curb.sig_num, curb.sig_den = int(params[1]), int(params[2])
+		sig_num, sig_den = int(params[1]), int(params[2])
+		if apply_to is None:
+			curb = ed.tab.get_cursor_bar()
+			curb.sig_num, curb.sig_den = sig_num, sig_den
+		else:
+			for b in apply_to.bars():
+				b.sig_num, b.sig_den = sig_num, sig_den
 		ed.redraw_view()
 	except:
+		ed.st = 'Invalid argument'
+
+@map_command('tabset')
+def set_tablature_attribute(ed, params):
+	'''Set a given tablature attribute'''
+	# add sanity tests
+	argtypes = { 
+		'instrument':int,
+		'bpm':float,
+		'tuning':lambda arg: [int(note) for note in arg.split(',')]}
+
+	if len(params) == 3 and params[1] in argtypes.keys():
+		setattr(ed.tab, params[1], argtypes[params[1]](params[2]))
+	else:
 		ed.st = 'Invalid argument'
 
 @map_command('ilen')

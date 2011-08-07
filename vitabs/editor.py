@@ -333,6 +333,19 @@ class Editor:
 				self.move_cursor(new_chord=self.tab.cursor_chord + 1)
 				self.redraw_view()
 
+	def exec_command(self, args, apply_to=None):
+		cmd = args[0]
+		try:
+			if apply_to is not None:
+				try:
+					self.commands[cmd](self, args, apply_to=apply_to)
+				except TypeError:
+					self.st = 'Command does not accept range'
+			else:
+				self.commands[cmd](self, args)
+		except KeyError:
+			self.st = 'Invalid command'
+
 	def command_mode(self):
 		'''Read a command'''
 		curses.echo()
@@ -348,11 +361,8 @@ class Editor:
 		# scrolling bug
 		self.stdscr.clear()
 		self.redraw_view()
-		try:
-			if cmd:
-				self.commands[cmd](self, words)
-		except KeyError:
-			self.st = 'Invalid command'
+		if cmd:
+			self.exec_command(words)
 
 	def normal_mode(self):
 		'''Enter normal mode, returns on quit'''

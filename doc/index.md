@@ -75,6 +75,19 @@ VITABS features a command mode (but not as powerful as the one in Vim).  To
 start typying a command, press `:`.  To execute, press Enter.  To abort, press
 `Ctrl-C`.
 
+#### Ranges
+Some commands can be applied to a range of chords/bars.  This is achieved by
+the `:for` command:
+
+    :for [from] [to] [command] [command arguments...]
+
+where `from` and `to` can be:
+
+    * `[bar number]` to include the whole bar
+	* `[bar number],[chord number]`
+	* `.` current cursor position
+	* `$` end of the tablature
+
 ### Getting out of VITABS
 Write `:q` and press Enter to exit.
 
@@ -185,6 +198,28 @@ Currently `E` plays the whole track and `e` plays from the current cursor
 position to the end of the track.
 
 `Ctrl-c` stops playback.
+
+
+Tablature attributes
+--------------------
+### Instrument
+    :tabset instrument [midi program number]
+
+### Tuning
+    :tabset tuning [notes]
+
+`notes` is a coma-separated list of midi note values from lowest to highest
+
+### Tempo
+    :tabset bpm [bpm]
+
+Bar attributes
+--------------
+### Meter
+
+    :meter [numerator] [denominator]
+
+sets meter for the current bar.  Accepts range.
 
 
 Working with files

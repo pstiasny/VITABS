@@ -94,3 +94,7 @@ class ChordRange:
 
 			for c in self.tab.bars[last_bar].chords[ : last_chord]:
 				yield c
+	
+	def bars(self):
+		for b in self.tab.bars[self.beginning[0] - 1 : self.end[0]]:
+			yield b
