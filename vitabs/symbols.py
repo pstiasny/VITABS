@@ -16,8 +16,8 @@
 templates = {
 	'bend' : '{}b',
 	'release' : '{}r',
-	'hammer on' : '{}h',
-	'pull off' : '{}p',
+	'hammer on' : 'h{}',
+	'pull off' : 'p{}',
 	'vibrato' : '{}~',
 	'tremolo' : '{}"',
 	'slide up' : '{}/',
