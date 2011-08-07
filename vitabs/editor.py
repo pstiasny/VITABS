@@ -19,7 +19,7 @@ import os
 import os.path
 
 from fractions import Fraction
-from tablature import Chord, Bar, Tablature, ChordRange
+from tablature import Fret, Chord, Bar, Tablature, ChordRange
 from player import Player
 
 class Editor:
@@ -304,12 +304,23 @@ class Editor:
 
 			elif c in range( ord('0'), ord('9') + 1 ):
 				curch = self.tab.get_cursor_chord()
-				if string in curch.strings and curch.strings[string] < 10:
-					st_dec = curch.strings[string] * 10 
-					curch.strings[string] = st_dec + c - ord('0')
+				if string in curch.strings and curch.strings[string].fret < 10:
+					st_dec = curch.strings[string].fret * 10 
+					curch.strings[string].fret = st_dec + c - ord('0')
 				else:
-					curch.strings[string] = c - ord('0')
+					curch.strings[string] = Fret(c - ord('0'))
 				self.redraw_view()
+			elif c == ord('b'):
+				try:
+					fr = self.tab.get_cursor_chord().strings[string]
+					if 'bend' in fr.symbols:
+						fr.symbols.remove('bend')
+					else:
+						fr.symbols.append('bend')
+					self.redraw_view()
+				except KeyError:
+					pass
+
 			elif c == curses.KEY_DC:
 				if self.tab.get_cursor_chord().strings[string]:
 					del self.tab.get_cursor_chord().strings[string]

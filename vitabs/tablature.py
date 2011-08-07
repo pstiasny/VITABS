@@ -16,6 +16,19 @@
 import fractions
 from fractions import Fraction
 
+class Fret:
+	def __init__(self, fret):
+		self.fret = fret
+		self.symbols = []
+	
+	def __repr__(self):
+		'''A textual representation of the fret as displayed in the tab'''
+		fr = str(self.fret)
+		if 'bend' in self.symbols:
+			return fr + 'b'
+		else:
+			return fr
+	
 class Chord:
 	def __init__(self, duration = Fraction('1/4')):
 		self.strings = {}

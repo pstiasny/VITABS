@@ -16,6 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import sys
+import os.path
 import curses
 
 from vitabs.editor import Editor
@@ -25,11 +26,18 @@ def ncmain(stdscr):
 	ed = Editor(stdscr)
 
 	ed.register_handlers(vitabs.commands)
+	
+	# modify this for os-specifig config path
+	user_config_path = os.path.expanduser('~/.config/vitabs/config.py')
+	if os.path.isfile(user_config_path):
+		execfile(user_config_path)
+	
 	if len(sys.argv) > 1:
 		ed.load_tablature(sys.argv[1])
 		ed.stdscr.clear()
 		ed.redraw_view()
 		ed.move_cursor()
+
 	ed.normal_mode()
 
 curses.wrapper(ncmain)

@@ -82,11 +82,13 @@ class Player:
 			for c in chords:
 				t = pypm.Time()
 				self.port.Write(
-					[[[144, tuning[s]+n, 100], t] for s, n in c.strings.iteritems()])
+					[[[144, tuning[s]+fr.fret, 100], t] 
+					for s, fr in c.strings.iteritems()])
 				time.sleep(c.duration * bartime)
 				t = pypm.Time()
 				self.port.Write(
-					[[[144, tuning[s]+n, 0], t] for s, n in c.strings.iteritems()])
+					[[[144, tuning[s]+fr.fret, 0], t] 
+					for s, fr in c.strings.iteritems()])
 				if not self.post_play_chord():
 					break
 		except KeyboardInterrupt:
