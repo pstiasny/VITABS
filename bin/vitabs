@@ -28,6 +28,7 @@ def ncmain(stdscr):
 	ed.register_handlers(vitabs.commands)
 	
 	# modify this for os-specifig config path
+	sys.path.append(os.path.expanduser('~/.config/vitabs/plugins'))
 	user_config_path = os.path.expanduser('~/.config/vitabs/config.py')
 	if os.path.isfile(user_config_path):
 		execfile(user_config_path)
