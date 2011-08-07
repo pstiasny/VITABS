@@ -93,5 +93,6 @@ class Player:
 					break
 		except KeyboardInterrupt:
 			self.port.Write(
-				[[[144, tuning[s]+n, 0], t] for s, n in c.strings.iteritems()])
+				[[[144, tuning[s]+fr.fret, 0], t] 
+				for s, fr in c.strings.iteritems()])
 
