@@ -88,6 +88,8 @@ where `from` and `to` can be:
 * `.` current cursor position
 * `$` end of the tablature
 
+e.g. `:for 1 $ meter 3 4` changes meter for the whole tablature to 3/4.
+
 ### Getting out of VITABS
 Write `:q` and press Enter to exit.
 
