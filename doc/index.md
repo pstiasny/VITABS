@@ -232,6 +232,7 @@ Tablature attributes
 ### Tempo
     :tabset bpm [bpm]
 
+
 Bar attributes
 --------------
 ### Meter
@@ -239,6 +240,15 @@ Bar attributes
     :meter [numerator] [denominator]
 
 sets meter for the current bar.  Accepts range.
+
+
+View manipulation
+-----------------
+The `:meta` command will set what kind of information is displayed over each
+bar
+
+* `:meta meter` display bar meter
+* `:meta number` display bar numbers
 
 
 Working with files

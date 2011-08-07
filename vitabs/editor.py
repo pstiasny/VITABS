@@ -29,6 +29,7 @@ class Editor:
 	st = ''
 	file_name = None
 	terminate = False
+	visible_meta = 'meter'
 
 	def __init__(self, stdscr, tab = Tablature()):
 		screen_height, screen_width = stdscr.getmaxyx()
@@ -114,12 +115,17 @@ class Editor:
 			stdscr.vline(y, x + 1, curses.ACS_VLINE, 6)
 		return x + 2
 
-	def draw_bar_meta(self, y, x, bar, prev_bar):
+	def draw_bar_meta(self, y, x, bar, prev_bar, index):
 		'''Print additional bar info at specified position'''
-		if (prev_bar == None 
-				or bar.sig_num != prev_bar.sig_num 
-				or bar.sig_den != prev_bar.sig_den):
-			self.stdscr.addstr(y, x, str(bar.sig_num) + '/' + str(bar.sig_den))
+		if self.visible_meta == 'meter':
+			if (prev_bar == None 
+					or bar.sig_num != prev_bar.sig_num 
+					or bar.sig_den != prev_bar.sig_den):
+				self.stdscr.addstr(
+					y, x, 
+					str(bar.sig_num) + '/' + str(bar.sig_den))
+		elif self.visible_meta == 'number':
+			self.stdscr.addstr(y, x, str(index))
 
 	def draw_tab(self, t):
 		'''Render the whole tablature'''
@@ -134,7 +140,7 @@ class Editor:
 				y += 8
 			if y + 8 > screen_height:
 				break
-			self.draw_bar_meta(y, x, tbar, prev_bar) 
+			self.draw_bar_meta(y, x, tbar, prev_bar, self.first_visible_bar + i)
 			x = self.draw_bar(y + 1, x, tbar)
 			self.last_visible_bar = i + self.first_visible_bar
 

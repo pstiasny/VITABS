@@ -326,6 +326,14 @@ def change_output(ed, params):
 		ed.player.open_first_output()
 		ed.st = 'Could not open given port'
 
+@map_command('meta')
+def set_visible_meta(ed, params):
+	if len(params) == 2 and params[1] in ['meter', 'number']:
+		ed.visible_meta = params[1]
+		ed.redraw_view()
+	else:
+		ed.st = 'Invalid argument'
+
 @map_command('e')
 def edit_file(ed, params):
 	try:
