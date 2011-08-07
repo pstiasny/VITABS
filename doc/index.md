@@ -144,7 +144,8 @@ Now you can enter new notes and modify the selected chord.  You can use the
 up/down arrow keys to move between the strings, however it is faster to jump
 between them by referring to them by their open-string note (in standard
 tuning): `E`, `A`, `D`, `G`, `B`, `e`.  Enter fret numbers using the usual
-number keys.  Press `delete` to remove the number from the current string.
+number keys.  Press `x` or `delete` to remove the number from the current
+string.
 
 Pressing the right arrow will insert another empty chord after the cursor and
 move to it.  If you instead want to edit one of the existing chords, exit

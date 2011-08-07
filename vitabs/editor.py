@@ -321,7 +321,7 @@ class Editor:
 				except KeyError:
 					pass
 
-			elif c == curses.KEY_DC:
+			elif c == curses.KEY_DC or c == ord('x'):
 				if self.tab.get_cursor_chord().strings[string]:
 					del self.tab.get_cursor_chord().strings[string]
 					self.redraw_view()
