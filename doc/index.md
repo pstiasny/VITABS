@@ -83,10 +83,10 @@ the `:for` command:
 
 where `from` and `to` can be:
 
-    * `[bar number]` to include the whole bar
-	* `[bar number],[chord number]`
-	* `.` current cursor position
-	* `$` end of the tablature
+* `[bar number]` to include the whole bar
+* `[bar number],[chord number]`
+* `.` current cursor position
+* `$` end of the tablature
 
 ### Getting out of VITABS
 Write `:q` and press Enter to exit.
