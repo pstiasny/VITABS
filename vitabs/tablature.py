@@ -129,14 +129,18 @@ class ChordRange:
 
 		if first_bar == last_bar:
 			del self.tab.bars[first_bar].chords[first_chord : last_chord]
-		else:
-			del self.tab.bars[first_bar].chords[first_chord : ]
 			if not self.tab.bars[first_bar].chords:
 				del self.tab.bars[first_bar]
-			del self.tab.bars[first_bar + 1 : last_bar]
+		else:
 			del self.tab.bars[last_bar].chords[ : last_chord]
 			if not self.tab.bars[last_bar].chords:
 				del self.tab.bars[last_bar]
+			
+			del self.tab.bars[first_bar + 1 : last_bar]
+
+			del self.tab.bars[first_bar].chords[first_chord : ]
+			if not self.tab.bars[first_bar].chords:
+				del self.tab.bars[first_bar]
 
 
 def parse_position(tab, desc):

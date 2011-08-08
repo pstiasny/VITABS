@@ -198,8 +198,9 @@ to have the specified initial length.
 
 Removing
 --------
-Press `x` to delete a single chord at the cursor.  More commands will be added
-in future versions.
+`x` deletes a single chord at the cursor.
+
+`d{motion}` deletes over a motion, e. g. `0d$` would delete the whole bar.
 
 
 Playback
@@ -216,7 +217,7 @@ port:
 `E` plays the whole track and `e` plays from the current cursor position to the
 end of the track.
 
-`r{motion}` plays over the given motion.
+`r{motion}` plays over the given motion, e.g. `0r$` would play the whole bar.
 
 `Ctrl-c` stops playback.
 

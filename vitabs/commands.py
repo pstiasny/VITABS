@@ -84,7 +84,6 @@ def delete(ed, num):
 	r = ed.expect_range(num)
 	if r:
 		r.delete_all()
-		ed.st = 'deleted ' + str(r)
 		after_delete(ed)
 		ed.redraw_view()
 
