@@ -259,7 +259,8 @@ class Editor:
 		self.cx = self.cursor_prev_bar_x + offset
 	
 	def make_motion(self, pos):
-		self.move_cursor(pos[0], pos[1], cache_lengths=True)
+		self.move_cursor(pos[0], 1 if pos[1] is None else pos[1],
+				cache_lengths=True)
 
 	def move_cursor_left(self):
 		if self.tab.cursor_chord == 1:

@@ -14,7 +14,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from fractions import Fraction
-from tablature import Chord, Bar, Tablature, ChordRange
+from tablature import Chord, Bar, Tablature, ChordRange, parse_position
 import string
 import curses # KEY_*
 
@@ -66,13 +66,8 @@ def set_chord(ed, num):
 	'''Enter insert mode at current position'''
 	ed.insert_mode()
 
-@nmap_char('x')
-def delete_chord(ed, num):
-	'''Delete at current cursor position'''
+def after_delete(ed):
 	t = ed.tab
-	del t.get_cursor_bar().chords[t.cursor_chord-1]
-	if not t.bars[t.cursor_bar-1].chords:
-		del t.bars[t.cursor_bar-1]
 	if not t.bars:
 		# empty tab
 		t.bars = [Bar()]
@@ -82,6 +77,25 @@ def delete_chord(ed, num):
 	elif t.cursor_chord > len(t.bars[t.cursor_bar-1].chords):
 		t.cursor_chord = len(t.bars[t.cursor_bar-1].chords)
 	ed.move_cursor()
+
+@nmap_char('d')
+def delete(ed, num):
+	'''Delete over a motion'''
+	r = ed.expect_range(num)
+	if r:
+		r.delete_all()
+		ed.st = 'deleted ' + str(r)
+		after_delete(ed)
+		ed.redraw_view()
+
+@nmap_char('x')
+def delete_chord(ed, num):
+	'''Delete at current cursor position'''
+	t = ed.tab
+	del t.get_cursor_bar().chords[t.cursor_chord-1]
+	if not t.bars[t.cursor_bar-1].chords:
+		del t.bars[t.cursor_bar-1]
+	after_delete(ed)
 	ed.redraw_view()
 
 @nmap_char('q')
@@ -126,9 +140,9 @@ def insert_bar(ed, num):
 def go_end(ed, num):
 	'''Go to last bar, with numeric argument go to the specified bar'''
 	if num:
-		return (min(len(ed.tab.bars), num), 1)
+		return (min(len(ed.tab.bars), num), None)
 	else:
-		return (len(ed.tab.bars), 1)
+		return (len(ed.tab.bars), None)
 
 @nmap_char('g')
 @motion
@@ -154,13 +168,13 @@ def go_bar_end(ed, num):
 @nmap_char('I')
 def insert_at_beg(ed, num):
 	'''Enter insert mode at the beginning of the bar'''
-	go_bar_beg(ed, None)
+	ed.make_motion(go_bar_beg(ed, None))
 	insert(ed, num)
 
 @nmap_char('A')
 def append_at_end(ed, num):
 	'''Enter insert mode at the end of the bar'''
-	go_bar_end(ed, None)
+	ed.make_motion(go_bar_end(ed, None))
 	append(ed, num)
 
 @nmap_char('J')
@@ -177,7 +191,7 @@ def join_bars(ed, num):
 @motion
 def go_next_bar(ed, num):
 	if not num: num = 1
-	return (min(len(ed.tab.bars), ed.tab.cursor_bar + num), 1)
+	return (min(len(ed.tab.bars), ed.tab.cursor_bar + num), None)
 
 @nmap_char('k')
 @nmap_key(curses.KEY_UP)
@@ -220,6 +234,13 @@ def scroll_bars_backward(ed, num):
 	else:
 		scroll_bars(ed, -1)
 
+@nmap_char('r')
+def play(ed, num):
+	'''Play over a motion'''
+	r = ed.expect_range(num)
+	if r:
+		ed.play_range(r.beginning, r.end)
+
 @nmap_char('E')
 def play_all(ed, num):
 	ed.play_range((1,1), ed.tab.last_position())
@@ -253,22 +274,8 @@ def apply_to_range(ed, params):
 	else:
 		first = last = None
 		try:
-			if params[1] == '.':
-				first = ed.tab.cursor_position()
-			else:
-				parts = params[1].split(',')
-				first = (int(parts[0]),
-						1 if len(parts) == 1 else int(parts[1]))
-
-			if params[2] == '.':
-				last = ed.tab.cursor_position()
-			elif params[2] == '$':
-				last = ed.tab.last_position()
-			else:
-				parts = params[2].split(',')
-				last = (int(parts[0]),
-						len(ed.tab.bars[int(parts[0]) - 1].chords)
-						if len(parts) == 1 else int(parts[1]))
+			first = parse_position(ed.tab, params[1])
+			last = parse_position(ed.tab, params[2])
 		except:
 			ed.st = 'Invalid arguments'
 

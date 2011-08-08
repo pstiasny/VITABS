@@ -81,8 +81,16 @@ class Tablature:
 class ChordRange:
 	def __init__(self, tab, beginning, end):
 		self.tab = tab
-		self.beginning = beginning
-		self.end = end
+
+		if beginning[1]:
+			self.beginning = beginning
+		else:
+			self.beginning = (beginning[0], 1)
+
+		if end[1]:
+			self.end = end
+		else:
+			self.end = (end[0], len(tab.bars[end[0] - 1].chords))
 	
 	def __repr__(self):
 		return "{0} {1}".format(self.beginning, self.end)
@@ -111,3 +119,32 @@ class ChordRange:
 	def bars(self):
 		for b in self.tab.bars[self.beginning[0] - 1 : self.end[0]]:
 			yield b
+	
+	def delete_all(self):
+		'''Delete the range of chords from the tablature'''
+		first_bar = self.beginning[0] - 1
+		first_chord = self.beginning[1] - 1
+		last_bar = self.end[0] - 1 
+		last_chord = self.end[1]
+
+		if first_bar == last_bar:
+			del self.tab.bars[first_bar].chords[first_chord : last_chord]
+		else:
+			del self.tab.bars[first_bar].chords[first_chord : ]
+			if not self.tab.bars[first_bar].chords:
+				del self.tab.bars[first_bar]
+			del self.tab.bars[first_bar + 1 : last_bar]
+			del self.tab.bars[last_bar].chords[ : last_chord]
+			if not self.tab.bars[last_bar].chords:
+				del self.tab.bars[last_bar]
+
+
+def parse_position(tab, desc):
+	if desc == '.':
+		return tab.cursor_position()
+	elif desc == '$':
+		return tab.last_position()
+	else:
+		parts = desc.split(',')
+		return (int(parts[0]),
+				None if len(parts) == 1 else int(parts[1]))

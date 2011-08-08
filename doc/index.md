@@ -213,8 +213,10 @@ port:
 
     :midiout [port index]
 
-Currently `E` plays the whole track and `e` plays from the current cursor
-position to the end of the track.
+`E` plays the whole track and `e` plays from the current cursor position to the
+end of the track.
+
+`r{motion}` plays over the given motion.
 
 `Ctrl-c` stops playback.
 
