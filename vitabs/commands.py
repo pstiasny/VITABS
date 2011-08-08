@@ -30,6 +30,12 @@ def nmap_key(key):
 		return f
 	return decorate
 
+def motion(f):
+	'''Mark as a motion command. A motion command should return a pair of (bar,
+	   chord) numbers and have no side-effects.'''
+	f.motion_command = True
+	return f
+
 def map_command(command):
 	def decorate(f):
 		f.handles_command = command
@@ -116,29 +122,34 @@ def insert_bar(ed, num):
 	ed.insert_mode()
 
 @nmap_char('G')
+@motion
 def go_end(ed, num):
 	'''Go to last bar, with numeric argument go to the specified bar'''
 	if num:
-		ed.move_cursor(min(len(ed.tab.bars), num), 1)
+		return (min(len(ed.tab.bars), num), 1)
 	else:
-		ed.move_cursor(len(ed.tab.bars), 1)
+		return (len(ed.tab.bars), 1)
 
 @nmap_char('g')
+@motion
 def go_beg(ed, num):
-	go_end(ed, 1)
+	return go_end(ed, 1)
 
 @nmap_char('0')
 @nmap_key(curses.KEY_HOME)
+@motion
 def go_bar_beg(ed, num):
 	'''Go to the beginning of the bar'''
 	if not num:
-		ed.move_cursor(new_chord = 1)
+		# ed.move_cursor(new_chord = 1)
+		return (ed.tab.cursor_bar, 1)
 
 @nmap_char('$')
 @nmap_key(curses.KEY_END)
+@motion
 def go_bar_end(ed, num):
 	'''Go to the end of the bar'''
-	ed.move_cursor(new_chord = len(ed.tab.get_cursor_bar().chords))
+	return (ed.tab.cursor_bar, len(ed.tab.get_cursor_bar().chords))
 
 @nmap_char('I')
 def insert_at_beg(ed, num):
@@ -163,15 +174,17 @@ def join_bars(ed, num):
 
 @nmap_char('j')
 @nmap_key(curses.KEY_DOWN)
+@motion
 def go_next_bar(ed, num):
 	if not num: num = 1
-	ed.move_cursor(min(len(ed.tab.bars), ed.tab.cursor_bar + num), 1)
+	return (min(len(ed.tab.bars), ed.tab.cursor_bar + num), 1)
 
 @nmap_char('k')
 @nmap_key(curses.KEY_UP)
+@motion
 def go_prev_bar(ed, num):
 	if not num: num = 1
-	ed.move_cursor(max(1, ed.tab.cursor_bar - num), 1)
+	return (max(1, ed.tab.cursor_bar - num), 1)
 
 @nmap_char('h')
 @nmap_key(curses.KEY_LEFT)

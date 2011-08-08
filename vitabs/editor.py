@@ -38,6 +38,7 @@ class Editor:
 		self.stdscr.keypad(1)
 		self.tab = tab
 		self.nmap = {}
+		self.motion_commands = {}
 		self.commands = {}
 		
 		self.set_term_title('VITABS')
@@ -52,12 +53,27 @@ class Editor:
 
 		self.player = Player()
 	
+	def make_motion_cmd(self, f):
+		'''Turn a motion command into a normal mode command'''
+		def motion_wrap(ed, num):
+			m = f(ed, num)
+			if m is not None:
+				ed.make_motion(f(ed, num))
+		motion_wrap.__name__ = f.__name__
+		motion_wrap.__doc__ = f.__doc__
+		return motion_wrap
+
 	def register_handlers(self, module):
 		'''Add commands defined in the module'''
 		for f in module.__dict__.itervalues():
 			if hasattr(f, 'normal_keys'):
-				for k in f.normal_keys:
-					self.nmap[k] = f
+				if getattr(f, 'motion_command', False):
+					for k in f.normal_keys:
+						self.nmap[k] = self.make_motion_cmd(f)
+						self.motion_commands[k] = f
+				else:
+					for k in f.normal_keys:
+						self.nmap[k] = f
 			if hasattr(f, 'handles_command'):
 				self.commands[f.handles_command] = f
 			
@@ -208,7 +224,6 @@ class Editor:
 		if new_bar < self.first_visible_bar or new_bar > self.last_visible_bar:
 			self.first_visible_bar = new_bar
 			self.redraw_view()
-			# reset prevbarx?
 
 		newbar_i = self.tab.bars[new_bar - 1]
 		
@@ -242,6 +257,9 @@ class Editor:
 		self.tab.cursor_bar = new_bar
 		self.tab.cursor_chord = new_chord
 		self.cx = self.cursor_prev_bar_x + offset
+	
+	def make_motion(self, pos):
+		self.move_cursor(pos[0], pos[1], cache_lengths=True)
 
 	def move_cursor_left(self):
 		if self.tab.cursor_chord == 1:
@@ -382,6 +400,21 @@ class Editor:
 		self.redraw_view()
 		if cmd:
 			self.exec_command(words)
+
+	def expect_range(self, num=None):
+		'''Get a motion command and return a range from cursor position to
+		   motion'''
+		c = self.get_char()
+		cur = self.tab.cursor_position()
+		try:
+			dest = self.motion_commands[c](self, num)
+			if dest:
+				if dest > cur:
+					return ChordRange(self.tab, cur, dest)
+				else:
+					return ChordRange(self.tab, dest, cur)
+		except KeyError:
+			return None
 
 	def normal_mode(self):
 		'''Enter normal mode, returns on quit'''

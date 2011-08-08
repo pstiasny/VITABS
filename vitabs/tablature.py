@@ -83,6 +83,9 @@ class ChordRange:
 		self.tab = tab
 		self.beginning = beginning
 		self.end = end
+	
+	def __repr__(self):
+		return "{0} {1}".format(self.beginning, self.end)
 
 	def chords(self):
 		'''Iterator over chords in the range'''
