@@ -227,7 +227,14 @@ end of the track.
 Tablature attributes
 --------------------
 ### Instrument
-    :tabset instrument [midi program number]
+    :instrument [midi program number]
+
+or
+
+    :instrument [name]
+
+where name is one of: `classical`, `accoustic`, `jazz`, `clean`, `overdrive`,
+`distortion`.
 
 ### Tuning
     :tabset tuning [notes]

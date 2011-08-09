@@ -296,6 +296,23 @@ def set_bar_meter(ed, params, apply_to=None):
 	except:
 		ed.st = 'Invalid argument'
 
+@map_command('instrument')
+def set_instrument(ed, params):
+	instruments = {
+			'classical' : 24,
+			'accoustic' : 25,
+			'jazz' : 26,
+			'clean' : 27,
+			'overdrive' : 29,
+			'distortion' : 30 }
+	try:
+		if params[1] in instruments:
+			ed.tab.instrument = instruments[params[1]]
+		else:
+			ed.tab.instrument = int(params[1])
+	except:
+		ed.st = 'Invalid argument'
+
 @map_command('tabset')
 def set_tablature_attribute(ed, params):
 	'''Set a given tablature attribute'''
