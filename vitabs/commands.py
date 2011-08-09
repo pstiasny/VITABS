@@ -345,6 +345,13 @@ def change_output(ed, params):
 		ed.player.open_first_output()
 		ed.st = 'Could not open given port'
 
+@map_command('nonstop')
+def enable_continuous_playback(ed, params):
+	if len(params) == 2 and params[1] == 'off':
+		ed.continuous_playback = False
+	else:
+		ed.continuous_playback = True
+
 @map_command('meta')
 def set_visible_meta(ed, params):
 	if len(params) == 2 and params[1] in ['meter', 'number']:

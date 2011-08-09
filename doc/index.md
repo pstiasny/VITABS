@@ -221,6 +221,8 @@ end of the track.
 
 `Ctrl-c` stops playback.
 
+`:nonstop` and `:nonstop off` turn continuous playback on and off.
+
 
 Tablature attributes
 --------------------

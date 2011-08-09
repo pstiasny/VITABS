@@ -30,6 +30,7 @@ class Editor:
 	file_name = None
 	terminate = False
 	visible_meta = 'meter'
+	continuous_playback = False
 
 	def __init__(self, stdscr, tab = Tablature()):
 		screen_height, screen_width = stdscr.getmaxyx()
@@ -287,21 +288,23 @@ class Editor:
 			curses.setsyx(self.cy + 6, self.cx)
 			curses.doupdate()
 
+		def move_to_beginning():
+			self.move_cursor(fro[0], fro[1])
+			redraw_playback_status()
+			return True
+
 		def update_playback_status():
 			self.move_cursor_right()
 			redraw_playback_status()
 			return True
 
-		self.move_cursor(fro[0], fro[1])
-		redraw_playback_status()
-
 		p = self.player
+		p.before_repeat = move_to_beginning
 		p.post_play_chord = update_playback_status
 		p.set_instrument(getattr(self.tab, 'instrument', 24))
 		p.play(
-				ChordRange(self.tab, fro, to).chords(),
-				getattr(self.tab, 'tuning', [76, 71, 67, 62, 57, 52]),
-				getattr(self.tab, 'bpm', 120))
+				ChordRange(self.tab, fro, to),
+				self.continuous_playback)
 		self.st = ''
 
 	def get_char(self, parent=None):

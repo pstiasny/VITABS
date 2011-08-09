@@ -33,9 +33,16 @@ def if_mod_imported(mod, retval=None):
 			return wfun
 	return wrapper
 
+def dummy_handler():
+	'''Called after each chord played, override for custom handling.
+	   Return False to stop playback.'''
+	return True
+
 class Player:
 	@if_mod_imported('pypm')
 	def __init__(self):
+		self.post_play_chord = dummy_handler
+		self.before_repeat = dummy_handler
 		pypm.Initialize()
 		self.open_first_output()
 
@@ -44,11 +51,6 @@ class Player:
 		del self.port
 		pypm.Terminate()
 	
-	def post_play_chord():
-		'''Called after each chord played, override for custom handling.
-		   Return False to stop playback.'''
-		return True
-
 	@if_mod_imported('pypm')
 	def open_first_output(self):
 		for i in range(pypm.CountDevices()):
@@ -76,20 +78,27 @@ class Player:
 		self.port.WriteShort(0xC0, num)
 
 	@if_mod_imported('pypm')
-	def play(self, chords, tuning, bpm):
+	def play(self, crange, continuous):
+		tuning = getattr(crange.tab, 'tuning', [76, 71, 67, 62, 57, 52])
+		bpm = getattr(crange.tab, 'bpm', 120)
 		try:
-			bartime = (240./bpm)
-			for c in chords:
-				t = pypm.Time()
-				self.port.Write(
-					[[[144, tuning[s]+fr.fret, 100], t] 
-					for s, fr in c.strings.iteritems()])
-				time.sleep(c.duration * bartime)
-				t = pypm.Time()
-				self.port.Write(
-					[[[144, tuning[s]+fr.fret, 0], t] 
-					for s, fr in c.strings.iteritems()])
-				if not self.post_play_chord():
+			while True:
+				if not self.before_repeat():
+					break
+				bartime = (240./bpm)
+				for c in crange.chords():
+					t = pypm.Time()
+					self.port.Write(
+						[[[144, tuning[s]+fr.fret, 100], t] 
+						for s, fr in c.strings.iteritems()])
+					time.sleep(c.duration * bartime)
+					t = pypm.Time()
+					self.port.Write(
+						[[[144, tuning[s]+fr.fret, 0], t] 
+						for s, fr in c.strings.iteritems()])
+					if not self.post_play_chord():
+						break
+				if not continuous:
 					break
 		except KeyboardInterrupt:
 			self.port.Write(
