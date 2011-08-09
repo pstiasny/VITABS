@@ -34,15 +34,19 @@ def if_mod_imported(mod, retval=None):
 	return wrapper
 
 def dummy_handler():
-	'''Called after each chord played, override for custom handling.
-	   Return False to stop playback.'''
 	return True
 
 class Player:
 	@if_mod_imported('pypm')
 	def __init__(self):
+		# Handlers return a boolean indiciating wheter to continue playing
+		# Override for custom handling.
+
+		# Called after each chord played
 		self.post_play_chord = dummy_handler
+		#Called before each repetition
 		self.before_repeat = dummy_handler
+
 		pypm.Initialize()
 		self.open_first_output()
 
