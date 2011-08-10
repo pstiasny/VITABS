@@ -64,7 +64,7 @@ for lnum, line in enumerate(songfile):
 			for t in items[1:]:
 				tab = pickle.load(open(t + '.vit'))
 				track_labels = {}
-				# load tags
+				# load labels
 				label_begin = None # (Name, (bar_number, None))
 				for i, b in enumerate(tab.bars):
 					label = getattr(b, 'label', None)
@@ -94,5 +94,6 @@ print 'the song: ', song_parts
 p = Player(port)
 
 for part in song_parts:
+	p.set_instrument(getattr(part.tab, 'instrument', 24))
 	p.play(part)
 
