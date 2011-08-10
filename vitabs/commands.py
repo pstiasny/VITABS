@@ -282,6 +282,21 @@ def apply_to_range(ed, params):
 			r = ChordRange(ed.tab, first, last)
 			ed.exec_command(params[3:], apply_to=r)
 
+@map_command('label')
+def set_bar_label(ed, params, apply_to=None):
+	if len(params) == 2:
+		ed.tab.get_cursor_bar().label = params[1]
+		ed.redraw_view()
+	elif len(params) == 1:
+		ed.st = getattr(ed.tab.get_cursor_bar(), 'label', 'No label.')
+	else:
+		ed.st = 'Single word label required'
+
+@map_command('nolabel')
+def remove_bar_label(ed, params, apply_to=None):
+	del ed.tab.get_cursor_bar().label
+	ed.redraw_view()
+
 @map_command('meter')
 def set_bar_meter(ed, params, apply_to=None):
 	try:
