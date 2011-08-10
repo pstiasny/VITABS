@@ -143,6 +143,9 @@ class Editor:
 					str(bar.sig_num) + '/' + str(bar.sig_den))
 		elif self.visible_meta == 'number':
 			self.stdscr.addstr(y, x, str(index))
+		elif self.visible_meta == 'label':
+			if hasattr(bar, 'label'):
+				self.stdscr.addstr(y, x, bar.label)
 
 	def draw_tab(self, t):
 		'''Render the whole tablature'''

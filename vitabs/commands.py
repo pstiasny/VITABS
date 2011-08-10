@@ -371,7 +371,7 @@ def enable_continuous_playback(ed, params):
 
 @map_command('meta')
 def set_visible_meta(ed, params):
-	if len(params) == 2 and params[1] in ['meter', 'number']:
+	if len(params) == 2 and params[1] in ['meter', 'number', 'label']:
 		ed.visible_meta = params[1]
 		ed.redraw_view()
 	else:
