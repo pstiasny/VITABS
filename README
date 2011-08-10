@@ -25,6 +25,7 @@ Features
 --------
 * Vi-like editing commands
 * MIDI playback
+* Song structure can be described in a text file
 
 Planned features include multiple tracks and plugin support.
 
