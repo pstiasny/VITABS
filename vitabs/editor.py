@@ -413,7 +413,7 @@ class Editor:
 		if whole_bar_cmd and c == whole_bar_cmd:
 			return ChordRange(self.tab,
 					(cur[0], 1),
-					(cur[0], len(self.tab.bars[cur[0] - 1].chords)))
+					(cur[0], None))
 		try:
 			dest = self.motion_commands[c](self, num)
 			if dest:
