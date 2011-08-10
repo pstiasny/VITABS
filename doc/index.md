@@ -200,7 +200,10 @@ Removing
 --------
 `x` deletes a single chord at the cursor.
 
-`d{motion}` deletes over a motion, e. g. `0d$` would delete the whole bar.
+`d{motion}` deletes over a motion, e. g. `dG` would delete from cursor to the
+end of the tablature.
+
+`dd` deletes the whole bar.
 
 
 Playback
@@ -217,7 +220,10 @@ port:
 `E` plays the whole track and `e` plays from the current cursor position to the
 end of the track.
 
-`r{motion}` plays over the given motion, e.g. `0r$` would play the whole bar.
+`r{motion}` plays over the given motion, e.g. `r0` would play from the beginning
+of the bar to the cursor.
+
+`rr` plays the whole bar.
 
 `Ctrl-c` stops playback.
 

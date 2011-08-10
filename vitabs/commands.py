@@ -81,7 +81,7 @@ def after_delete(ed):
 @nmap_char('d')
 def delete(ed, num):
 	'''Delete over a motion'''
-	r = ed.expect_range(num)
+	r = ed.expect_range(num, whole_bar_cmd = ord('d'))
 	if r:
 		r.delete_all()
 		after_delete(ed)
@@ -236,7 +236,7 @@ def scroll_bars_backward(ed, num):
 @nmap_char('r')
 def play(ed, num):
 	'''Play over a motion'''
-	r = ed.expect_range(num)
+	r = ed.expect_range(num, whole_bar_cmd=ord('r'))
 	if r:
 		ed.play_range(r.beginning, r.end)
 

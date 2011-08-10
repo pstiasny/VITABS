@@ -405,11 +405,15 @@ class Editor:
 		if cmd:
 			self.exec_command(words)
 
-	def expect_range(self, num=None):
+	def expect_range(self, num=None, whole_bar_cmd=None):
 		'''Get a motion command and return a range from cursor position to
 		   motion'''
 		c = self.get_char()
 		cur = self.tab.cursor_position()
+		if whole_bar_cmd and c == whole_bar_cmd:
+			return ChordRange(self.tab,
+					(cur[0], 1),
+					(cur[0], len(self.tab.bars[cur[1] - 1].chords)))
 		try:
 			dest = self.motion_commands[c](self, num)
 			if dest:
