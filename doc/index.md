@@ -254,8 +254,8 @@ Bar attributes
 sets meter for the current bar.  Accepts range.
 
 
-Editing and navigating song structure
--------------------------------------
+Editing and navigating the song structure
+-----------------------------------------
 Labels are used to denote pieces of song structure.  To set a label at the
 current bar:
 
@@ -265,7 +265,7 @@ To remove a label:
 
     :nolabel
 
-`w` jumps to the beginning of next label.
+`w` jumps to the beginning of the next label.
 
 
 View manipulation
