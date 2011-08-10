@@ -1,0 +1,98 @@
+#!/usr/bin/python2
+
+# Copyright (C) 2011  Pawel Stiasny
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+from vitabs.tablature import Tablature, ChordRange, parse_position
+from vitabs.player import Player
+import sys, getopt, pickle
+
+def usage():
+	print """VITABS song player
+Play a VITABS song according to a song structure definition file
+
+Usage:
+  vitabs-song [-h] [-p number] songfile
+
+Options:
+  -h --help                  this help
+  -p [number] --port=number  play on the "number" port
+"""
+
+try:
+	opts, args = getopt.getopt(sys.argv[1:], "hp:", ["help", "port="])
+except getopt.GetoptError, err:
+	print str(err)
+	usage()
+	sys.exit(2)
+
+port = None
+for o, a in opts:
+	if o in ("-h", "--help"):
+		usage()
+		sys.exit()
+	elif o in ("-p", "--port"):
+		port = int(a)
+
+if len(args) != 1:
+	print "no songfile specified"
+	usage()
+	sys.exit(2)
+songfile = open(args[0], 'rt')
+
+tracks = {}
+song_parts = []
+for lnum, line in enumerate(songfile):
+	line = line.strip()
+	try:
+		if len(line) == 0 or line[0] == '#':
+			continue
+		items = line.split(' ')
+		if items[0] == 'tracks:':
+			for t in items[1:]:
+				tab = pickle.load(open(t + '.vit'))
+				track_labels = {}
+				# load tags
+				label_begin = None # (Name, (bar_number, None))
+				for i, b in enumerate(tab.bars):
+					label = getattr(b, 'label', None)
+					if label:
+						if label_begin:
+							# end of previous label
+							track_labels[label_begin[0]] = ChordRange(tab,
+									label_begin[1], (i, None))
+						label_begin = (label, (i + 1, None))
+				if label_begin:
+					# end of last label
+					track_labels[label_begin[0]] = ChordRange(tab,
+							label_begin[1], (i + 1, None))
+				tracks[t] = track_labels
+						
+			print 'tracks are ', tracks
+		else:
+			repeats = int(items[2][1:])
+			for i in xrange(repeats):
+				the_track = tracks[items[0]]
+				song_parts.append(the_track[items[1]])
+	except Exception, e:
+		print 'Syntax error on line', lnum, ':', str(e)
+
+print 'the song: ', song_parts
+
+p = Player(port)
+
+for part in song_parts:
+	p.play(part)
+
