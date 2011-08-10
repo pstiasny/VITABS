@@ -13,6 +13,9 @@ User can override the default setup of VITABS by providing a configuration
     # load a plugin
     ed.register_handlers(__import__('some_plugin'))
     
+    # same as argument to the :meta command
+    ed.visible_meta = 'number'
+    
     # use a predefined MIDI port number
     # (not guaranteed to work, as this may change when new devices become
     # available!)
