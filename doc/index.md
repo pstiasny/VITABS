@@ -265,6 +265,8 @@ To remove a label:
 
     :nolabel
 
+`w` jumps to the beginning of next label.
+
 
 View manipulation
 -----------------

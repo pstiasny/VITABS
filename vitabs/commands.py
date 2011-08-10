@@ -164,6 +164,17 @@ def go_bar_end(ed, num):
 	'''Go to the end of the bar'''
 	return (ed.tab.cursor_bar, len(ed.tab.get_cursor_bar().chords))
 
+@nmap_char('w')
+@motion
+def go_next_label(ed, num):
+	'''Go to the next label'''
+	pos = (len(ed.tab.bars), None)
+	for barn in xrange(ed.tab.cursor_bar + 1, len(ed.tab.bars) + 1):
+		if hasattr(ed.tab.bars[barn - 1], 'label'):
+			pos = (barn, None)
+			break
+	return pos
+
 @nmap_char('I')
 def insert_at_beg(ed, num):
 	'''Enter insert mode at the beginning of the bar'''
