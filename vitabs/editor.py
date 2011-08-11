@@ -341,7 +341,7 @@ class Editor:
 					curch.strings[string] = Fret(c - ord('0'))
 				self.redraw_view()
 			elif c == curses.KEY_DC or c == ord('x'):
-				if self.tab.get_cursor_chord().strings[string]:
+				if string in self.tab.get_cursor_chord().strings:
 					del self.tab.get_cursor_chord().strings[string]
 					self.redraw_view()
 
