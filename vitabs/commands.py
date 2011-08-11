@@ -83,8 +83,34 @@ def delete(ed, num):
 	'''Delete over a motion'''
 	r = ed.expect_range(num, whole_bar_cmd = ord('d'))
 	if r:
+		ed.make_motion(r.beginning)
 		r.delete_all()
 		after_delete(ed)
+		ed.redraw_view()
+
+# fix this
+@nmap_char('c')
+def change(ed, num):
+	'''Delete over a motion and enter insert mode'''
+	r = ed.expect_range(num, whole_bar_cmd = ord('c'))
+	if r:
+		ed.make_motion(r.beginning)
+		r.delete_all()
+		ed.tab.bars[r.beginning[0] - 1].chords.insert(r.beginning[1] - 1,
+				Chord(ed.insert_duration))
+		ed.move_cursor()
+		ed.redraw_view()
+		ed.insert_mode()
+
+@nmap_char('y')
+def yank(ed, num):
+	import copy
+	ed.yanked_bar = copy.deepcopy(ed.tab.get_cursor_bar())
+
+@nmap_char('p')
+def paste(ed, num):
+	if ed.yanked_bar:
+		ed.tab.bars.insert(ed.tab.cursor_bar, ed.yanked_bar)
 		ed.redraw_view()
 
 @nmap_char('x')

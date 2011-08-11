@@ -31,6 +31,7 @@ class Editor:
 	terminate = False
 	visible_meta = 'meter'
 	continuous_playback = False
+	yanked_bar = None
 
 	def __init__(self, stdscr, tab = Tablature()):
 		screen_height, screen_width = stdscr.getmaxyx()
