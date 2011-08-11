@@ -148,8 +148,8 @@ def append_bar(ed, num):
 	'''Create a bar after the selected and enter insert mode'''
 	curb = ed.tab.get_cursor_bar()
 	ed.tab.bars.insert(ed.tab.cursor_bar, Bar(curb.sig_num, curb.sig_den))
-	ed.move_cursor(ed.tab.cursor_bar + 1, 1)
 	ed.redraw_view()
+	ed.move_cursor(ed.tab.cursor_bar + 1, 1)
 	ed.insert_mode()
 
 @nmap_char('O')
