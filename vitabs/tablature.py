@@ -95,6 +95,13 @@ class ChordRange:
 	def __repr__(self):
 		return "{0} {1}".format(self.beginning, self.end)
 
+	def is_single_bar(self):
+		return self.beginning[0] == self.end[0]
+
+	def is_whole_bar(self):
+		return (self.is_single_bar() and self.beginning[1] == 1 and
+				self.end[1] == len(self.tab.bars[self.end[0] - 1].chords))
+
 	def chords(self):
 		'''Iterator over chords in the range'''
 		first_bar = self.beginning[0] - 1
@@ -141,7 +148,6 @@ class ChordRange:
 			del self.tab.bars[first_bar].chords[first_chord : ]
 			if not self.tab.bars[first_bar].chords:
 				del self.tab.bars[first_bar]
-
 
 def parse_position(tab, desc):
 	if desc == '.':
