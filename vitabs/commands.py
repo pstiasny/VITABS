@@ -109,8 +109,9 @@ def yank(ed, num):
 
 @nmap_char('p')
 def paste(ed, num):
+	import copy
 	if ed.yanked_bar:
-		ed.tab.bars.insert(ed.tab.cursor_bar, ed.yanked_bar)
+		ed.tab.bars.insert(ed.tab.cursor_bar, copy.deepcopy(ed.yanked_bar))
 		ed.redraw_view()
 
 @nmap_char('x')

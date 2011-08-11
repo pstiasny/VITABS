@@ -446,7 +446,7 @@ class Editor:
 				if c in self.nmap:
 					self.nmap[c](self, num_arg)
 
-				if c in range( ord('0'), ord('9') ):
+				if c in range( ord('0'), ord('9') + 1 ):
 					# read a numeric argument
 					if num_arg:
 						num_arg = num_arg * 10 + c - ord('0')
