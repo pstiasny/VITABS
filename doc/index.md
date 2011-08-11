@@ -196,6 +196,13 @@ This command will cause all following chords created with an insert command
 to have the specified initial length.
 
 
+Joining and splitting
+---------------------
+`J` joins the current bar with the next bar.
+
+`|` splits the bar at the point after the cursor.
+
+
 Removing
 --------
 `x` deletes a single chord at the cursor.
@@ -204,6 +211,10 @@ Removing
 end of the tablature.
 
 `dd` deletes the whole bar.
+
+`c{motion}` deletes over a motion and enters insert mode in that place.
+
+`cc` acts like `c`, but deletes the whole bar.
 
 
 Playback

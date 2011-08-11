@@ -217,6 +217,17 @@ def join_bars(ed, num):
 		del ed.tab.bars[ed.tab.cursor_bar]
 		ed.redraw_view()
 
+@nmap_char('|')
+def split_bar(ed, num):
+	'''Split bar after the cursor position'''
+	cbar = ed.tab.get_cursor_bar()
+	end_part = cbar.chords[ed.tab.cursor_chord : ]
+	cbar.chords = cbar.chords[ : ed.tab.cursor_chord]
+	new_bar = Bar(cbar.sig_num, cbar.sig_den)
+	new_bar.chords = end_part
+	ed.tab.bars.insert(ed.tab.cursor_bar, new_bar)
+	ed.redraw_view()
+
 @nmap_char('j')
 @nmap_key(curses.KEY_DOWN)
 @motion
