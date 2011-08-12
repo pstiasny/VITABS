@@ -425,11 +425,23 @@ def enable_continuous_playback(ed, params):
 	else:
 		ed.continuous_playback = True
 
-@map_command('meta')
+@map_command('m')
 def set_visible_meta(ed, params):
-	if len(params) == 2 and params[1] in ['meter', 'number', 'label']:
+	possible_meta = ['meter', 'number', 'label']
+
+	if len(params) == 1:
+		try:
+			i = possible_meta.index(ed.visible_meta)
+			ed.visible_meta = possible_meta[(i + 1) % len(possible_meta)]
+		except KeyError:
+			ed.visible_meta = possible_meta[0]
+		ed.st = ed.visible_meta
+		ed.redraw_view()
+
+	elif len(params) == 2 and params[1] in possible_meta:
 		ed.visible_meta = params[1]
 		ed.redraw_view()
+
 	else:
 		ed.st = 'Invalid argument'
 

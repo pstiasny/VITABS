@@ -277,12 +277,14 @@ To remove a label:
 
 View manipulation
 -----------------
-The `:meta` command will set what kind of information is displayed over each
+The `:m` command will set what kind of information is displayed over each
 bar
 
-* `:meta meter` display bar meter
-* `:meta number` display bar numbers
-* `:meta label` display labels
+* `:m meter` display bar meter
+* `:m number` display bar numbers
+* `:m label` display labels
+
+`:m` with no argument cycles through available options.
 
 
 Working with files
