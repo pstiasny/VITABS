@@ -490,8 +490,9 @@ def set_visible_meta(ed, params):
 
 @map_command('e')
 def edit_file(ed, params):
+	import os.path
 	try:
-		ed.load_tablature(params[1])
+		ed.load_tablature(os.path.expanduser(params[1]))
 		ed.move_cursor()
 		ed.redraw_view()
 	except IndexError:
