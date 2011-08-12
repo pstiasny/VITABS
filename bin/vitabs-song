@@ -95,5 +95,7 @@ p = Player(port)
 
 for part in song_parts:
 	p.set_instrument(getattr(part.tab, 'instrument', 24))
-	p.play(part)
+	# play all parts, stop if interrupted.
+	if not p.play(part):
+		break
 

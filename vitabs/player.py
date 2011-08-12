@@ -87,6 +87,8 @@ class Player:
 
 	@if_mod_imported('pypm')
 	def play(self, crange, continuous=False):
+		'''Play a ChordRange. If continuous is True, keep playing until a
+		KeyboardInterrupt is received.'''
 		tuning = getattr(crange.tab, 'tuning', [76, 71, 67, 62, 57, 52])
 		bpm = getattr(crange.tab, 'bpm', 120)
 		try:
@@ -108,8 +110,10 @@ class Player:
 						break
 				if not continuous:
 					break
+			return True
 		except KeyboardInterrupt:
 			self.port.Write(
 				[[[144, tuning[s]+fr.fret, 0], t] 
 				for s, fr in c.strings.iteritems()])
+			return False
 
