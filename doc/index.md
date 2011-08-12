@@ -271,13 +271,37 @@ Bar attributes
 sets meter for the current bar.  Accepts range.
 
 
+Editing and navigating the song structure
+-----------------------------------------
+Labels are used to denote pieces of song structure.  To set a label at the
+current bar:
+
+    :label [word]
+
+If the label already exists, the command will move the cursor to the beginning
+of this label instead.
+
+To remove a label:
+
+    :nolabel
+
+`:label` with no argument displays label for the current bar
+
+`w` jumps to the beginning of the next label.
+
+`b` jumps to the beginning of the previous label.
+
+
 View manipulation
 -----------------
-The `:meta` command will set what kind of information is displayed over each
+The `:m` command will set what kind of information is displayed over each
 bar
 
-* `:meta meter` display bar meter
-* `:meta number` display bar numbers
+* `:m meter` display bar meter
+* `:m number` display bar numbers
+* `:m label` display labels
+
+`:m` with no argument cycles through available options.
 
 
 Working with files

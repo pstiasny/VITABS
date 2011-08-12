@@ -196,6 +196,33 @@ def go_bar_end(ed, num):
 	'''Go to the end of the bar'''
 	return (ed.tab.cursor_bar, len(ed.tab.get_cursor_bar().chords))
 
+@nmap_char('w')
+@motion
+def go_next_label(ed, num):
+	'''Go to the next label'''
+	pos = (len(ed.tab.bars), None)
+	for barn in xrange(ed.tab.cursor_bar + 1, len(ed.tab.bars) + 1):
+		if hasattr(ed.tab.bars[barn - 1], 'label'):
+			pos = (barn, None)
+			break
+	return pos
+
+@nmap_char('b')
+@motion
+def go_prev_label(ed, num):
+	'''Go to the next label'''
+	if hasattr(ed.tab.get_cursor_bar(), 'label') and ed.tab.cursor_chord == 1:
+		search_range = xrange(1, ed.tab.cursor_bar)
+	else:
+		search_range = xrange(1, ed.tab.cursor_bar + 1)
+
+	pos = (1, None)
+	for barn in reversed(search_range):
+		if hasattr(ed.tab.bars[barn - 1], 'label'):
+			pos = (barn, None)
+			break
+	return pos
+
 @nmap_char('I')
 def insert_at_beg(ed, num):
 	'''Enter insert mode at the beginning of the bar'''
@@ -325,6 +352,35 @@ def apply_to_range(ed, params):
 			r = ChordRange(ed.tab, first, last)
 			ed.exec_command(params[3:], apply_to=r)
 
+def find_label(ed, label):
+	for i, b in enumerate(ed.tab.bars):
+		if hasattr(b, 'label') and b.label == label:
+			return (i + 1, None)
+	return None
+
+@map_command('label')
+def set_bar_label(ed, params, apply_to=None):
+	if len(params) == 2:
+		l = find_label(ed, params[1])
+		if l:
+			ed.make_motion(l)
+		else:
+			ed.tab.get_cursor_bar().label = params[1]
+			ed.redraw_view()
+	elif len(params) == 1:
+		if hasattr(ed.tab.get_cursor_bar(), 'label'):
+			ed.st = ed.tab.get_cursor_bar().label
+		else:
+			lpos = go_prev_label(ed, None)
+			ed.st = getattr(ed.tab.bars[lpos[0] - 1], 'label', 'No label.')
+	else:
+		ed.st = 'Single word label required'
+
+@map_command('nolabel')
+def remove_bar_label(ed, params, apply_to=None):
+	del ed.tab.get_cursor_bar().label
+	ed.redraw_view()
+
 @map_command('meter')
 def set_bar_meter(ed, params, apply_to=None):
 	try:
@@ -412,11 +468,23 @@ def enable_continuous_playback(ed, params):
 	else:
 		ed.continuous_playback = True
 
-@map_command('meta')
+@map_command('m')
 def set_visible_meta(ed, params):
-	if len(params) == 2 and params[1] in ['meter', 'number']:
+	possible_meta = ['meter', 'number', 'label']
+
+	if len(params) == 1:
+		try:
+			i = possible_meta.index(ed.visible_meta)
+			ed.visible_meta = possible_meta[(i + 1) % len(possible_meta)]
+		except KeyError:
+			ed.visible_meta = possible_meta[0]
+		ed.st = ed.visible_meta
+		ed.redraw_view()
+
+	elif len(params) == 2 and params[1] in possible_meta:
 		ed.visible_meta = params[1]
 		ed.redraw_view()
+
 	else:
 		ed.st = 'Invalid argument'
 

@@ -38,7 +38,7 @@ def dummy_handler():
 
 class Player:
 	@if_mod_imported('pypm')
-	def __init__(self):
+	def __init__(self, outport=None):
 		# Handlers return a boolean indiciating wheter to continue playing
 		# Override for custom handling.
 
@@ -48,7 +48,10 @@ class Player:
 		self.before_repeat = dummy_handler
 
 		pypm.Initialize()
-		self.open_first_output()
+		if outport is None:
+			self.open_first_output()
+		else:
+			self.change_output(outport)
 
 	@if_mod_imported('pypm')
 	def __del__(self):
@@ -65,7 +68,8 @@ class Player:
 
 	@if_mod_imported('pypm')
 	def change_output(self, num):
-		del self.port
+		if hasattr(self, 'port'):
+			del self.port
 		self.port = pypm.Output(num, 0)
 	
 	@if_mod_imported('pypm', [])
@@ -82,7 +86,7 @@ class Player:
 		self.port.WriteShort(0xC0, num)
 
 	@if_mod_imported('pypm')
-	def play(self, crange, continuous):
+	def play(self, crange, continuous=False):
 		tuning = getattr(crange.tab, 'tuning', [76, 71, 67, 62, 57, 52])
 		bpm = getattr(crange.tab, 'bpm', 120)
 		try:
