@@ -309,13 +309,27 @@ def apply_to_range(ed, params):
 			r = ChordRange(ed.tab, first, last)
 			ed.exec_command(params[3:], apply_to=r)
 
+def find_label(ed, label):
+	for i, b in enumerate(ed.tab.bars):
+		if hasattr(b, 'label') and b.label == label:
+			return (i + 1, None)
+	return None
+
 @map_command('label')
 def set_bar_label(ed, params, apply_to=None):
 	if len(params) == 2:
-		ed.tab.get_cursor_bar().label = params[1]
-		ed.redraw_view()
+		l = find_label(ed, params[1])
+		if l:
+			ed.make_motion(l)
+		else:
+			ed.tab.get_cursor_bar().label = params[1]
+			ed.redraw_view()
 	elif len(params) == 1:
-		ed.st = getattr(ed.tab.get_cursor_bar(), 'label', 'No label.')
+		if hasattr(ed.tab.get_cursor_bar(), 'label'):
+			ed.st = ed.tab.get_cursor_bar().label
+		else:
+			lpos = go_prev_label(ed, None)
+			ed.st = getattr(ed.tab.bars[lpos[0] - 1], 'label', 'No label.')
 	else:
 		ed.st = 'Single word label required'
 

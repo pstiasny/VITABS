@@ -261,9 +261,14 @@ current bar:
 
     :label [word]
 
+If the label already exists, the command will move the cursor to the beginning
+of this label instead.
+
 To remove a label:
 
     :nolabel
+
+`:label` with no argument displays label for the current bar
 
 `w` jumps to the beginning of the next label.
 
