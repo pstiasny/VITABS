@@ -289,7 +289,7 @@ class Editor:
 		def redraw_playback_status():
 			self.st = 'Playing... <CTRL-C> to abort'
 			self.redraw_status()
-			curses.setsyx(self.cy + 6, self.cx)
+			curses.setsyx(self.cy - 1, self.cx)
 			curses.doupdate()
 
 		def move_to_beginning():
