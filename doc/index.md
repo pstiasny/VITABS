@@ -267,6 +267,8 @@ To remove a label:
 
 `w` jumps to the beginning of the next label.
 
+`b` jumps to the beginning of the previous label.
+
 
 View manipulation
 -----------------

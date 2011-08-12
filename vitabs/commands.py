@@ -175,6 +175,22 @@ def go_next_label(ed, num):
 			break
 	return pos
 
+@nmap_char('b')
+@motion
+def go_prev_label(ed, num):
+	'''Go to the next label'''
+	if hasattr(ed.tab.get_cursor_bar(), 'label') and ed.tab.cursor_chord == 1:
+		search_range = xrange(1, ed.tab.cursor_bar)
+	else:
+		search_range = xrange(1, ed.tab.cursor_bar + 1)
+
+	pos = (1, None)
+	for barn in reversed(search_range):
+		if hasattr(ed.tab.bars[barn - 1], 'label'):
+			pos = (barn, None)
+			break
+	return pos
+
 @nmap_char('I')
 def insert_at_beg(ed, num):
 	'''Enter insert mode at the beginning of the bar'''
