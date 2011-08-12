@@ -305,9 +305,10 @@ class Editor:
 		p.before_repeat = move_to_beginning
 		p.post_play_chord = update_playback_status
 		p.set_instrument(getattr(self.tab, 'instrument', 24))
-		p.play(
+		if p.play(
 				ChordRange(self.tab, fro, to),
-				self.continuous_playback)
+				self.continuous_playback):
+			self.move_cursor_left()
 		self.st = ''
 
 	def get_char(self, parent=None):
