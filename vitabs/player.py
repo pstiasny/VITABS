@@ -85,7 +85,7 @@ class Player:
 	def set_instrument(self, num):
 		self.port.WriteShort(0xC0, num)
 
-	@if_mod_imported('pypm')
+	@if_mod_imported('pypm', False)
 	def play(self, crange, continuous=False):
 		'''Play a ChordRange. If continuous is True, keep playing until a
 		KeyboardInterrupt is received.'''
