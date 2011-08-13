@@ -27,7 +27,7 @@ templates = {
 keys = {
 	ord('b') : 'bend',
 	ord('r') : 'release',
-	ord('h') : 'hammer on',
+	ord('H') : 'hammer on',
 	ord('p') : 'pull off',
 	ord('v') : 'vibrato',
 	ord('t') : 'tremolo',

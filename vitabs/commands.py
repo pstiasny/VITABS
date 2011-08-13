@@ -64,7 +64,7 @@ def append(ed, num):
 @nmap_char('s')
 def set_chord(ed, num):
 	'''Enter insert mode at current position'''
-	ed.insert_mode()
+	ed.insert_mode(free_motion=True)
 
 def after_delete(ed):
 	t = ed.tab

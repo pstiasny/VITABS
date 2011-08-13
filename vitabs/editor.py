@@ -321,10 +321,14 @@ class Editor:
 			self.term_resized()
 		return c
 
-	def insert_mode(self):
+	def insert_mode(self, free_motion=False):
 		'''Switch to insert mode and listen for keys'''
 		string = 0
-		self.st = '-- INSERT --'
+		if free_motion:
+			self.st = '-- REPLACE --'
+		else:
+			self.st = '-- INSERT --'
+
 		while True:
 			self.redraw_status()
 			curses.setsyx(self.cy + string, self.cx)
@@ -359,12 +363,19 @@ class Editor:
 			elif c == ord('B'): string = 1
 			elif c == ord('e'): string = 0
 
-			elif c == curses.KEY_RIGHT or c == ord('l'):
+			elif ((c == curses.KEY_RIGHT or c == ord('l')) and not free_motion
+					or c == ord(' ')):
 				self.tab.get_cursor_bar().chords.insert(
 						self.tab.cursor_chord, 
 						Chord(self.insert_duration))
 				self.move_cursor(new_chord=self.tab.cursor_chord + 1)
 				self.redraw_view()
+
+			elif c == curses.KEY_RIGHT or c == ord('l') and free_motion:
+				self.move_cursor_right()
+
+			elif c == curses.KEY_LEFT or c == ord('h') and free_motion:
+				self.move_cursor_left()
 
 			try:
 				# try to find a symbol in key -> symbol dict

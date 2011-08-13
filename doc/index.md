@@ -128,8 +128,8 @@ insert mode:
 * `I` at the beginning of the bar
 * `A` at the end of the bar
 
-additionally, the `s` command enters insert mode at cursor position. allowing
-to edit the selected chord.
+additionally, the `s` command enters replace mode at cursor position. allowing
+to edit the selected chord (see *replace mode* below).
 
 To create a new bar after the currently selected and enter insert mode press
 `o`. Press `O` to do the same before the selected bar.
@@ -147,19 +147,34 @@ tuning): `E`, `A`, `D`, `G`, `B`, `e`.  Enter fret numbers using the usual
 number keys.  Press `x` or `delete` to remove the number from the current
 string.
 
-Pressing the right arrow will insert another empty chord after the cursor and
-move to it.  If you instead want to edit one of the existing chords, exit
-insert mode first, then move to the desired position and use the `s` command.
+`l`, right arrow or `Space` creates another empty chord after the cursor and
+move to it.
 
 After you are done inserting, press `ESC` to exit insert mode and return to
 normal mode.
 
-#### Special symbols
-The following keys set/unset symbols for the selected string:
+### The replace mode
+If you want to edit one of the existing chords instead, exit insert mode first,
+then move to the desired position.
+
+Use the `s` command to enter the replace mode.  The difference between the
+insert mode and the replace mode is that in the later you are able to move
+freely with h/l or left/right keys and you can change already entered chords.
+Entering the mode will be marked in the status bar as follows:
+
+    -- REPLACE --
+
+You can still append new chords with the `Space` key.
+
+To return to normal mode, press `ESC`.
+
+### Special symbols
+The following keys set/unset symbols for the selected string in insert or
+replace mode:
 
 * `b`: bend
 * `r`: release
-* `h`: hammer on
+* `H`: hammer on
 * `p`: pull off
 * `v`: vibrato
 * `t`: tremolo
