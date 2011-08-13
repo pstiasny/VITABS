@@ -451,7 +451,6 @@ class Editor:
 			self.redraw_status()
 			self.st = ''
 			curses.setsyx(self.cy - 1, self.cx)
-			curses.curs_set(2)
 			curses.doupdate()
 			# TODO: accept multi-char commands
 			try:
