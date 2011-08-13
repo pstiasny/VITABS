@@ -374,7 +374,7 @@ class Editor:
 			elif c == curses.KEY_RIGHT or c == ord('l') and free_motion:
 				self.move_cursor_right()
 
-			elif c == curses.KEY_LEFT or c == ord('h') and free_motion:
+			elif (c == curses.KEY_LEFT or c == ord('h')) and free_motion:
 				self.move_cursor_left()
 
 			try:
