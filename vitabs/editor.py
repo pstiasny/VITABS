@@ -404,6 +404,7 @@ class Editor:
 
 	def command_mode(self):
 		'''Read a command'''
+		import sys
 		curses.echo()
 		self.status_line.erase()
 		self.status_line.addstr(0, 0, ":")
@@ -418,7 +419,12 @@ class Editor:
 		self.stdscr.clear()
 		self.redraw_view()
 		if cmd:
-			self.exec_command(words)
+			try:
+				self.exec_command(words)
+			except:
+				exc = sys.exc_info()
+				self.st = "Exception: " + str(exc[0].__name__) + ": " + \
+				str(exc[1])
 
 	def expect_range(self, num=None, whole_bar_cmd=None):
 		'''Get a motion command and return a range from cursor position to
