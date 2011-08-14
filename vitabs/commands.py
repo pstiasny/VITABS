@@ -152,7 +152,9 @@ def increase_duration(ed, num):
 def append_bar(ed, num):
 	'''Create a bar after the selected and enter insert mode'''
 	curb = ed.tab.get_cursor_bar()
-	ed.tab.bars.insert(ed.tab.cursor_bar, Bar(curb.sig_num, curb.sig_den))
+	bar = Bar(curb.sig_num, curb.sig_den)
+	bar.chords[0].duration = ed.insert_duration
+	ed.tab.bars.insert(ed.tab.cursor_bar, bar)
 	ed.redraw_view()
 	ed.move_cursor(ed.tab.cursor_bar + 1, 1)
 	ed.insert_mode()
@@ -161,7 +163,9 @@ def append_bar(ed, num):
 def insert_bar(ed, num):
 	'''Create a bar before the selected and enter insert mode'''
 	curb = ed.tab.get_cursor_bar()
-	ed.tab.bars.insert(ed.tab.cursor_bar - 1, Bar(curb.sig_num, curb.sig_den))
+	bar = Bar(curb.sig_num, curb.sig_den)
+	bar.chords[0].duration = ed.insert_duration
+	ed.tab.bars.insert(ed.tab.cursor_bar - 1, bar)
 	ed.move_cursor(ed.tab.cursor_bar, 1)
 	ed.redraw_view()
 	ed.insert_mode()
