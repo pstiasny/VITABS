@@ -16,13 +16,25 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import sys
+import traceback
 import os.path
 import curses
 
 from vitabs.editor import Editor
 import vitabs.commands
 
-def ncmain(stdscr):
+stdscr = curses.initscr()
+curses.noecho()
+curses.cbreak()
+stdscr.keypad(1)
+
+def terminate_curses():
+	curses.nocbreak()
+	stdscr.keypad(0)
+	curses.echo()
+	curses.endwin()
+
+try:
 	ed = Editor(stdscr)
 
 	ed.register_handlers(vitabs.commands)
@@ -40,6 +52,21 @@ def ncmain(stdscr):
 		ed.move_cursor()
 
 	ed.normal_mode()
+except:
+	terminate_curses()
+	print "\033[91mSomething terrible happened\033[0m"
+	print traceback.format_exc()
+	try:
+		if ed.file_name:
+			fn = ed.file_name + '~'
+		else:
+			fn = vitabs-bak
+		ed.save_tablature(fn)
+		print "\033[91mBackup saved in", fn, "\033[0m"
+	except:
+		print "Backup save failed"
+else:
+	terminate_curses()
 
-curses.wrapper(ncmain)
+#curses.wrapper(ncmain)
 
