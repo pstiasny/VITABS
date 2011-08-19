@@ -90,6 +90,7 @@ class Editor:
 				self.tab = Tablature()
 			self.file_name = filename
 			self.set_term_title(filename + ' - VITABS')
+			self.st = '{0} ({1} bars)'.format(filename, len(self.tab.bars))
 		except:
 			self.st = 'Error: Can\'t open the specified file'
 
