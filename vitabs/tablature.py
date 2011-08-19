@@ -32,8 +32,8 @@ class Chord:
 		self.duration = duration
 
 class Bar:
-	def __init__(self, sig_num = 4, sig_den = 4):
-		self.chords = [Chord()]
+	def __init__(self, sig_num=4, sig_den=4, first_chord_len=Fraction('1/4')):
+		self.chords = [Chord(first_chord_len)]
 		self.sig_num = sig_num
 		self.sig_den = sig_den
 

@@ -67,10 +67,11 @@ def set_chord(ed, num):
 	ed.insert_mode(free_motion=True)
 
 def after_delete(ed):
+	'''Take care of empty lists'''
 	t = ed.tab
 	if not t.bars:
 		# empty tab
-		t.bars = [Bar()]
+		t.bars = [Bar(first_chord_len=ed.insert_duration)]
 	if t.cursor_bar > len(t.bars):
 		t.cursor_bar = len(t.bars)
 		t.cursor_chord = len(t.bars[t.cursor_bar-1].chords)
@@ -100,6 +101,11 @@ def change(ed, num):
 			insert(ed, None)
 		else:
 			r.delete_all()
+			if not ed.tab.bars:
+				ed.tab.bars = [Bar(first_chord_len=ed.insert_duration)]
+				ed.move_cursor(1,1)
+				ed.redraw_view()
+				ed.insert_mode()
 			if ed.tab.cursor_bar > len(ed.tab.bars):
 				# deleting a bar at the end of the tab
 				ed.tab.cursor_bar = len(ed.tab.bars)
