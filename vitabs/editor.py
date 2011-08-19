@@ -21,6 +21,7 @@ import os.path
 from fractions import Fraction
 from tablature import Fret, Chord, Bar, Tablature, ChordRange
 import symbols
+import music
 from player import Player
 
 class Editor:
@@ -90,7 +91,10 @@ class Editor:
 				self.tab = Tablature()
 			self.file_name = filename
 			self.set_term_title(filename + ' - VITABS')
-			self.st = '{0} ({1} bars)'.format(filename, len(self.tab.bars))
+			self.st = '{0} ({1} bars, tuning: {2})'.format(
+					filename, len(self.tab.bars),
+					music.tuning_str(getattr(self.tab, 'tuning',
+						music.standard_E)))
 		except:
 			self.st = 'Error: Can\'t open the specified file'
 

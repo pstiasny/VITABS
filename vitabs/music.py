@@ -15,8 +15,13 @@
 
 notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 
-E_standard = [76, 71, 67, 62, 57, 52]
+standard_E = [76, 71, 67, 62, 57, 52]
 
 def midi_to_note_name(note_num):
 	return notes[(note_num - 24) % len(notes)] + \
 			str((note_num - 24) / len(notes))
+
+def tuning_str(tuning):
+	if tuning == standard_E:
+		return 'Standard E'
+	return ' '.join(reversed([midi_to_note_name(n) for n in tuning]))
