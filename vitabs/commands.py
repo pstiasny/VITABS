@@ -15,6 +15,7 @@
 
 from fractions import Fraction
 from tablature import Chord, Bar, Tablature, ChordRange, parse_position
+import music
 import string
 import curses # KEY_*
 
@@ -435,6 +436,23 @@ def set_tablature_attribute(ed, params):
 		setattr(ed.tab, params[1], argtypes[params[1]](params[2]))
 	else:
 		ed.st = 'Invalid argument'
+
+@map_command('tuning')
+def tuning(ed, params):
+	if len(params) == 1:
+		pass
+	elif len(params) == 2:
+		# standard E shifted
+		shift = int(params[1])
+		ed.tab.tuning = [n + shift for n in music.standard_E]
+	elif len(params) == 7:
+		# individual strings
+		ed.tab.tuning = reversed([str(s) for s in params[1:]])
+	else:
+		ed.st = 'Invalid argument'
+		return
+	# display tuning
+	ed.st = music.tuning_str(getattr(ed.tab, 'tuning', music.standard_E))
 
 @map_command('ilen')
 def set_insert_duration(ed, params):

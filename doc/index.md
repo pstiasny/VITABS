@@ -265,13 +265,23 @@ or
 
     :instrument [name]
 
-where name is one of: `classical`, `accoustic`, `jazz`, `clean`, `overdrive`,
-`distortion`.
+where `[name]` is one of: `classical`, `accoustic`, `jazz`, `clean`,
+`overdrive`, `distortion`.
 
 ### Tuning
-    :tabset tuning [notes]
+    :tuning
 
-`notes` is a coma-separated list of midi note values from lowest to highest
+displays the tuning for the current tab
+
+    :tuning [6th string note] ... [1st string note]
+
+Sets tuning string-by string.  `[nth string note]` (from the lowest to the
+highest string) are midi note values for open strings.
+
+    :tuning [semitones]
+
+Where `semitones` can be 0, negative or positive integer.  Sets the tuning
+`semitones` above (or below for a negative value) the Standard E tuining.
 
 ### Tempo
     :tabset bpm [bpm]
