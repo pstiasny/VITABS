@@ -540,6 +540,14 @@ def write_file(ed, params):
 def quit(ed, params):
 	ed.terminate = True
 
+@map_command('wq')
+def write_and_quit(ed, params):
+	if ed.file_name:
+		write_file(ed, params)
+		quit(ed, params)
+	else:
+		ed.st = 'New file, use :w [file name]'
+
 @map_command('python')
 def exec_python(ed, params):
 	'''Execute a python expression from the command line'''
