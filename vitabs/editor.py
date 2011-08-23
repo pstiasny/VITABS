@@ -43,8 +43,8 @@ class Editor:
 		self.nmap = {}
 		self.motion_commands = {}
 		self.commands = {}
-		
-		self.set_term_title('VITABS')
+
+		self.set_term_title('[unnamed] - VITABS')
 		self.status_line = curses.newwin(0, 0, screen_height - 1, 0)
 		self.status_line.scrollok(False)
 
@@ -69,7 +69,10 @@ class Editor:
 
 	def mark_changed(self):
 		self.tab.changed = True
-		self.set_term_title(self.file_name + ' + - VITABS')
+		if self.file_name:
+			self.set_term_title(self.file_name + ' + - VITABS')
+		else:
+			self.set_term_title('[unnamed] + - VITABS')
 
 	def register_handlers(self, module):
 		'''Add commands defined in the module'''
