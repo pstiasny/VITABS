@@ -439,17 +439,35 @@ class Editor:
 				self.st = "Exception: " + str(exc[0].__name__) + ": " + \
 				str(exc[1])
 
+	def _is_number(self, char):
+		return (char >= ord('0') and char <= ord('9'))
+	
+	def _parse_numeric_arg(self, c, num_arg):
+		if num_arg:
+			num_arg = num_arg * 10 + c - ord('0')
+		elif c != ord('0'):
+			num_arg = c - ord('0')
+		return num_arg
+
 	def expect_range(self, num=None, whole_bar_cmd=None):
 		'''Get a motion command and return a range from cursor position to
 		   motion'''
+		num_motion = None
 		c = self.get_char()
+		while self._is_number(c):
+			num_motion = self._parse_numeric_arg(c, num_motion)
+			c = self.get_char()
+		if num_motion and num: total_num = num * num_motion
+		elif num_motion: total_num = num_motion
+		else: total_num = num
+
 		cur = self.tab.cursor_position()
 		if whole_bar_cmd and c == whole_bar_cmd:
 			return ChordRange(self.tab,
 					(cur[0], 1),
 					(cur[0], None))
 		try:
-			dest = self.motion_commands[c](self, num)
+			dest = self.motion_commands[c](self, total_num)
 			if dest:
 				if dest > cur:
 					return ChordRange(self.tab, cur, dest)
@@ -481,14 +499,9 @@ class Editor:
 					if not (getattr(cmd, 'nosidefx', False)):
 						self.mark_changed()
 
-				if c in range( ord('0'), ord('9') + 1 ):
-					# read a numeric argument
-					if num_arg:
-						num_arg = num_arg * 10 + c - ord('0')
-						self.st = str(num_arg)
-					elif c != ord('0'):
-						num_arg = c - ord('0')
-						self.st = str(num_arg)
+				if self._is_number(c):
+					num_arg = self._parse_numeric_arg(c, num_arg)
+					if num_arg: self.st = str(num_arg)
 				else:
 					# reset after a command
 					num_arg = None
