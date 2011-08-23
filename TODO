@@ -1,3 +1,6 @@
 * Multi-key command macros
 * <>-+ (?) for shifting around the fretboard
 * tracks? / buffers
+* erase any labels while yanking
+* add more midi metadata
+* turn move-cursor to motion command, accept num arg

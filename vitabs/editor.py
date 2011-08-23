@@ -64,7 +64,12 @@ class Editor:
 				ed.make_motion(f(ed, num))
 		motion_wrap.__name__ = f.__name__
 		motion_wrap.__doc__ = f.__doc__
+		motion_wrap.nosidefx = True
 		return motion_wrap
+
+	def mark_changed(self):
+		self.tab.changed = True
+		self.set_term_title(self.file_name + ' + - VITABS')
 
 	def register_handlers(self, module):
 		'''Add commands defined in the module'''
@@ -100,6 +105,9 @@ class Editor:
 
 	def save_tablature(self, filename):
 		'''Pickle tab to a file'''
+		if hasattr(self.tab, 'changed'):
+			self.tab.changed = False
+			delattr(self.tab, 'changed')
 		try:
 			outfile = open(filename, 'wb')
 			pickle.dump(self.tab, outfile)
@@ -468,7 +476,10 @@ class Editor:
 				c = self.get_char()
 
 				if c in self.nmap:
-					self.nmap[c](self, num_arg)
+					cmd = self.nmap[c]
+					cmd(self, num_arg)
+					if not (getattr(cmd, 'nosidefx', False)):
+						self.mark_changed()
 
 				if c in range( ord('0'), ord('9') + 1 ):
 					# read a numeric argument

@@ -37,6 +37,11 @@ def motion(f):
 	f.motion_command = True
 	return f
 
+def nosidefx(f):
+	'''Mark a command that doesn't change the file - not necessary for motions'''
+	f.nosidefx = True
+	return f
+
 def map_command(command):
 	def decorate(f):
 		f.handles_command = command
@@ -115,6 +120,7 @@ def change(ed, num):
 				insert_bar(ed, None)
 
 @nmap_char('y')
+@nosidefx
 def yank(ed, num):
 	import copy
 	ed.yanked_bar = copy.deepcopy(ed.tab.get_cursor_bar())
@@ -282,15 +288,18 @@ def go_prev_bar(ed, num):
 
 @nmap_char('h')
 @nmap_key(curses.KEY_LEFT)
+@nosidefx
 def go_left(ed, num):
 	ed.move_cursor_left()
 
 @nmap_char('l')
 @nmap_key(curses.KEY_RIGHT)
+@nosidefx
 def go_right(ed, num): 
 	ed.move_cursor_right()
 
 @nmap_key(curses.KEY_NPAGE) # Page-Down
+@nosidefx
 def scroll_bars(ed, num):
 	'''Scroll the screen by one bar'''
 	if num == None: num = 1
@@ -307,6 +316,7 @@ def scroll_bars(ed, num):
 		ed.move_cursor()
 
 @nmap_key(curses.KEY_PPAGE) # Page-Up
+@nosidefx
 def scroll_bars_backward(ed, num):
 	'''Scroll the screen by one bar backwards'''
 	if num:
@@ -315,6 +325,7 @@ def scroll_bars_backward(ed, num):
 		scroll_bars(ed, -1)
 
 @nmap_char('r')
+@nosidefx
 def play(ed, num):
 	'''Play over a motion'''
 	r = ed.expect_range(num, whole_bar_cmd=ord('r'))
@@ -322,14 +333,17 @@ def play(ed, num):
 		ed.play_range(r.beginning, r.end)
 
 @nmap_char('E')
+@nosidefx
 def play_all(ed, num):
 	ed.play_range((1,1), ed.tab.last_position())
 
 @nmap_char('e')
+@nosidefx
 def play_to_end(ed, num):
 	ed.play_range(ed.tab.cursor_position(), ed.tab.last_position())
 
 @nmap_char('?')
+@nosidefx
 def display_nmaps(ed, num):
 	def make_line():
 		for c, f in ed.nmap.items():
@@ -342,6 +356,7 @@ def display_nmaps(ed, num):
 	ed.pager(make_line())
 
 @nmap_char(':')
+@nosidefx
 def enter_command_mode(ed, num):
 	ed.command_mode()
 
@@ -536,9 +551,16 @@ def write_file(ed, params):
 		else:
 			ed.st = 'File name not specified'
 
-@map_command('q')
+@map_command('q!')
 def quit(ed, params):
 	ed.terminate = True
+
+@map_command('q')
+def soft_quit(ed, params):
+	if getattr(ed.tab, 'changed', False):
+		ed.st = 'The file has changed. Use :q! to force'
+	else:
+		quit(ed, params)
 
 @map_command('wq')
 def write_and_quit(ed, params):
