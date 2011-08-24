@@ -98,8 +98,9 @@ class ChordRange:
 	def is_single_bar(self):
 		return self.beginning[0] == self.end[0]
 
-	def is_whole_bar(self):
-		return (self.is_single_bar() and self.beginning[1] == 1 and
+	def whole_bars(self):
+		'''False if the range doesn't span a whole bar at one of it's ends'''
+		return (self.beginning[1] == 1 and
 				self.end[1] == len(self.tab.bars[self.end[0] - 1].chords))
 
 	def chords(self):

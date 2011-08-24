@@ -457,7 +457,7 @@ class Editor:
 		   motion'''
 		num_motion = None
 		c = self.get_char()
-		while self._is_number(c):
+		while self._is_number(c) and (c != ord('0') or num_motion):
 			num_motion = self._parse_numeric_arg(c, num_motion)
 			c = self.get_char()
 		if num_motion and num: total_num = num * num_motion
