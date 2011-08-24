@@ -367,7 +367,7 @@ class Editor:
 				self.st = ''
 				break
 
-			elif c in range( ord('0'), ord('9') + 1 ):
+			elif ord('0') <= c <= ord('9'):
 				curch = self.tab.get_cursor_chord()
 				if string in curch.strings and curch.strings[string].fret < 10:
 					st_dec = curch.strings[string].fret * 10 
@@ -455,7 +455,7 @@ class Editor:
 				str(exc[1])
 
 	def _is_number(self, char):
-		return (char >= ord('0') and char <= ord('9'))
+		return (ord('0') <= char <= ord('9'))
 	
 	def _parse_numeric_arg(self, c, num_arg):
 		if num_arg:
