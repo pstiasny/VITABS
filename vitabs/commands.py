@@ -101,9 +101,8 @@ def change(ed, num):
 	r = ed.expect_range(num, whole_bar_cmd = ord('c'))
 	if r:
 		ed.make_motion(r.beginning)
-		if r.is_single_bar() and not r.whole_bars():
+		if not r.whole_bars():
 			r.delete_all()
-			# TODO: delete in the middle of the bar?
 			insert(ed, None)
 		else:
 			r.delete_all()
@@ -112,7 +111,7 @@ def change(ed, num):
 				# ed.move_cursor(1,1)
 				ed.redraw_view()
 				ed.insert_mode()
-			if ed.tab.cursor_bar > len(ed.tab.bars):
+			elif ed.tab.cursor_bar > len(ed.tab.bars):
 				# deleting a bar at the end of the tab
 				ed.tab.cursor_bar = len(ed.tab.bars)
 				append_bar(ed, None)
