@@ -25,6 +25,7 @@ import music
 from player import Player
 
 class Editor:
+	screen_initiated = False
 	cursor_prev_bar_x = 2
 	insert_duration = Fraction('1/4')
 	st = ''
@@ -35,26 +36,34 @@ class Editor:
 	yanked_bar = None
 
 	def __init__(self, stdscr, tab = Tablature()):
-		screen_height, screen_width = stdscr.getmaxyx()
 		self.root = stdscr
-		self.stdscr = curses.newwin(screen_height - 1, 0, 0, 0)
-		self.stdscr.keypad(1)
 		self.tab = tab
 		self.nmap = {}
 		self.motion_commands = {}
 		self.commands = {}
 
-		self.set_term_title('[unnamed] - VITABS')
+		self.player = Player()
+
+	def init_screen(self):
+		screen_height, screen_width = self.root.getmaxyx()
+		self.stdscr = curses.newwin(screen_height - 1, 0, 0, 0)
+		self.stdscr.keypad(1)
+
+		if self.file_name:
+			self.set_term_title(self.file_name + ' - VITABS')
+		else:
+			self.set_term_title('[unnamed] - VITABS')
+
 		self.status_line = curses.newwin(0, 0, screen_height - 1, 0)
 		self.status_line.scrollok(False)
 
-		self.first_visible_bar = tab.cursor_bar
+		self.first_visible_bar = self.tab.cursor_bar
 		self.redraw_view()
 		self.cy = 2
-		self.move_cursor(1, 1)
+		self.move_cursor()
 		curses.doupdate()
 
-		self.player = Player()
+		self.screen_initiated = True
 	
 	def make_motion_cmd(self, f):
 		'''Turn a motion command into a normal mode command'''

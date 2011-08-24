@@ -23,16 +23,16 @@ import curses
 from vitabs.editor import Editor
 import vitabs.commands
 
-stdscr = curses.initscr()
-curses.noecho()
-curses.cbreak()
-stdscr.keypad(1)
-
 def terminate_curses():
 	curses.nocbreak()
 	stdscr.keypad(0)
 	curses.echo()
 	curses.endwin()
+
+stdscr = curses.initscr()
+curses.noecho()
+curses.cbreak()
+stdscr.keypad(1)
 
 try:
 	ed = Editor(stdscr)
@@ -47,10 +47,8 @@ try:
 	
 	if len(sys.argv) > 1:
 		ed.load_tablature(sys.argv[1])
-		ed.stdscr.clear()
-		ed.redraw_view()
-		ed.move_cursor()
 
+	ed.init_screen()
 	ed.normal_mode()
 except:
 	terminate_curses()
