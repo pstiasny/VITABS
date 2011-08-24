@@ -108,7 +108,6 @@ def change(ed, num):
 			r.delete_all()
 			if not ed.tab.bars:
 				ed.tab.bars = [Bar(first_chord_len=ed.insert_duration)]
-				# ed.move_cursor(1,1)
 				ed.redraw_view()
 				ed.insert_mode()
 			elif ed.tab.cursor_bar > len(ed.tab.bars):
@@ -533,12 +532,15 @@ def set_visible_meta(ed, params):
 @map_command('e')
 def edit_file(ed, params):
 	import os.path
-	try:
-		ed.load_tablature(os.path.expanduser(params[1]))
-		ed.move_cursor()
-		ed.redraw_view()
-	except IndexError:
-		ed.st = 'File name not specified'
+	if getattr(ed.tab, 'changed', False):
+		ed.st = 'The file has changed. Save with :w first.'
+	else:
+		try:
+			ed.load_tablature(os.path.expanduser(params[1]))
+			ed.move_cursor()
+			ed.redraw_view()
+		except IndexError:
+			ed.st = 'File name not specified'
 
 @map_command('w')
 def write_file(ed, params):
