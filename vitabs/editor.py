@@ -68,11 +68,12 @@ class Editor:
 		return motion_wrap
 
 	def mark_changed(self):
+		if not getattr(self.tab, 'changed', False):
+			if self.file_name:
+				self.set_term_title(self.file_name + ' + - VITABS')
+			else:
+				self.set_term_title('[unnamed] + - VITABS')
 		self.tab.changed = True
-		if self.file_name:
-			self.set_term_title(self.file_name + ' + - VITABS')
-		else:
-			self.set_term_title('[unnamed] + - VITABS')
 
 	def register_handlers(self, module):
 		'''Add commands defined in the module'''
@@ -122,10 +123,12 @@ class Editor:
 	
 	def set_term_title(self, text):
 		'''Atempt to change virtual terminal window title'''
+		import sys
 		try:
 			term = os.environ['TERM'] 
 			if 'xterm' in term or 'rxvt' in term:
-				print '\033]0;' + text + '\007'
+				sys.stdout.write('\033]0;' + text + '\007')
+				sys.stdout.flush()
 		except:
 			pass
 
