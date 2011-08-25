@@ -34,6 +34,7 @@ class Editor:
 	visible_meta = 'meter'
 	continuous_playback = False
 	yanked_bar = None
+	string = 0
 
 	def __init__(self, stdscr, tab = Tablature()):
 		self.root = stdscr
@@ -351,7 +352,6 @@ class Editor:
 
 	def insert_mode(self, free_motion=False):
 		'''Switch to insert mode and listen for keys'''
-		string = 0
 		if free_motion:
 			self.st = '-- REPLACE --'
 		else:
@@ -359,7 +359,7 @@ class Editor:
 
 		while True:
 			self.redraw_status()
-			curses.setsyx(self.cy + string, self.cx)
+			curses.setsyx(self.cy + self.string, self.cx)
 			curses.doupdate()
 
 			c = self.get_char()
@@ -369,6 +369,7 @@ class Editor:
 
 			elif ord('0') <= c <= ord('9'):
 				curch = self.tab.get_cursor_chord()
+				string = self.string
 				if string in curch.strings and curch.strings[string].fret < 10:
 					st_dec = curch.strings[string].fret * 10 
 					curch.strings[string].fret = st_dec + c - ord('0')
@@ -376,20 +377,20 @@ class Editor:
 					curch.strings[string] = Fret(c - ord('0'))
 				self.redraw_view()
 			elif c == curses.KEY_DC or c == ord('x'):
-				if string in self.tab.get_cursor_chord().strings:
-					del self.tab.get_cursor_chord().strings[string]
+				if self.string in self.tab.get_cursor_chord().strings:
+					del self.tab.get_cursor_chord().strings[self.string]
 					self.redraw_view()
 
 			elif c == curses.KEY_UP or c == ord('k'):
-				string = max(string - 1, 0)
+				self.string = max(self.string - 1, 0)
 			elif c == curses.KEY_DOWN or c == ord('j'):
-				string = min(string + 1, 5)
-			elif c == ord('E'): string = 5
-			elif c == ord('A'): string = 4
-			elif c == ord('D'): string = 3
-			elif c == ord('G'): string = 2
-			elif c == ord('B'): string = 1
-			elif c == ord('e'): string = 0
+				self.string = min(self.string + 1, 5)
+			elif c == ord('E'): self.string = 5
+			elif c == ord('A'): self.string = 4
+			elif c == ord('D'): self.string = 3
+			elif c == ord('G'): self.string = 2
+			elif c == ord('B'): self.string = 1
+			elif c == ord('e'): self.string = 0
 
 			elif ((c == curses.KEY_RIGHT or c == ord('l')) and not free_motion
 					or c == ord(' ')):
@@ -408,7 +409,7 @@ class Editor:
 			try:
 				# try to find a symbol in key -> symbol dict
 				sym = symbols.keys[c]
-				fr = self.tab.get_cursor_chord().strings[string]
+				fr = self.tab.get_cursor_chord().strings[self.string]
 				if sym in fr.symbols:
 					fr.symbols.remove(sym)
 				else:
