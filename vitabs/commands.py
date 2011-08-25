@@ -529,18 +529,22 @@ def set_visible_meta(ed, params):
 	else:
 		ed.st = 'Invalid argument'
 
-@map_command('e')
+@map_command('e!')
 def edit_file(ed, params):
 	import os.path
+	try:
+		ed.load_tablature(os.path.expanduser(params[1]))
+		ed.move_cursor()
+		ed.redraw_view()
+	except IndexError:
+		ed.st = 'File name not specified'
+
+@map_command('e')
+def soft_edit_file(ed, params):
 	if getattr(ed.tab, 'changed', False):
-		ed.st = 'The file has changed. Save with :w first.'
+		ed.st = 'The file has changed. Use :e! to force.'
 	else:
-		try:
-			ed.load_tablature(os.path.expanduser(params[1]))
-			ed.move_cursor()
-			ed.redraw_view()
-		except IndexError:
-			ed.st = 'File name not specified'
+		edit_file(ed, params)
 
 @map_command('w')
 def write_file(ed, params):
@@ -559,7 +563,7 @@ def quit(ed, params):
 @map_command('q')
 def soft_quit(ed, params):
 	if getattr(ed.tab, 'changed', False):
-		ed.st = 'The file has changed. Use :q! to force'
+		ed.st = 'The file has changed. Use :q! to force.'
 	else:
 		quit(ed, params)
 
