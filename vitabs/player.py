@@ -89,6 +89,7 @@ class Player:
 	def play(self, crange, continuous=False):
 		tuning = getattr(crange.tab, 'tuning', [76, 71, 67, 62, 57, 52])
 		bpm = getattr(crange.tab, 'bpm', 120)
+		channel = 0
 		try:
 			while True:
 				if not self.before_repeat():
@@ -97,12 +98,12 @@ class Player:
 				for c in crange.chords():
 					t = pypm.Time()
 					self.port.Write(
-						[[[144, tuning[s]+fr.fret, 100], t] 
+						[[[144 + channel, tuning[s]+fr.fret, 100], t] 
 						for s, fr in c.strings.iteritems()])
 					time.sleep(c.duration * bartime)
 					t = pypm.Time()
 					self.port.Write(
-						[[[144, tuning[s]+fr.fret, 0], t] 
+						[[[128 + channel, tuning[s]+fr.fret, 100], t] 
 						for s, fr in c.strings.iteritems()])
 					if not self.post_play_chord():
 						break
