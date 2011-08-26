@@ -548,8 +548,9 @@ def soft_edit_file(ed, params):
 
 @map_command('w')
 def write_file(ed, params):
+	import os.path
 	try:
-		ed.save_tablature(params[1])
+		ed.save_tablature(os.path.expanduser(params[1]))
 	except IndexError:
 		if ed.file_name:
 			ed.save_tablature(ed.file_name)
