@@ -15,6 +15,7 @@
 
 import tablature
 import time
+import math
 import functools
 
 try:
@@ -97,10 +98,23 @@ class Player:
 				bartime = (240./bpm)
 				for c in crange.chords():
 					t = pypm.Time()
+					play_vibrato = False
+					for fr in c.strings.itervalues():
+						if 'vibrato' in fr.symbols:
+							play_vibrato = True
+							break
 					self.port.Write(
 						[[[144 + channel, tuning[s]+fr.fret, 100], t] 
 						for s, fr in c.strings.iteritems()])
-					time.sleep(c.duration * bartime)
+					if play_vibrato:
+						interval = c.duration * bartime / 20
+						for i in range(20):
+							self.port.WriteShort(224 + channel, 0,
+									40 + int(15. * math.sin(float(i) / 0.95)))
+							time.sleep(interval)
+						self.port.WriteShort(224 + channel, 0, 40)
+					else:
+						time.sleep(c.duration * bartime)
 					t = pypm.Time()
 					self.port.Write(
 						[[[128 + channel, tuning[s]+fr.fret, 100], t] 
