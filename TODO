@@ -4,5 +4,4 @@
 * erase any labels while yanking
 * add more midi metadata
 * extend midi playback with expression
-* turn move-cursor to motion command, accept num arg
 * mouse support
