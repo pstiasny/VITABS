@@ -43,5 +43,8 @@ def len_str(length):
 		try:
 			return length_names[length / Fraction('3/2')] + '.'
 		except KeyError:
-			return str(length)
+			try:
+				return length_names[length * Fraction('3/2')] + '3'
+			except KeyError:
+				return str(length)
 
