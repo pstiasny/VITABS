@@ -517,7 +517,7 @@ def enable_continuous_playback(ed, params):
 
 @map_command('m')
 def set_visible_meta(ed, params):
-	possible_meta = ['meter', 'number', 'label']
+	possible_meta = ['meter', 'number', 'label', 'length']
 
 	if len(params) == 1:
 		try:

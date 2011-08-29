@@ -325,6 +325,7 @@ bar
 * `:m meter` display bar meter
 * `:m number` display bar numbers
 * `:m label` display labels
+* `:m length` display note lengths
 
 `:m` with no argument cycles through available options.
 

@@ -13,9 +13,19 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from fractions import Fraction
+
 notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 
 standard_E = [76, 71, 67, 62, 57, 52]
+
+length_names = {
+		1 : 'W',
+		Fraction('1/2') : 'H',
+		Fraction('1/4') : 'Q',
+		Fraction('1/8') : 'E',
+		Fraction('1/16') : 'S'
+	}
 
 def midi_to_note_name(note_num):
 	return notes[(note_num - 24) % len(notes)] + \
@@ -25,3 +35,10 @@ def tuning_str(tuning):
 	if tuning == standard_E:
 		return 'Standard E'
 	return ' '.join(reversed([midi_to_note_name(n) for n in tuning]))
+
+def len_str(length):
+	try:
+		return length_names[length]
+	except KeyError:
+		return str(length)
+

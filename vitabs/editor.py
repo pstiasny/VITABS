@@ -156,6 +156,9 @@ class Editor:
 			for i in chord.strings.keys():
 				if x < screen_width:
 					stdscr.addstr(y+i, x, str(chord.strings[i]), curses.A_BOLD)
+			# should it really be here?
+			if self.visible_meta == 'length':
+				stdscr.addstr(y - 1, x, music.len_str(chord.duration))
 			width = int(chord.duration / gcd)
 			x = x + width*2 + 1
 		if x + 1 < screen_width:
@@ -219,6 +222,7 @@ class Editor:
 		# position indicator
 		self.status_line.addstr(0, width - 8, 
 				 '{0},{1}'.format(self.tab.cursor_bar, self.tab.cursor_chord))
+		# note length indicator
 		self.status_line.addstr(0, width - 16,
 				str(self.tab.get_cursor_chord().duration))
 		# meter incomplete indicator
