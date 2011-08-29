@@ -298,28 +298,27 @@ class Editor:
 
 	def go_left(self, num=1):
 		'''Returns position pair [num] chords left from the cursor'''
-		# TODO: handle num
-		if self.tab.cursor_chord == 1:
+		if self.tab.cursor_chord <= num:
 			if self.tab.cursor_bar > 1:
 				return (self.tab.cursor_bar - 1, 
 						len(self.tab.bars[self.tab.cursor_bar - 2].chords))
 			else:
-				return self.tab.cursor_position()
+				return (1, 1)
 		else:
-			return (self.tab.cursor_bar, self.tab.cursor_chord - 1)
+			return (self.tab.cursor_bar, self.tab.cursor_chord - num)
 
 	def move_cursor_left(self):
 		self.make_motion(self.go_left())
 
-	def go_right(self):
+	def go_right(self, num=1):
 		'''Returns position pair [num] chords right from the cursor'''
-		if self.tab.cursor_chord == len(self.tab.get_cursor_bar().chords):
+		if self.tab.cursor_chord + num > len(self.tab.get_cursor_bar().chords):
 			if self.tab.cursor_bar < len(self.tab.bars):
 				return (self.tab.cursor_bar + 1, 1)
 			else:
-				return self.tab.cursor_position()
+				return self.tab.last_position()
 		else:
-			return (self.tab.cursor_bar, self.tab.cursor_chord + 1)
+			return (self.tab.cursor_bar, self.tab.cursor_chord + num)
 
 	def move_cursor_right(self):
 		self.make_motion(self.go_right())

@@ -288,13 +288,19 @@ def go_prev_bar(ed, num):
 @nmap_key(curses.KEY_LEFT)
 @motion
 def go_left(ed, num):
-	return ed.go_left()
+	if num is None:
+		return ed.go_left()
+	else:
+		return ed.go_left(num)
 
 @nmap_char('l')
 @nmap_key(curses.KEY_RIGHT)
 @motion
 def go_right(ed, num): 
-	return ed.go_right()
+	if num is None:
+		return ed.go_right()
+	else:
+		return ed.go_right(num)
 
 @nmap_key(curses.KEY_NPAGE) # Page-Down
 @nosidefx
