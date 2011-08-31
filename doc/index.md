@@ -209,6 +209,8 @@ To display a sum of bars note lengths:
     :bartotal
 
 ### Insert length
+Above note length changing commands will determine with what length the
+following chords will be inserted.  You can change this manually with
 
     :ilen [numerator] [denominator]
 

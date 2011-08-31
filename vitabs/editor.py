@@ -158,7 +158,9 @@ class Editor:
 					stdscr.addstr(y+i, x, str(chord.strings[i]), curses.A_BOLD)
 			# should it really be here?
 			if self.visible_meta == 'length':
-				stdscr.addstr(y - 1, x, music.len_str(chord.duration))
+				dstr = music.len_str(chord.duration)
+				if x + len(dstr) < screen_width:
+					stdscr.addstr(y - 1, x, dstr)
 			width = int(chord.duration / gcd)
 			x = x + width*2 + 1
 		if x + 1 < screen_width:

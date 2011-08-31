@@ -148,6 +148,7 @@ def set_duration(ed, num_arg):
 		curch.duration = Fraction(1, num_arg)
 	else:
 		curch.duration = curch.duration * Fraction('1/2')
+	ed.insert_duration = curch.duration
 	ed.move_cursor()
 	ed.redraw_view()
 
@@ -156,6 +157,7 @@ def increase_duration(ed, num):
 	'''Increase note length twice'''
 	curch = ed.tab.get_cursor_chord()
 	curch.duration = curch.duration * 2
+	ed.insert_duration = curch.duration
 	ed.move_cursor()
 	ed.redraw_view()
 
@@ -494,6 +496,7 @@ def set_insert_duration(ed, params):
 def cmd_set_duration(ed, params, apply_to=None):
 	try:
 		d = Fraction(int(params[1]), int(params[2]))
+		ed.insert_duration = d
 
 		if apply_to is None:
 			ed.tab.get_cursor_chord().duration = d
