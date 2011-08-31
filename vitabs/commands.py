@@ -159,6 +159,16 @@ def increase_duration(ed, num):
 	ed.move_cursor()
 	ed.redraw_view()
 
+@nmap_char('%')
+def left_duration(ed, num):
+	'''Apply duration of the chord to the left from the cursor and move right'''
+	if ed.tab.cursor_chord > 1:
+		ed.tab.get_cursor_chord().duration = \
+				ed.tab.get_cursor_bar().chords[ed.tab.cursor_chord - 2].duration
+		ed.redraw_view()
+		ed.move_cursor() # recalculate
+	ed.move_cursor_right()
+
 @nmap_char('o')
 def append_bar(ed, num):
 	'''Create a bar after the selected and enter insert mode'''

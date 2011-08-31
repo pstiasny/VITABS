@@ -188,6 +188,7 @@ To change the duration of the selected chord you can use
 
 * `q` to decrease the length twice
 * `Q` to incerease twice
+* `%` to apply duration of the chord to the left of the selected and move right
 
 To set a specified length of 1/[natural number] write that number followed
 by `q`, e.g. if you want to set the selected chord to quarter notes, you would
