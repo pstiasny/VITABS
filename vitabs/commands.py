@@ -506,6 +506,11 @@ def cmd_set_duration(ed, params, apply_to=None):
 	except:
 		ed.st = 'Invalid argument'
 
+@map_command('bartotal')
+def bar_total(ed, params):
+	'''Display a sum of bars note lengths'''
+	ed.st = str(ed.tab.get_cursor_bar().real_duration())
+
 @map_command('midiouts')
 def list_midi_outputs(ed, params):
 	ed.pager(ed.player.list_outputs())

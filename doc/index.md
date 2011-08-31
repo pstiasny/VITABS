@@ -204,6 +204,10 @@ To set a specified range for the selected chord:
 
 This command accept a range.
 
+To display a sum of bars note lengths:
+
+    :bartotal
+
 ### Insert length
 
     :ilen [numerator] [denominator]
