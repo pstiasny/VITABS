@@ -190,7 +190,7 @@ class Editor:
 		screen_height, screen_width = self.stdscr.getmaxyx()
 		for i, tbar in enumerate(t.bars[self.first_visible_bar - 1 : ]):
 			bar_width = tbar.total_width(tbar.gcd())
-			if x + bar_width >= screen_width:
+			if x + bar_width >= screen_width and x != 2:
 				x = 2
 				y += 8
 			if y + 8 > screen_height:
@@ -278,7 +278,8 @@ class Editor:
 
 					self.cursor_prev_bar_x += barw
 
-					if self.cursor_prev_bar_x > screen_width:
+					if (self.cursor_prev_bar_x > screen_width and
+							self.cursor_prev_bar_x != 2 + barw):
 						self.cursor_prev_bar_x = 2 + barw
 						self.cy += 8
 
