@@ -373,6 +373,8 @@ class Editor:
 		else:
 			self.st = '-- INSERT --'
 
+		self.redraw_view()
+
 		insert_beg = self.tab.cursor_position()
 		insert_end = insert_beg
 
@@ -479,9 +481,6 @@ class Editor:
 		words = line.split(' ')
 		cmd = words[0]
 		curses.noecho()
-		# scrolling bug
-		self.stdscr.clear()
-		self.redraw_view()
 		if cmd:
 			try:
 				self.exec_command(words)
@@ -489,6 +488,7 @@ class Editor:
 				exc = sys.exc_info()
 				self.st = "Exception: " + str(exc[0].__name__) + ": " + \
 				str(exc[1])
+		self.redraw_view()
 
 	def _is_number(self, char):
 		return (ord('0') <= char <= ord('9'))
@@ -549,6 +549,7 @@ class Editor:
 					cmd(self, num_arg)
 					if not (getattr(cmd, 'nosidefx', False)):
 						self.mark_changed()
+						self.redraw_view()
 
 				if self._is_number(c):
 					num_arg = self._parse_numeric_arg(c, num_arg)

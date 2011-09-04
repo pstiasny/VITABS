@@ -55,7 +55,6 @@ def insert(ed, num):
 			ed.tab.cursor_chord - 1,
 			Chord(ed.insert_duration))
 	ed.move_cursor(new_chord = max(ed.tab.cursor_chord, 1))
-	ed.redraw_view()
 	ed.insert_mode()
 
 @nmap_char('a')
@@ -64,7 +63,6 @@ def append(ed, num):
 	ed.tab.get_cursor_bar().chords.insert(ed.tab.cursor_chord,
 			Chord(ed.insert_duration))
 	ed.move_cursor(new_chord = ed.tab.cursor_chord + 1)
-	ed.redraw_view()
 	ed.insert_mode()
 
 @nmap_char('s')
@@ -93,7 +91,6 @@ def delete(ed, num):
 		ed.make_motion(r.beginning)
 		r.delete_all()
 		after_delete(ed)
-		ed.redraw_view()
 
 @nmap_char('c')
 def change(ed, num):
@@ -108,7 +105,6 @@ def change(ed, num):
 			r.delete_all()
 			if not ed.tab.bars:
 				ed.tab.bars = [Bar(first_chord_len=ed.insert_duration)]
-				ed.redraw_view()
 				ed.insert_mode()
 			elif ed.tab.cursor_bar > len(ed.tab.bars):
 				# deleting a bar at the end of the tab
@@ -128,7 +124,6 @@ def paste(ed, num):
 	import copy
 	if ed.yanked_bar:
 		ed.tab.bars.insert(ed.tab.cursor_bar, copy.deepcopy(ed.yanked_bar))
-		ed.redraw_view()
 
 @nmap_char('x')
 @nmap_key(curses.KEY_DC)
@@ -139,7 +134,6 @@ def delete_chord(ed, num):
 	if not t.bars[t.cursor_bar-1].chords:
 		del t.bars[t.cursor_bar-1]
 	after_delete(ed)
-	ed.redraw_view()
 
 @nmap_char('X')
 def backwards_delete_chord(ed, num):
@@ -158,7 +152,6 @@ def set_duration(ed, num_arg):
 		curch.duration = curch.duration * Fraction('1/2')
 	ed.insert_duration = curch.duration
 	ed.move_cursor()
-	ed.redraw_view()
 
 @nmap_char('Q')
 def increase_duration(ed, num):
@@ -167,7 +160,6 @@ def increase_duration(ed, num):
 	curch.duration = curch.duration * 2
 	ed.insert_duration = curch.duration
 	ed.move_cursor()
-	ed.redraw_view()
 
 @nmap_char('%')
 def left_duration(ed, num):
@@ -175,7 +167,6 @@ def left_duration(ed, num):
 	if ed.tab.cursor_chord > 1:
 		ed.tab.get_cursor_chord().duration = \
 				ed.tab.get_cursor_bar().chords[ed.tab.cursor_chord - 2].duration
-		ed.redraw_view()
 		ed.move_cursor() # recalculate
 	ed.move_cursor_right()
 
@@ -186,7 +177,6 @@ def append_bar(ed, num):
 	bar = Bar(curb.sig_num, curb.sig_den)
 	bar.chords[0].duration = ed.insert_duration
 	ed.tab.bars.insert(ed.tab.cursor_bar, bar)
-	ed.redraw_view()
 	ed.move_cursor(ed.tab.cursor_bar + 1, 1)
 	ed.insert_mode()
 
@@ -198,7 +188,6 @@ def insert_bar(ed, num):
 	bar.chords[0].duration = ed.insert_duration
 	ed.tab.bars.insert(ed.tab.cursor_bar - 1, bar)
 	ed.move_cursor(ed.tab.cursor_bar, 1)
-	ed.redraw_view()
 	ed.insert_mode()
 
 @nmap_char('G')
@@ -277,7 +266,6 @@ def join_bars(ed, num):
 		ed.tab.get_cursor_bar().chords.extend(
 				ed.tab.bars[ed.tab.cursor_bar].chords)
 		del ed.tab.bars[ed.tab.cursor_bar]
-		ed.redraw_view()
 
 @nmap_char('|')
 def split_bar(ed, num):
@@ -288,7 +276,6 @@ def split_bar(ed, num):
 	new_bar = Bar(cbar.sig_num, cbar.sig_den)
 	new_bar.chords = end_part
 	ed.tab.bars.insert(ed.tab.cursor_bar, new_bar)
-	ed.redraw_view()
 
 @nmap_char('j')
 @nmap_key(curses.KEY_DOWN)
@@ -416,7 +403,6 @@ def set_bar_label(ed, params, apply_to=None):
 			ed.make_motion(l)
 		else:
 			ed.tab.get_cursor_bar().label = params[1]
-			ed.redraw_view()
 	elif len(params) == 1:
 		if hasattr(ed.tab.get_cursor_bar(), 'label'):
 			ed.st = ed.tab.get_cursor_bar().label
@@ -429,7 +415,6 @@ def set_bar_label(ed, params, apply_to=None):
 @map_command('nolabel')
 def remove_bar_label(ed, params, apply_to=None):
 	del ed.tab.get_cursor_bar().label
-	ed.redraw_view()
 
 @map_command('meter')
 def set_bar_meter(ed, params, apply_to=None):
@@ -441,7 +426,6 @@ def set_bar_meter(ed, params, apply_to=None):
 		else:
 			for b in apply_to.bars():
 				b.sig_num, b.sig_den = sig_num, sig_den
-		ed.redraw_view()
 	except:
 		ed.st = 'Invalid argument'
 
@@ -513,7 +497,6 @@ def cmd_set_duration(ed, params, apply_to=None):
 				c.duration = d
 
 		ed.move_cursor()
-		ed.redraw_view()
 	except:
 		ed.st = 'Invalid argument'
 
@@ -552,11 +535,9 @@ def set_visible_meta(ed, params):
 		except KeyError:
 			ed.visible_meta = possible_meta[0]
 		ed.st = ed.visible_meta
-		ed.redraw_view()
 
 	elif len(params) == 2 and params[1] in possible_meta:
 		ed.visible_meta = params[1]
-		ed.redraw_view()
 
 	else:
 		ed.st = 'Invalid argument'
@@ -567,7 +548,6 @@ def edit_file(ed, params):
 	try:
 		ed.load_tablature(os.path.expanduser(params[1]))
 		ed.move_cursor()
-		ed.redraw_view()
 	except IndexError:
 		ed.st = 'File name not specified'
 
