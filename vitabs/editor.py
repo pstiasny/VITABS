@@ -373,6 +373,9 @@ class Editor:
 		else:
 			self.st = '-- INSERT --'
 
+		insert_beg = self.tab.cursor_position()
+		insert_end = insert_beg
+
 		while True:
 			self.redraw_status()
 			curses.setsyx(self.cy + self.string, self.cx)
@@ -408,13 +411,29 @@ class Editor:
 			elif c == ord('B'): self.string = 1
 			elif c == ord('e'): self.string = 0
 
-			elif ((c == curses.KEY_RIGHT or c == ord('l')) and not free_motion
-					or c == ord(' ')):
+			elif c == ord(' '):
+				# TODO: don't repeat yourself...
 				self.tab.get_cursor_bar().chords.insert(
 						self.tab.cursor_chord, 
 						Chord(self.insert_duration))
-				self.move_cursor(new_chord=self.tab.cursor_chord + 1)
 				self.redraw_view()
+				self.move_cursor_right()
+				insert_end = (insert_end[0], insert_end[1] + 1)
+
+			elif (c == curses.KEY_RIGHT or c == ord('l')) and not free_motion:
+				right = self.go_right()
+				if right > insert_end:
+					self.tab.get_cursor_bar().chords.insert(
+							self.tab.cursor_chord, 
+							Chord(self.insert_duration))
+					self.redraw_view()
+					insert_end = right
+				self.make_motion(right)
+
+			elif (c == curses.KEY_LEFT or c == ord('h')) and not free_motion:
+				left = self.go_left()
+				if left >= insert_beg:
+					self.make_motion(left)
 
 			elif c == curses.KEY_RIGHT or c == ord('l') and free_motion:
 				self.move_cursor_right()
