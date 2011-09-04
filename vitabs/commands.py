@@ -145,7 +145,7 @@ def delete_chord(ed, num):
 def backwards_delete_chord(ed, num):
 	'''Delete before current cursor position'''
 	if ed.tab.cursor_chord > 1:
-		ed.move_cursor(new_chord=ed.tab.cursor_chord-1)
+		ed.move_cursor_left()
 		delete_chord(ed, num)
 
 @nmap_char('q')
