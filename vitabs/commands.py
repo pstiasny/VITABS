@@ -131,6 +131,7 @@ def paste(ed, num):
 		ed.redraw_view()
 
 @nmap_char('x')
+@nmap_key(curses.KEY_DC)
 def delete_chord(ed, num):
 	'''Delete at current cursor position'''
 	t = ed.tab
