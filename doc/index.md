@@ -229,6 +229,8 @@ Removing
 --------
 `x` deletes a single chord at the cursor.
 
+`X` deletes a single chord before the cursor.
+
 `d{motion}` deletes over a motion, e. g. `dG` would delete from cursor to the
 end of the tablature.
 

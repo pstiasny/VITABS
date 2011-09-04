@@ -141,6 +141,13 @@ def delete_chord(ed, num):
 	after_delete(ed)
 	ed.redraw_view()
 
+@nmap_char('X')
+def backwards_delete_chord(ed, num):
+	'''Delete before current cursor position'''
+	if ed.tab.cursor_chord > 1:
+		ed.move_cursor(new_chord=ed.tab.cursor_chord-1)
+		delete_chord(ed, num)
+
 @nmap_char('q')
 def set_duration(ed, num_arg):
 	'''Decrease note length by half, with numeric argument set to 1/arg'''
