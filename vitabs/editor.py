@@ -420,6 +420,7 @@ class Editor:
 						Chord(self.insert_duration))
 				self.redraw_view()
 				self.move_cursor_right()
+				self.move_cursor()
 				insert_end = (insert_end[0], insert_end[1] + 1)
 
 			elif (c == curses.KEY_RIGHT or c == ord('l')) and not free_motion:
@@ -431,6 +432,7 @@ class Editor:
 					self.redraw_view()
 					insert_end = right
 				self.make_motion(right)
+				self.move_cursor()
 
 			elif (c == curses.KEY_LEFT or c == ord('h')) and not free_motion:
 				left = self.go_left()
