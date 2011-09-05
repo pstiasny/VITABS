@@ -177,6 +177,7 @@ def append_bar(ed, num):
 	bar = Bar(curb.sig_num, curb.sig_den)
 	bar.chords[0].duration = ed.insert_duration
 	ed.tab.bars.insert(ed.tab.cursor_bar, bar)
+	ed.redraw_view() # necessery to calculate whether fits on page
 	ed.move_cursor(ed.tab.cursor_bar + 1, 1)
 	ed.insert_mode()
 
