@@ -423,7 +423,7 @@ class Editor:
 				insert_end = (insert_end[0], insert_end[1] + 1)
 
 			elif (c == curses.KEY_RIGHT or c == ord('l')) and not free_motion:
-				right = self.go_right()
+				right = (self.tab.cursor_bar, self.tab.cursor_chord + 1)
 				if right > insert_end:
 					self.tab.get_cursor_bar().chords.insert(
 							self.tab.cursor_chord, 
