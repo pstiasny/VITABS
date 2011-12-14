@@ -84,10 +84,14 @@ class Player:
 
 	@if_mod_imported('pypm')
 	def set_instrument(self, num):
+		if not hasattr(self, 'port'):
+			return
 		self.port.WriteShort(0xC0, num)
 
 	@if_mod_imported('pypm')
 	def play(self, crange, continuous=False):
+		if not hasattr(self, 'port'):
+			return
 		tuning = getattr(crange.tab, 'tuning', [76, 71, 67, 62, 57, 52])
 		bpm = getattr(crange.tab, 'bpm', 120)
 		channel = 0
