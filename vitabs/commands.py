@@ -84,25 +84,33 @@ def after_delete(ed):
 	ed.move_cursor()
 
 @nmap_char('d')
-def delete(ed, num):
+def delete(ed, num, rng = None):
 	'''Delete over a motion'''
-	r = ed.expect_range(num, whole_bar_cmd = ord('d'))
-	if r:
-		ed.make_motion(r.beginning)
-		r.delete_all()
+	if rng is None:
+		rng = ed.expect_range(num, whole_bar_cmd = ord('d'))
+	if rng:
+		ed.make_motion(rng.beginning)
+		rng.delete_all()
 		after_delete(ed)
 
+@nmap_char('D')
+def delete_to_end(ed, num):
+	'''Delete to the end of the bar, same as d$'''
+	pos = ed.tab.cursor_position()
+	delete(ed, num, ChordRange(ed.tab, pos, go_bar_end(ed, num)))
+
 @nmap_char('c')
-def change(ed, num):
+def change(ed, num, rng = None):
 	'''Delete over a motion and enter insert mode'''
-	r = ed.expect_range(num, whole_bar_cmd = ord('c'))
-	if r:
-		ed.make_motion(r.beginning)
-		if not r.whole_bars():
-			r.delete_all()
+	if rng is None:
+		rng = ed.expect_range(num, whole_bar_cmd = ord('c'))
+	if rng:
+		ed.make_motion(rng.beginning)
+		if not rng.whole_bars():
+			rng.delete_all()
 			insert(ed, None)
 		else:
-			r.delete_all()
+			rng.delete_all()
 			if not ed.tab.bars:
 				ed.tab.bars = [Bar(first_chord_len=ed.insert_duration)]
 				ed.insert_mode()
@@ -112,6 +120,12 @@ def change(ed, num):
 				append_bar(ed, None)
 			else:
 				insert_bar(ed, None)
+
+@nmap_char('C')
+def change_to_end(ed, num):
+	'''Change to the end of the bar, same as c$'''
+	pos = ed.tab.cursor_position()
+	change(ed, num, ChordRange(ed.tab, pos, go_bar_end(ed, num)))
 
 @nmap_char('y')
 @nosidefx
