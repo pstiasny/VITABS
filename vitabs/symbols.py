@@ -14,32 +14,32 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 templates = {
-	'bend' : '{}b',
-	'release' : '{}r',
-	'hammer on' : 'h{}',
-	'pull off' : 'p{}',
-	'vibrato' : '{}~',
-	'tremolo' : '{}"',
-	'slide up' : '{}/',
-	'slide down' : '{}\\'
+    'bend' : '{}b',
+    'release' : '{}r',
+    'hammer on' : 'h{}',
+    'pull off' : 'p{}',
+    'vibrato' : '{}~',
+    'tremolo' : '{}"',
+    'slide up' : '{}/',
+    'slide down' : '{}\\'
 }
 
 keys = {
-	ord('b') : 'bend',
-	ord('r') : 'release',
-	ord('H') : 'hammer on',
-	ord('p') : 'pull off',
-	ord('v') : 'vibrato',
-	ord('t') : 'tremolo',
-	ord('s') : 'slide up',
-	ord('d') : 'slide down'
+    ord('b') : 'bend',
+    ord('r') : 'release',
+    ord('H') : 'hammer on',
+    ord('p') : 'pull off',
+    ord('v') : 'vibrato',
+    ord('t') : 'tremolo',
+    ord('s') : 'slide up',
+    ord('d') : 'slide down'
 }
 
 def apply_symbols(fretnum, symlist):
-	st = str(fretnum)
-	for s in symlist:
-		try:
-			st = templates[s].format(st)
-		except KeyError:
-			pass
-	return st
+    st = str(fretnum)
+    for s in symlist:
+        try:
+            st = templates[s].format(st)
+        except KeyError:
+            pass
+    return st
