@@ -42,6 +42,7 @@ class Editor:
         self.nmap = {}
         self.motion_commands = {}
         self.commands = {}
+        self.cmd_history = ['']
 
         self.player = Player()
 
@@ -467,18 +468,19 @@ class Editor:
             else:
                 self.commands[cmd](self, args)
         except KeyError:
-            self.st = 'Invalid command'
+            self.st = 'Invalid command: {}'.format(cmd)
 
     def command_mode(self):
         '''Read a command'''
         import sys
-        curses.echo()
+        from vitabs.lineeditor import CommandEditor
+
+        ed = self
         self.status_line.erase()
-        self.status_line.addstr(0, 0, ":")
-        try:
-            line = self.status_line.getstr(0, 1) 
-        except KeyboardInterrupt:
-            line = ''
+        # TODO: needs the command mode indicator (:)
+        tb = CommandEditor(self.status_line, self)
+        line = tb.edit()
+
         words = line.split(' ')
         cmd = words[0]
         curses.noecho()
@@ -489,6 +491,7 @@ class Editor:
                 exc = sys.exc_info()
                 self.st = "Exception: " + str(exc[0].__name__) + ": " + \
                 str(exc[1])
+        self.cmd_history.append(cmd)
         self.redraw_view()
 
     def _is_number(self, char):
