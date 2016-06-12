@@ -58,7 +58,7 @@ except:
         if ed.file_name:
             fn = ed.file_name + '~'
         else:
-            fn = vitabs-bak
+            fn = 'vitabs-bak'
         ed.save_tablature(fn)
         print "\033[91mBackup saved in", fn, "\033[0m"
     except:
