@@ -19,7 +19,17 @@ programming interface.
 
 Getting VITABS
 ---------------
-You can get the latest development source at projects github at 
+
+### Install via pip
+
+The editor can be installed via the **pip** package manager:
+
+    pip install vitabs
+
+
+### Install from source
+
+You can get the latest development source at projects github at
 <https://github.com/pstiasny/VITABS>.  Use git to dowload the latest version
 
     git clone git://github.com/pstiasny/VITABS.git
