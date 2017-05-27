@@ -20,9 +20,9 @@ programming interface.
 Getting VITABS
 ---------------
 You can get the latest development source at projects github at 
-<https://github.com/PawelStiasny/VITABS>.  Use git to dowload the latest version
+<https://github.com/pstiasny/VITABS>.  Use git to dowload the latest version
 
-    git clone git://github.com/PawelStiasny/VITABS.git
+    git clone git://github.com/pstiasny/VITABS.git
 
 To install, execute the following as root:
 
