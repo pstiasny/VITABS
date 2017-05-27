@@ -1,13 +1,14 @@
 from distutils.core import setup
 
 setup(
-    name='VITABS',
-    version='0.1dev',
+    name='vitabs',
+    version='0.1',
     author='Pawel Stiasny',
+    author_email='pawelstiasny@gmail.com',
     packages=['vitabs'],
     scripts=['bin/vitabs'],
-    url='http://github.com/PawelStiasny/VITABS',
-    license='COPYING',
+    url='http://github.com/pstiasny/VITABS',
+    license='GNU General Public License',
     description='Vi-inspired guitar tab editor',
     long_description=open('README').read(),
 )
