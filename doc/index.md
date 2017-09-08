@@ -253,7 +253,10 @@ end of the tablature.
 
 Playback
 --------
-You need to have PyPortMidi installed on your system for playback to work.
+You need to have python-rtmidi installed on your system for playback to work.
+You can install using pip:
+
+    $ pip install python-rtmidi
 
 By default, VITABS will connect to the first available MIDI port.  If you wish
 to use a different output port, the command `:midiouts` will list available
