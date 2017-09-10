@@ -21,7 +21,7 @@ not be at it's finest, still an effort is beeing taken to clean it up.
 Requirements
 ------------
 Python 2 and curses library are required to run VITABS.
-PyPortMidi is required for MIDI playback.
+python-portmidi is required for MIDI playback.
 
 
 Features
