@@ -1,0 +1,10 @@
+0.2
+===
+
+* Changed playback backend to rtmidi
+
+
+0.1
+===
+
+* Initial release
