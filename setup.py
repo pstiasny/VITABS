@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='vitabs',
-    version='0.1b',
+    version='0.2',
     author='Pawel Stiasny',
     author_email='pawelstiasny@gmail.com',
     packages=['vitabs'],
@@ -11,4 +11,7 @@ setup(
     license='GNU General Public License',
     description='Vi-inspired guitar tab editor',
     long_description=open('README').read(),
+    extra_requires={
+        'midi': ['python-portmidi'],
+    },
 )
