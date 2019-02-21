@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='vitabs',
-    version='0.2b',
+    version='0.2',
     author='Pawel Stiasny',
     author_email='pawelstiasny@gmail.com',
     packages=['vitabs'],
