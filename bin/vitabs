@@ -43,7 +43,7 @@ try:
     sys.path.append(os.path.expanduser('~/.config/vitabs/plugins'))
     user_config_path = os.path.expanduser('~/.config/vitabs/config.py')
     if os.path.isfile(user_config_path):
-        execfile(user_config_path)
+        exec(compile(open(user_config_path).read(), user_config_path, 'exec'))
     
     if len(sys.argv) > 1:
         ed.load_tablature(sys.argv[1])
@@ -52,17 +52,17 @@ try:
     ed.normal_mode()
 except:
     terminate_curses()
-    print "\033[91mSomething terrible happened\033[0m"
-    print traceback.format_exc()
+    print("\033[91mSomething terrible happened\033[0m")
+    print(traceback.format_exc())
     try:
         if ed.file_name:
             fn = ed.file_name + '~'
         else:
             fn = 'vitabs-bak'
         ed.save_tablature(fn)
-        print "\033[91mBackup saved in", fn, "\033[0m"
+        print("\033[91mBackup saved in", fn, "\033[0m")
     except:
-        print "Backup save failed"
+        print("Backup save failed")
 else:
     terminate_curses()
 

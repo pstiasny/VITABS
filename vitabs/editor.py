@@ -14,15 +14,20 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import curses
+import locale
 import pickle
 import os
 import os.path
 
 from fractions import Fraction
-from tablature import Fret, Chord, Bar, Tablature, ChordRange
-import symbols
-import music
-from player import Player
+from .tablature import Fret, Chord, Bar, Tablature, ChordRange
+from . import symbols
+from . import music
+from .player import Player
+
+locale.setlocale(locale.LC_ALL, '')
+encoding = locale.getpreferredencoding()
+
 
 class Editor:
     screen_initiated = False
@@ -87,7 +92,7 @@ class Editor:
 
     def register_handlers(self, module):
         '''Add commands defined in the module'''
-        for f in module.__dict__.itervalues():
+        for f in module.__dict__.values():
             if hasattr(f, 'normal_keys'):
                 if getattr(f, 'motion_command', False):
                     for k in f.normal_keys:
@@ -152,7 +157,7 @@ class Editor:
             stdscr.hline(y + i, x, curses.ACS_HLINE, total_width)
         x += 1
         for chord in bar.chords:
-            for i in chord.strings.keys():
+            for i in list(chord.strings.keys()):
                 if x < screen_width:
                     stdscr.addstr(y+i, x, str(chord.strings[i]), curses.A_BOLD)
             # should it really be here?
@@ -476,7 +481,7 @@ class Editor:
         self.status_line.erase()
         self.status_line.addstr(0, 0, ":")
         try:
-            line = self.status_line.getstr(0, 1) 
+            line = self.status_line.getstr(0, 1).decode(encoding)
         except KeyboardInterrupt:
             line = ''
         words = line.split(' ')

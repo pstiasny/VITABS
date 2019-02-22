@@ -15,7 +15,8 @@
 
 import fractions
 from fractions import Fraction
-import symbols as syms
+from . import symbols as syms
+from functools import reduce
 
 class Fret:
     def __init__(self, fret):

@@ -14,8 +14,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from fractions import Fraction
-from tablature import Chord, Bar, Tablature, ChordRange, parse_position
-import music
+from .tablature import Chord, Bar, Tablature, ChordRange, parse_position
+from . import music
 import string
 import curses # KEY_*
 
@@ -239,7 +239,7 @@ def go_bar_end(ed, num):
 def go_next_label(ed, num):
     '''Go to the next label'''
     pos = (len(ed.tab.bars), None)
-    for barn in xrange(ed.tab.cursor_bar + 1, len(ed.tab.bars) + 1):
+    for barn in range(ed.tab.cursor_bar + 1, len(ed.tab.bars) + 1):
         if hasattr(ed.tab.bars[barn - 1], 'label'):
             pos = (barn, None)
             break
@@ -250,9 +250,9 @@ def go_next_label(ed, num):
 def go_prev_label(ed, num):
     '''Go to the next label'''
     if hasattr(ed.tab.get_cursor_bar(), 'label') and ed.tab.cursor_chord == 1:
-        search_range = xrange(1, ed.tab.cursor_bar)
+        search_range = range(1, ed.tab.cursor_bar)
     else:
-        search_range = xrange(1, ed.tab.cursor_bar + 1)
+        search_range = range(1, ed.tab.cursor_bar + 1)
 
     pos = (1, None)
     for barn in reversed(search_range):
@@ -371,7 +371,7 @@ def play_to_end(ed, num):
 @nosidefx
 def display_nmaps(ed, num):
     def make_line():
-        for c, f in ed.nmap.items():
+        for c, f in list(ed.nmap.items()):
             if f.__doc__:
                 yield '{0}  {1}: {2}'.format(
                     curses.keyname(c), f.__name__, f.__doc__)
@@ -472,7 +472,7 @@ def set_tablature_attribute(ed, params):
         'tuning':lambda arg: [int(note) for note in arg.split(',')]
     }
 
-    if len(params) == 3 and params[1] in argtypes.keys():
+    if len(params) == 3 and params[1] in list(argtypes.keys()):
         setattr(ed.tab, params[1], argtypes[params[1]](params[2]))
     else:
         ed.st = 'Invalid argument'
@@ -608,5 +608,5 @@ def write_and_quit(ed, params):
 @map_command('python')
 def exec_python(ed, params):
     '''Execute a python expression from the command line'''
-    exec string.join(params[1 : ], ' ') in {'ed' : ed}
+    exec(string.join(params[1 : ], ' '), {'ed' : ed})
 

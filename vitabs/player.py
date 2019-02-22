@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import tablature
+from . import tablature
 import time
 import math
 import functools
@@ -21,7 +21,7 @@ import functools
 try:
     import rtmidi
 except ImportError:
-    print "python-rtmidi not installed, MIDI playback will not be available."
+    print("python-rtmidi not installed, MIDI playback will not be available.")
 
 def if_mod_imported(mod, retval=None):
     '''Make a function do nothing if module is not imported'''
@@ -100,11 +100,11 @@ class Player:
                 bartime = (240./bpm)
                 for c in crange.chords():
                     play_vibrato = False
-                    for fr in c.strings.itervalues():
+                    for fr in c.strings.values():
                         if 'vibrato' in fr.symbols:
                             play_vibrato = True
                             break
-                    for s, fr in c.strings.iteritems():
+                    for s, fr in c.strings.items():
                         self.midiout.send_message(
                             [144 + channel, tuning[s]+fr.fret, 100])
                     if play_vibrato:
@@ -119,7 +119,7 @@ class Player:
                         self.midiout.send_message([224 + channel, 0, 40])
                     else:
                         time.sleep(c.duration * bartime)
-                    for s, fr in c.strings.iteritems():
+                    for s, fr in c.strings.items():
                         self.midiout.send_message(
                             [128 + channel, tuning[s]+fr.fret, 100])
                     if not self.post_play_chord():
@@ -127,5 +127,5 @@ class Player:
                 if not continuous:
                     break
         except KeyboardInterrupt:
-            for s, fr in c.strings.iteritems():
+            for s, fr in c.strings.items():
                 self.midiout.send_message([144, tuning[s]+fr.fret, 0])
