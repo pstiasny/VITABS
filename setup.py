@@ -1,8 +1,8 @@
-from distutils.core import setup
+from setuptools import setup
 
 setup(
     name='vitabs',
-    version='0.2',
+    version='1.0',
     author='Pawel Stiasny',
     author_email='pawelstiasny@gmail.com',
     packages=['vitabs'],
@@ -13,5 +13,8 @@ setup(
     long_description=open('README').read(),
     extras_require={
         'midi': ['python-rtmidi'],
+    },
+    project_urls={
+        'Manual': 'https://github.com/pstiasny/VITABS/blob/master/doc/index.md',
     },
 )

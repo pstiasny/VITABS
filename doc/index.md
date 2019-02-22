@@ -26,6 +26,10 @@ The editor can be installed via the **pip** package manager:
 
     pip install vitabs
 
+Or install with the optional MIDI playblack support:
+
+    pip install vitabs[midi]
+
 
 ### Install from source
 

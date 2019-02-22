@@ -13,15 +13,18 @@ mappings are modeled after Vi and Vim.
 A more detailed documentation is available in the doc directory in Markdown
 format.
 
-The project is in a quite early stage, so many features are missing. Also, this
-project started as an excersise in python and curses for me, so code quality may
-not be at it's finest, still an effort is beeing taken to clean it up.
-
 
 Requirements
 ------------
-Python 2 and curses library are required to run VITABS.
-python-portmidi is required for MIDI playback.
+Python 3 and curses library are required to run VITABS.
+python-rtmidi is required for MIDI playback.
+
+
+Installation
+------------
+It's easiest to get VITABS via the pip package manager::
+
+    pip install vitabs[midi]
 
 
 Features
