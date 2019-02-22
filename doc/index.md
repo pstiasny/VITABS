@@ -8,14 +8,6 @@ It also tries to adhere to the philosophy of doing one thing well.  VITABS is
 not a composition application, music typesetting software nor music theory
 teacher.  Other applications doing these things well are available.
 
-If you are familiar with Vim, you should be able to understand this editors
-interface concept quickly.  If you're not, but you are looking for a free,
-convienient tab editor -- read on.  This manual tries to explain how to use
-the editor, covering basic concepts, more advanced convenience features and
-programming interface.
-
-[TOC]
-
 
 Getting VITABS
 ---------------
@@ -49,11 +41,9 @@ directory.
 
 Starting VITABS
 ---------------
-To launch the application you need Python 2 and the curses library.
+Start the program in the terminal:
 
-Start the program in the terminal
-
-    python2 vitabs.py
+    vitabs
 
 
 Interface overview
