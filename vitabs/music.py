@@ -29,7 +29,7 @@ length_names = {
 
 def midi_to_note_name(note_num):
     return notes[(note_num - 24) % len(notes)] + \
-            str((note_num - 24) / len(notes))
+            str((note_num - 24) // len(notes))
 
 def tuning_str(tuning):
     if tuning == standard_E:
