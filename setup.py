@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='vitabs',
-    version='1.0',
+    version='1.1',
     author='Pawel Stiasny',
     author_email='pawelstiasny@gmail.com',
     packages=['vitabs'],
@@ -13,6 +13,7 @@ setup(
     long_description=open('README').read(),
     extras_require={
         'midi': ['python-rtmidi'],
+        'test': ['pytest'],
     },
     project_urls={
         'Manual': 'https://github.com/pstiasny/VITABS/blob/master/doc/index.md',

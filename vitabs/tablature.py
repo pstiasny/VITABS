@@ -41,23 +41,24 @@ class Bar:
     def required_duration(self):
         """Duration as specified by signature"""
         return Fraction(self.sig_num, self.sig_den)
-    
+
     def real_duration(self):
         """Sum of chord durations"""
-        return reduce(lambda a, b: a + b.duration, self.chords, 0)
+        return sum(c.duration for c in self.chords)
 
     def gcd(self):
         """Greatest common denominator of chord durations"""
-        return reduce(lambda a,b: fractions.gcd(a, b.duration), 
-            self.chords, 0)
+        from math import lcm
+        denoms = (c.duration.denominator for c in self.chords)
+        return lcm(*denoms)
 
-    def total_width(self, gcd):
+    def total_width(self):
         """Calculated width in characters"""
         d = self.real_duration()
         if d == 0:
             return 2
         else:
-            return int(self.real_duration() / gcd) * 2 + len(self.chords) + 2
+            return int(d * self.gcd()) * 2 + len(self.chords) + 2
 
 class Tablature:
     cursor_bar = 1

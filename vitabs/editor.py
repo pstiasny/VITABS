@@ -152,7 +152,7 @@ class Editor:
         screen_width = self.stdscr.getmaxyx()[1]
         stdscr.vline(y, x - 1, curses.ACS_VLINE, 6)
         gcd = bar.gcd()
-        total_width = bar.total_width(gcd)
+        total_width = bar.total_width()
         for i in range(6):
             stdscr.hline(y + i, x, curses.ACS_HLINE, total_width)
         x += 1
@@ -165,7 +165,7 @@ class Editor:
                 dstr = music.len_str(chord.duration)
                 if x + len(dstr) < screen_width:
                     stdscr.addstr(y - 1, x, dstr)
-            width = int(chord.duration / gcd)
+            width = int(chord.duration * gcd)
             x = x + width*2 + 1
         if x + 1 < screen_width:
             stdscr.vline(y, x + 1, curses.ACS_VLINE, 6)
@@ -193,7 +193,7 @@ class Editor:
         prev_bar = None
         screen_height, screen_width = self.stdscr.getmaxyx()
         for i, tbar in enumerate(t.bars[self.first_visible_bar - 1 : ]):
-            bar_width = tbar.total_width(tbar.gcd())
+            bar_width = tbar.total_width()
             if x + bar_width >= screen_width and x != 2:
                 x = 2
                 y += 8
@@ -280,7 +280,7 @@ class Editor:
             self.cy = 2
             if new_bar > self.first_visible_bar:
                 for b in self.tab.bars[self.first_visible_bar - 1 : new_bar - 1]:
-                    barw = b.total_width(b.gcd()) + 1
+                    barw = b.total_width() + 1
 
                     self.cursor_prev_bar_x += barw
 
@@ -290,7 +290,7 @@ class Editor:
                         self.cy += 8
 
                 # should the cursor bar be wrapped?
-                newbar_w = newbar_i.total_width(newbar_i.gcd()) + 1
+                newbar_w = newbar_i.total_width() + 1
                 if newbar_w + self.cursor_prev_bar_x > screen_width:
                     self.cursor_prev_bar_x = 2
                     self.cy += 8
@@ -299,7 +299,7 @@ class Editor:
         offset = 1
         gcd = newbar_i.gcd()
         for c in newbar_i.chords[:new_chord - 1]:
-            offset += int(c.duration / gcd)*2 + 1
+            offset += int(c.duration * gcd)*2 + 1
 
         self.tab.cursor_bar = new_bar
         self.tab.cursor_chord = new_chord
