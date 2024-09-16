@@ -22,11 +22,11 @@ class Fret:
     def __init__(self, fret):
         self.fret = fret
         self.symbols = []
-    
+
     def __repr__(self):
         '''A textual representation of the fret as displayed in the tab'''
         return syms.apply_symbols(self.fret, self.symbols)
-    
+
 class Chord:
     def __init__(self, duration = Fraction('1/4')):
         self.strings = {}
@@ -72,7 +72,7 @@ class Tablature:
 
     def get_cursor_chord(self):
         return self.bars[self.cursor_bar - 1].chords[self.cursor_chord - 1]
-    
+
     def cursor_position(self):
         return self.cursor_bar, self.cursor_chord
 
@@ -93,7 +93,7 @@ class ChordRange:
             self.end = end
         else:
             self.end = (end[0], len(tab.bars[end[0] - 1].chords))
-    
+
     def __repr__(self):
         return "{0} {1}".format(self.beginning, self.end)
 
@@ -109,7 +109,7 @@ class ChordRange:
         '''Iterator over chords in the range'''
         first_bar = self.beginning[0] - 1
         first_chord = self.beginning[1] - 1
-        last_bar = self.end[0] - 1 
+        last_bar = self.end[0] - 1
         last_chord = self.end[1]
 
         if first_bar == last_bar:
@@ -125,16 +125,16 @@ class ChordRange:
 
             for c in self.tab.bars[last_bar].chords[ : last_chord]:
                 yield c
-    
+
     def bars(self):
         for b in self.tab.bars[self.beginning[0] - 1 : self.end[0]]:
             yield b
-    
+
     def delete_all(self):
         '''Delete the range of chords from the tablature'''
         first_bar = self.beginning[0] - 1
         first_chord = self.beginning[1] - 1
-        last_bar = self.end[0] - 1 
+        last_bar = self.end[0] - 1
         last_chord = self.end[1]
 
         if first_bar == last_bar:
@@ -145,7 +145,7 @@ class ChordRange:
             del self.tab.bars[last_bar].chords[ : last_chord]
             if not self.tab.bars[last_bar].chords:
                 del self.tab.bars[last_bar]
-            
+
             del self.tab.bars[first_bar + 1 : last_bar]
 
             del self.tab.bars[first_bar].chords[first_chord : ]

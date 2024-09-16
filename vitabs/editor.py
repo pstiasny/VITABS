@@ -70,7 +70,7 @@ class Editor:
         curses.doupdate()
 
         self.screen_initiated = True
-    
+
     def make_motion_cmd(self, f):
         '''Turn a motion command into a normal mode command'''
         def motion_wrap(ed, num):
@@ -103,7 +103,7 @@ class Editor:
                         self.nmap[k] = f
             if hasattr(f, 'handles_command'):
                 self.commands[f.handles_command] = f
-            
+
     def load_tablature(self, filename):
         '''Unpickle tab from a file'''
         try:
@@ -134,12 +134,12 @@ class Editor:
         except:
             self.st = 'Error: Can\'t save'
         self.set_term_title(filename + ' - VITABS')
-    
+
     def set_term_title(self, text):
         '''Atempt to change virtual terminal window title'''
         import sys
         try:
-            term = os.environ['TERM'] 
+            term = os.environ['TERM']
             if 'xterm' in term or 'rxvt' in term:
                 sys.stdout.write('\033]0;' + text + '\007')
                 sys.stdout.flush()
@@ -174,11 +174,11 @@ class Editor:
     def draw_bar_meta(self, y, x, bar, prev_bar, index):
         '''Print additional bar info at specified position'''
         if self.visible_meta == 'meter':
-            if (prev_bar == None 
-                    or bar.sig_num != prev_bar.sig_num 
+            if (prev_bar == None
+                    or bar.sig_num != prev_bar.sig_num
                     or bar.sig_den != prev_bar.sig_den):
                 self.stdscr.addstr(
-                    y, x, 
+                    y, x,
                     str(bar.sig_num) + '/' + str(bar.sig_den))
         elif self.visible_meta == 'number':
             self.stdscr.addstr(y, x, str(index))
@@ -204,13 +204,13 @@ class Editor:
             self.last_visible_bar = i + self.first_visible_bar
 
             prev_bar = tbar
-    
+
     def redraw_view(self):
         '''Redraw tab window'''
         self.stdscr.erase()
         self.draw_tab(self.tab) # merge theese functions?
         self.stdscr.noutrefresh()
-    
+
     def term_resized(self):
         '''Called when the terminal window is resized, updates window sizes'''
         height, width = self.root.getmaxyx()
@@ -218,7 +218,7 @@ class Editor:
         self.stdscr.resize(height - 1, width)
         self.redraw_view()
         self.move_cursor()
-    
+
     def redraw_status(self):
         '''Update status bar'''
         width = self.status_line.getmaxyx()[1]
@@ -227,7 +227,7 @@ class Editor:
         self.status_line.addstr(0, 0, self.st)
         # position indicator
         self.status_line.addstr(
-            0, width - 8, 
+            0, width - 8,
             '{0},{1}'.format(self.tab.cursor_bar, self.tab.cursor_chord))
         # note length indicator
         self.status_line.addstr(
@@ -272,7 +272,7 @@ class Editor:
             self.redraw_view()
 
         newbar_i = self.tab.bars[new_bar - 1]
-        
+
         # calculate the width of preceeding bars
         screen_height, screen_width = self.stdscr.getmaxyx()
         if new_bar != self.tab.cursor_bar or self.cursor_prev_bar_x == None:
@@ -304,7 +304,7 @@ class Editor:
         self.tab.cursor_bar = new_bar
         self.tab.cursor_chord = new_chord
         self.cx = self.cursor_prev_bar_x + offset
-    
+
     def make_motion(self, pos):
         self.move_cursor(pos[0], 1 if pos[1] is None else pos[1],
                          cache_lengths=True)
@@ -313,7 +313,7 @@ class Editor:
         '''Returns position pair [num] chords left from the cursor'''
         if self.tab.cursor_chord <= num:
             if self.tab.cursor_bar > 1:
-                return (self.tab.cursor_bar - 1, 
+                return (self.tab.cursor_bar - 1,
                         len(self.tab.bars[self.tab.cursor_bar - 2].chords))
             else:
                 return (1, 1)
@@ -335,7 +335,7 @@ class Editor:
 
     def move_cursor_right(self):
         self.make_motion(self.go_right())
-    
+
     def play_range(self, fro, to):
         def redraw_playback_status():
             self.st = 'Playing... <CTRL-C> to abort'
@@ -396,7 +396,7 @@ class Editor:
                 curch = self.tab.get_cursor_chord()
                 string = self.string
                 if string in curch.strings and curch.strings[string].fret < 10:
-                    st_dec = curch.strings[string].fret * 10 
+                    st_dec = curch.strings[string].fret * 10
                     curch.strings[string].fret = st_dec + c - ord('0')
                 else:
                     curch.strings[string] = Fret(c - ord('0'))
@@ -420,7 +420,7 @@ class Editor:
             elif c == ord(' '):
                 # TODO: don't repeat yourself...
                 self.tab.get_cursor_bar().chords.insert(
-                        self.tab.cursor_chord, 
+                        self.tab.cursor_chord,
                         Chord(self.insert_duration))
                 self.redraw_view()
                 self.move_cursor_right()
@@ -431,7 +431,7 @@ class Editor:
                 right = (self.tab.cursor_bar, self.tab.cursor_chord + 1)
                 if right > insert_end:
                     self.tab.get_cursor_bar().chords.insert(
-                            self.tab.cursor_chord, 
+                            self.tab.cursor_chord,
                             Chord(self.insert_duration))
                     self.redraw_view()
                     insert_end = right
@@ -498,7 +498,7 @@ class Editor:
 
     def _is_number(self, char):
         return (ord('0') <= char <= ord('9'))
-    
+
     def _parse_numeric_arg(self, c, num_arg):
         if num_arg:
             num_arg = num_arg * 10 + c - ord('0')
@@ -537,7 +537,7 @@ class Editor:
         '''Enter normal mode, returns on quit'''
         num_arg = None
         t = self.tab
-        
+
         while True:
             if self.terminate:
                 break
