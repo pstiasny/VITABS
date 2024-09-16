@@ -107,20 +107,23 @@ class Editor:
 
     def load_tablature(self, filename):
         '''Unpickle tab from a file'''
-        try:
-            if os.path.isfile(filename):
-                infile = open(filename, 'rb')
-                self.tab = pickle.load(infile)
-                infile.close()
-            else:
-                self.tab = Tablature()
-            self.file_name = filename
-            self.set_term_title(filename + ' - VITABS')
-            self.st = '{0} ({1} bars, tuning: {2})'.format(
-                filename, len(self.tab.bars),
-                music.tuning_str(getattr(self.tab, 'tuning', music.standard_E)))
-        except:
-            self.st = 'Error: Can\'t open the specified file'
+        if os.path.isfile(filename):
+            try:
+                with open(filename, 'rb') as infile:
+                    self.tab = pickle.load(infile)
+            except:
+                self.st = 'Error: Can\'t open the specified file'
+                return
+        else:
+            self.tab = Tablature()
+
+        self.file_name = filename
+        self.set_term_title(filename + ' - VITABS')
+        self.st = '{0} ({1} bars, tuning: {2})'.format(
+            filename, len(self.tab.bars),
+            music.tuning_str(getattr(self.tab, 'tuning', music.standard_E)))
+        self.tab.cursor_bar = 1
+        self.tab.cursor_chord = 1
 
     def save_tablature(self, filename):
         '''Pickle tab to a file'''
