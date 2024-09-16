@@ -47,6 +47,7 @@ class Editor:
         self.nmap = {}
         self.motion_commands = {}
         self.commands = {}
+        self.log_messages = []
 
         self.player = Player()
 
@@ -401,7 +402,7 @@ class Editor:
                 else:
                     curch.strings[string] = Fret(c - ord('0'))
                 self.redraw_view()
-            elif c == curses.KEY_DC or c == ord('x'):
+            elif c == curses.KEY_DC or c == 127 or c == ord('x'):
                 if self.string in self.tab.get_cursor_chord().strings:
                     del self.tab.get_cursor_chord().strings[self.string]
                     self.redraw_view()

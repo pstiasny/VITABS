@@ -16,7 +16,6 @@
 from fractions import Fraction
 from .tablature import Chord, Bar, Tablature, ChordRange, parse_position
 from . import music
-import string
 import curses # KEY_*
 
 def nmap_char(key):
@@ -317,7 +316,7 @@ def go_left(ed, num):
 @nmap_char('l')
 @nmap_key(curses.KEY_RIGHT)
 @motion
-def go_right(ed, num): 
+def go_right(ed, num):
     if num is None:
         return ed.go_right()
     else:
@@ -328,7 +327,7 @@ def go_right(ed, num):
 def scroll_bars(ed, num):
     '''Scroll the screen by one bar'''
     if num == None: num = 1
-    first = ed.first_visible_bar 
+    first = ed.first_visible_bar
     first += num
     first = min(max(first, 1), len(ed.tab.bars))
     ed.first_visible_bar = first
@@ -466,7 +465,7 @@ def set_instrument(ed, params):
 def set_tablature_attribute(ed, params):
     '''Set a given tablature attribute'''
     # add sanity tests
-    argtypes = { 
+    argtypes = {
         'instrument':int,
         'bpm':float,
         'tuning':lambda arg: [int(note) for note in arg.split(',')]
@@ -608,5 +607,9 @@ def write_and_quit(ed, params):
 @map_command('python')
 def exec_python(ed, params):
     '''Execute a python expression from the command line'''
-    exec(string.join(params[1 : ], ' '), {'ed' : ed})
+    exec(' '.join(params[1 : ]), {'ed' : ed})
 
+@map_command('log')
+@nosidefx
+def log(ed, params):
+    ed.pager(reversed(ed.log_messages))
