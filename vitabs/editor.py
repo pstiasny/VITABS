@@ -14,6 +14,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import curses
+import curses.ascii
 import locale
 import pickle
 import os
@@ -392,7 +393,7 @@ class Editor:
             curses.doupdate()
 
             c = self.get_char()
-            if c == 27: # ESCAPE
+            if c == curses.ascii.ESC:
                 self.st = ''
                 break
 
@@ -405,7 +406,7 @@ class Editor:
                 else:
                     curch.strings[string] = Fret(c - ord('0'))
                 self.redraw_view()
-            elif c == curses.KEY_DC or c == 127 or c == ord('x'):
+            elif c == curses.KEY_DC or c == curses.ascii.DEL or c == ord('x'):
                 if self.string in self.tab.get_cursor_chord().strings:
                     del self.tab.get_cursor_chord().strings[self.string]
                     self.redraw_view()
@@ -568,7 +569,7 @@ class Editor:
                     # reset after a command
                     num_arg = None
 
-                if c == 27: # ESCAPE
+                if c == curses.ascii.ESC:
                     self.st = ''
 
             except KeyboardInterrupt:

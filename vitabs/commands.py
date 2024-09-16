@@ -17,9 +17,13 @@ from fractions import Fraction
 from .tablature import Chord, Bar, Tablature, ChordRange, parse_position
 from . import music
 import curses # KEY_*
+import curses.ascii
 
 def nmap_char(key):
     return nmap_key(ord(key))
+
+def nmap_char_ctrl(key):
+    return nmap_key(curses.ascii.ctrl(ord(key)))
 
 def nmap_key(key):
     def decorate(f):
@@ -182,6 +186,22 @@ def left_duration(ed, num):
         ed.move_cursor() # recalculate
     ed.move_cursor_right()
 
+@nmap_char('*')
+def lengthen_by_50_percent(ed, num):
+    '''Increase duration by 50%'''
+    curch = ed.tab.get_cursor_chord()
+    curch.duration = curch.duration * Fraction(3, 2)
+    ed.insert_duration = curch.duration
+    ed.move_cursor()
+
+@nmap_char('#')
+def shorten_by_50_percent(ed, num):
+    '''Decrease duration to 2/3rd'''
+    curch = ed.tab.get_cursor_chord()
+    curch.duration = curch.duration * Fraction(2, 3)
+    ed.insert_duration = curch.duration
+    ed.move_cursor()
+
 @nmap_char('o')
 def append_bar(ed, num):
     '''Create a bar after the selected and enter insert mode'''
@@ -321,6 +341,18 @@ def go_right(ed, num):
         return ed.go_right()
     else:
         return ed.go_right(num)
+
+@nmap_char_ctrl('a')
+def transpose_up(ed, num):
+    if not num: num = 1
+    chord = ed.tab.get_cursor_chord()
+    for fret in chord.strings.values():
+        fret.fret = max(fret.fret + num, 0)
+
+@nmap_char_ctrl('x')
+def transpose_down(ed, num):
+    if not num: num = 1
+    transpose_up(ed, -num)
 
 @nmap_key(curses.KEY_NPAGE) # Page-Down
 @nosidefx

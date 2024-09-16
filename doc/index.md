@@ -192,6 +192,8 @@ To change the duration of the selected chord you can use
 
 * `q` to decrease the length twice
 * `Q` to incerease twice
+* `*` to incerease length by 50% (equivalent to adding a dot for a regular note)
+* `#` to incerease length to two thirds (resulting in a triplet note)
 * `%` to apply duration of the chord to the left of the selected and move right
 
 To set a specified length of 1/[natural number] write that number followed
@@ -220,6 +222,17 @@ following chords will be inserted.  You can change this manually with
 
 This command will cause all following chords created with an insert command
 to have the specified initial length.
+
+
+Transposing
+-----------
+
+`Ctrl-a` moves chord at the cursor to a higher-numbered fret
+
+`Ctrl-x` moves chord at the cursor to a lower-numbered fret
+
+Numeric argument can be given, e. g. `12 Ctrl-a` will increase fret numbers
+by 12.
 
 
 Joining and splitting
